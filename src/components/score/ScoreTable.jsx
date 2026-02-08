@@ -42,6 +42,37 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer }) {
     setIsRankingCalculated(true);
   };
 
+  // 테스트 데이터 생성
+  const handleFillTestData = () => {
+    const lastNames = ['김', '이', '박', '최', '정', '강', '조', '윤', '장', '임'];
+    const firstNames = ['민수', '영희', '철수', '지영', '현우', '수진', '동현', '미영', '성민', '혜진'];
+    const clubs = ['그린파크', '레이크힐', '선샤인', '블루밸리', '골든게이트'];
+
+    tournament.players.forEach((player) => {
+      const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+      const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+      const name = lastName + firstName;
+      const gender = Math.random() > 0.5 ? '남' : '여';
+      const club = clubs[Math.floor(Math.random() * clubs.length)];
+      const scoreA = Math.floor(Math.random() * 15) + 20; // 20~34
+      const scoreB = Math.floor(Math.random() * 15) + 20;
+      const scoreC = Math.floor(Math.random() * 15) + 20;
+      const scoreD = Math.floor(Math.random() * 15) + 20;
+
+      onUpdatePlayer(tournament.id, player.id, {
+        name,
+        gender,
+        club,
+        scoreA,
+        scoreB,
+        scoreC,
+        scoreD
+      });
+    });
+
+    setIsRankingCalculated(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 pb-4">
       {/* 헤더 */}
@@ -55,6 +86,12 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer }) {
               ← 대회 목록
             </button>
             <div className="flex gap-2">
+              <button
+                onClick={handleFillTestData}
+                className="px-3 py-1 rounded-lg font-medium transition-colors bg-orange-500 text-white hover:bg-orange-600"
+              >
+                테스트 데이터
+              </button>
               <button
                 onClick={handleCalculateRanking}
                 className="px-3 py-1 rounded-lg font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700"
