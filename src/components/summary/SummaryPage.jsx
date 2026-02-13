@@ -2,6 +2,7 @@ import { useState } from 'react';
 import OverviewTab from './tabs/OverviewTab';
 import IndividualTab from './tabs/IndividualTab';
 import EncouragementTab from './tabs/EncouragementTab';
+import TeamTab from './tabs/TeamTab';
 
 export default function SummaryPage({ tournament, onBack }) {
   const [activeTab, setActiveTab] = useState('overview');
@@ -9,7 +10,8 @@ export default function SummaryPage({ tournament, onBack }) {
   const tabs = [
     { id: 'overview', label: '전체 현황' },
     { id: 'individual', label: '개인전' },
-    { id: 'encouragement', label: '장려상' }
+    { id: 'encouragement', label: '장려상' },
+    { id: 'team', label: '단체전' }
   ];
 
   const renderTabContent = () => {
@@ -20,6 +22,8 @@ export default function SummaryPage({ tournament, onBack }) {
         return <IndividualTab tournament={tournament} />;
       case 'encouragement':
         return <EncouragementTab tournament={tournament} />;
+      case 'team':
+        return <TeamTab />;
       default:
         return null;
     }
