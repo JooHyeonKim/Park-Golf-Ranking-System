@@ -98,12 +98,6 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
               >
                 등수 계산하기
               </button>
-              <button
-                onClick={() => onViewSummary()}
-                className="px-3 py-1 rounded-lg font-medium transition-colors bg-purple-600 text-white hover:bg-purple-700"
-              >
-                집계 보기
-              </button>
               <div className="relative" ref={sortMenuRef}>
                 <button
                   onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
@@ -145,6 +139,12 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
             <h2 className="text-xl font-bold text-gray-800">{tournament.name}</h2>
             <p className="text-sm text-gray-500">{tournament.date}</p>
           </div>
+          <button
+            onClick={() => onViewSummary()}
+            className="w-full mt-2 py-3 rounded-lg font-bold text-lg transition-colors bg-emerald-600 text-white hover:bg-emerald-700 shadow-md"
+          >
+            결과 보기
+          </button>
         </div>
       </div>
 
