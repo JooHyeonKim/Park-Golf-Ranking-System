@@ -19,7 +19,7 @@ export default function SummaryPage({ tournament, onBack }) {
       case 'individual':
         return <IndividualTab tournament={tournament} />;
       case 'encouragement':
-        return <EncouragementTab />;
+        return <EncouragementTab tournament={tournament} />;
       default:
         return null;
     }
