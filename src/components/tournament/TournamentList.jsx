@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function TournamentList({ tournaments, onSelect, onDelete, onAdd }) {
+export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
@@ -101,6 +101,12 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd 
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
                       >
                         보기
+                      </button>
+                      <button
+                        onClick={() => onViewSummary(tournament.id)}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700"
+                      >
+                        집계
                       </button>
                       <button
                         onClick={() => handleDelete(tournament.id, tournament.name)}

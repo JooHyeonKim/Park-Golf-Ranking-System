@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTournaments } from './hooks/useTournaments';
 import TournamentList from './components/tournament/TournamentList';
 import ScoreTable from './components/score/ScoreTable';
+import SummaryPage from './components/summary/SummaryPage';
 
 export default function App() {
   const {
@@ -13,26 +14,52 @@ export default function App() {
     setCurrentTournament
   } = useTournaments();
 
+  const [screenMode, setScreenMode] = useState('list'); // 'list' | 'score' | 'summary'
+
   const handleAddTournament = (name, date) => {
     addTournament(name, date);
+    setScreenMode('score');
   };
 
   const handleSelectTournament = (id) => {
     setCurrentTournament(id);
+    setScreenMode('score');
   };
 
   const handleBackToList = () => {
     setCurrentTournament(null);
+    setScreenMode('list');
   };
 
-  // 대회 목록 화면 또는 점수 입력 화면
-  if (!currentTournament) {
+  const handleViewSummary = (id) => {
+    if (id) {
+      setCurrentTournament(id);
+    }
+    setScreenMode('summary');
+  };
+
+  const handleBackToScore = () => {
+    setScreenMode('score');
+  };
+
+  // 화면 라우팅
+  if (screenMode === 'list' || !currentTournament) {
     return (
       <TournamentList
         tournaments={tournaments}
         onSelect={handleSelectTournament}
         onDelete={deleteTournament}
         onAdd={handleAddTournament}
+        onViewSummary={handleViewSummary}
+      />
+    );
+  }
+
+  if (screenMode === 'summary') {
+    return (
+      <SummaryPage
+        tournament={currentTournament}
+        onBack={handleBackToScore}
       />
     );
   }
@@ -42,6 +69,7 @@ export default function App() {
       tournament={currentTournament}
       onBack={handleBackToList}
       onUpdatePlayer={updatePlayer}
+      onViewSummary={handleViewSummary}
     />
   );
 }

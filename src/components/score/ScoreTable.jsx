@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRanking } from '../../hooks/useRanking';
 
-export default function ScoreTable({ tournament, onBack, onUpdatePlayer }) {
+export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewSummary }) {
   const [sortBy, setSortBy] = useState('group'); // 'rank' | 'group'
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
@@ -97,6 +97,12 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer }) {
                 className="px-3 py-1 rounded-lg font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700"
               >
                 등수 계산하기
+              </button>
+              <button
+                onClick={() => onViewSummary()}
+                className="px-3 py-1 rounded-lg font-medium transition-colors bg-purple-600 text-white hover:bg-purple-700"
+              >
+                집계 보기
               </button>
               <div className="relative" ref={sortMenuRef}>
                 <button

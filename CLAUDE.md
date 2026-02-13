@@ -72,37 +72,6 @@ src/
 - **Persistence**: localStorage with keys `parkgolf-tournaments` and `parkgolf-current-tournament`
 - **No external API calls** - all data is local
 
-### Key Data Structures
-
-**Tournament**
-```javascript
-{ id, name, date, createdAt, players: Player[] }
-```
-
-**Player** (144 players per tournament: 36 groups × 4 players)
-```javascript
-{
-  id: number,
-  group: number,          // 조 번호 (1-36)
-  course: string,         // 코스명 (A-1 ~ D-9)
-  name, gender, club: string,
-  scoreA, scoreB, scoreC, scoreD: number | null,
-  detailScores: Object | null  // For tiebreakers: A1-A9, B1-B9, C1-C9, D1-D9
-}
-```
-
-**Group-Course Mapping**: Group 1 = A-1, Group 2 = A-2, ..., Group 36 = D-9
-
-### Ranking Rules
-
-1. **Primary**: Lower 36-hole total wins
-2. **Tiebreaker**: Compare course scores in order D → C → B → A (lower wins)
-3. **Final tiebreaker**: Compare hole-by-hole D9 → D8 → ... → A1 (requires detailScores)
-
-### PWA Configuration
-
-PWA settings are in [vite.config.js](vite.config.js) using `vite-plugin-pwa` with Workbox for offline caching.
-
 ## Tech Stack
 
 - React 18 + Vite
