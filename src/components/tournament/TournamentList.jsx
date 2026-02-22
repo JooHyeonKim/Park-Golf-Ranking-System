@@ -7,13 +7,15 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
   const [newHoleCount, setNewHoleCount] = useState(36);
 
   const handleAdd = () => {
-    if (newName.trim()) {
-      onAdd(newName.trim(), newDate, newHoleCount);
-      setNewName('');
-      setNewDate(new Date().toISOString().split('T')[0]);
-      setNewHoleCount(36);
-      setShowAddForm(false);
+    if (!newName.trim()) {
+      alert('대회명을 입력해주세요.');
+      return;
     }
+    onAdd(newName.trim(), newDate, newHoleCount);
+    setNewName('');
+    setNewDate(new Date().toISOString().split('T')[0]);
+    setNewHoleCount(36);
+    setShowAddForm(false);
   };
 
   const handleDelete = (id, name) => {
@@ -30,16 +32,16 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
           <h1 className="text-2xl font-bold text-gray-800">파크골프 대회 관리</h1>
           <div className="flex gap-2">
             <button
-              onClick={onGoToClubs}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-            >
-              클럽 관리
-            </button>
-            <button
               onClick={() => setShowAddForm(!showAddForm)}
               className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
             >
               + 새 대회
+            </button>
+            <button
+              onClick={onGoToClubs}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              클럽 관리
             </button>
           </div>
         </div>
