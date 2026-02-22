@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRanking } from '../../hooks/useRanking';
+import { CLUBS } from '../../utils/data';
 import DetailScoreModal from './DetailScoreModal';
 
 export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewSummary }) {
@@ -53,7 +54,7 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
   const handleFillTestData = () => {
     const lastNames = ['김', '이', '박', '최', '정', '강', '조', '윤', '장', '임'];
     const firstNames = ['민수', '영희', '철수', '지영', '현우', '수진', '동현', '미영', '성민', '혜진'];
-    const clubs = ['그린파크', '레이크힐', '선샤인', '블루밸리', '골든게이트'];
+    const clubs = CLUBS;
 
     tournament.players.forEach((player) => {
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
@@ -223,13 +224,16 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
 
                   {/* 클럽 */}
                   <td className="py-2 px-2 border-r">
-                    <input
-                      type="text"
+                    <select
                       value={player.club || ''}
                       onChange={(e) => handleInputChange(player.id, 'club', e.target.value)}
                       className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500"
-                      placeholder="클럽"
-                    />
+                    >
+                      <option value="">-</option>
+                      {CLUBS.map((club) => (
+                        <option key={club} value={club}>{club}</option>
+                      ))}
+                    </select>
                   </td>
 
                   {/* A코스 */}
