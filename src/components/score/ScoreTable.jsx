@@ -40,6 +40,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
   const handleScoreChange = (playerId, field, value) => {
     // 빈 문자열이면 null, 아니면 숫자로 변환
     const numValue = value === '' ? null : parseInt(value, 10);
+    if (numValue !== null && numValue > 100) return;
     const updates = { [field]: numValue };
     setIsRankingCalculated(false); // 점수 수정 시 순위 초기화
     onUpdatePlayer(tournament.id, playerId, updates);
