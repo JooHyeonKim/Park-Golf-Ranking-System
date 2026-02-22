@@ -1,9 +1,124 @@
-export default function TeamTab() {
+import { useMemo, Fragment } from 'react';
+import { calculateRankings, calculateTotal } from '../../../utils/ranking';
+
+const INDIVIDUAL_TOP = 5;
+
+export default function TeamTab({ tournament }) {
+  const teamRankings = useMemo(() => {
+    const ranked = calculateRankings(tournament.players);
+    const withScores = ranked.filter(p => p.name && calculateTotal(p) !== null);
+
+    // 개인전 수상자 제외 대상 (남녀 각 상위 5명)
+    const topMales = withScores.filter(p => p.gender === '남').slice(0, INDIVIDUAL_TOP);
+    const topFemales = withScores.filter(p => p.gender === '여').slice(0, INDIVIDUAL_TOP);
+    const excludedIds = new Set([
+      ...topMales.map(p => p.id),
+      ...topFemales.map(p => p.id)
+    ]);
+
+    // 제외 대상 빼고 eligible 선수
+    const eligible = withScores.filter(p => !excludedIds.has(p.id));
+
+    // 클럽별 그룹화
+    const clubMap = new Map();
+    eligible.forEach(player => {
+      const clubName = player.club?.trim();
+      if (!clubName) return;
+      if (!clubMap.has(clubName)) {
+        clubMap.set(clubName, []);
+      }
+      clubMap.get(clubName).push(player);
+    });
+
+    // 각 클럽: 상위 5명 선택, 합계 계산
+    const clubResults = [];
+    clubMap.forEach((players, clubName) => {
+      const top5 = players.slice(0, 5);
+      if (top5.length === 0) return;
+      const clubTotal = top5.reduce((sum, p) => sum + calculateTotal(p), 0);
+      clubResults.push({ clubName, players: top5, total: clubTotal });
+    });
+
+    // 합계 오름차순 정렬
+    clubResults.sort((a, b) => a.total - b.total);
+
+    // 순위 부여 (동점 시 동일 순위)
+    let currentRank = 1;
+    let previousTotal = null;
+    return clubResults.map((club, index) => {
+      if (club.total !== previousTotal) {
+        currentRank = index + 1;
+        previousTotal = club.total;
+      }
+      return { ...club, rank: currentRank };
+    });
+  }, [tournament.players]);
+
+  if (teamRankings.length === 0) {
+    return (
+      <div className="bg-white rounded-lg p-12 text-center shadow-sm">
+        <p className="text-xl text-gray-600">단체전 집계</p>
+        <p className="text-sm text-gray-400 mt-2">클럽이 등록된 선수가 없습니다</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white rounded-lg p-12 text-center shadow-sm">
-      <div className="text-6xl mb-4">🏆</div>
-      <p className="text-xl text-gray-600">단체전 집계</p>
-      <p className="text-sm text-gray-400 mt-2">추후 구현 예정입니다</p>
+    <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <table className="w-full text-sm border-collapse">
+        <thead>
+          <tr className="border-b">
+            <th rowSpan={2} className="bg-gray-200 py-3 px-2 text-center border-r min-w-[50px]">
+              순위
+            </th>
+            <th rowSpan={2} className="bg-gray-200 py-3 px-2 text-center border-r min-w-[80px]">
+              클럽명
+            </th>
+            <th rowSpan={2} className="bg-yellow-200 py-3 px-2 text-center border-r min-w-[60px] font-bold">
+              합계
+            </th>
+            {[1, 2, 3, 4, 5].map(n => (
+              <th key={n} colSpan={2} className="bg-green-200 py-3 px-2 text-center border-r last:border-r-0 min-w-[120px]">
+                {n}
+              </th>
+            ))}
+          </tr>
+          <tr className="border-b-2">
+            {[1, 2, 3, 4, 5].map(n => (
+              <Fragment key={n}>
+                <th className="bg-green-100 py-2 px-2 text-center border-r min-w-[60px]">성명</th>
+                <th className={`bg-green-100 py-2 px-2 text-center min-w-[50px] ${n < 5 ? 'border-r' : ''}`}>타수</th>
+              </Fragment>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {teamRankings.map((club, index) => (
+            <tr key={club.clubName} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+              <td className="py-3 px-2 text-center border-r font-bold text-gray-700">
+                {club.rank}
+              </td>
+              <td className="py-3 px-2 text-center border-r font-medium">
+                {club.clubName}
+              </td>
+              <td className="py-3 px-2 text-center border-r font-bold text-yellow-700 bg-yellow-50">
+                {club.total}
+              </td>
+              {[0, 1, 2, 3, 4].map(i => (
+                <Fragment key={i}>
+                  <td className="py-3 px-2 text-center border-r">
+                    {club.players[i]?.name || ''}
+                  </td>
+                  <td className={`py-3 px-2 text-center font-semibold ${i < 4 ? 'border-r' : ''}`}>
+                    {club.players[i] ? calculateTotal(club.players[i]) : ''}
+                  </td>
+                </Fragment>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
+

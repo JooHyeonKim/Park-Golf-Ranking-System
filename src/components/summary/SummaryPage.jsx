@@ -23,7 +23,7 @@ export default function SummaryPage({ tournament, onBack }) {
       case 'encouragement':
         return <EncouragementTab tournament={tournament} />;
       case 'team':
-        return <TeamTab />;
+        return <TeamTab tournament={tournament} />;
       default:
         return null;
     }

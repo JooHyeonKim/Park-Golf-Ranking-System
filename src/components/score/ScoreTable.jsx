@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRanking } from '../../hooks/useRanking';
+import DetailScoreModal from './DetailScoreModal';
 
 export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewSummary }) {
   const is36Hole = (tournament.holeCount || 36) === 36;
   const [sortBy, setSortBy] = useState('group'); // 'rank' | 'group'
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
+  const [detailModalPlayer, setDetailModalPlayer] = useState(null);
   const sortMenuRef = useRef(null);
   const { sortedPlayers } = useRanking(tournament.players, sortBy, isRankingCalculated);
 
@@ -297,7 +299,18 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
 
                   {/* 순위 */}
                   <td className="py-2 px-2 text-center font-bold text-red-600 text-lg">
-                    {player.rank ?? '-'}
+                    <div className="flex items-center justify-center gap-1">
+                      <span>{player.rank ?? '-'}</span>
+                      {isRankingCalculated && player.needsDetail && (
+                        <button
+                          onClick={() => setDetailModalPlayer(player)}
+                          className="ml-1 px-1.5 py-0.5 text-xs bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors animate-pulse"
+                          title="동점자 - 상세 점수 입력 필요"
+                        >
+                          !
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -305,6 +318,18 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
           </table>
         </div>
       </div>
+
+      {/* 동점자 상세 점수 입력 모달 */}
+      {detailModalPlayer && (
+        <DetailScoreModal
+          player={detailModalPlayer}
+          is36Hole={is36Hole}
+          onSave={(playerId, updates) => {
+            onUpdatePlayer(tournament.id, playerId, updates);
+          }}
+          onClose={() => setDetailModalPlayer(null)}
+        />
+      )}
     </div>
   );
 }
