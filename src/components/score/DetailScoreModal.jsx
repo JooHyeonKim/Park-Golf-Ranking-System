@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 
-const PAR = [3, 4, 3, 4, 5, 3, 4, 3, 4];
+const HOLES = 9;
 
 export default function DetailScoreModal({ player, is36Hole, onSave, onClose, readOnly = false }) {
-  const courses = is36Hole ? ['A', 'B', 'C', 'D'] : ['A', 'B'];
+  const courses = is36Hole ? ['D', 'C', 'B', 'A'] : ['B', 'A'];
   const [activeCourse, setActiveCourse] = useState(courses[0]);
   const [scores, setScores] = useState(() => player.detailScores || {});
 
@@ -53,7 +53,7 @@ export default function DetailScoreModal({ player, is36Hole, onSave, onClose, re
         <div className="flex items-center justify-between px-4 py-3 border-b bg-green-600 text-white">
           <div>
             <h3 className="font-bold text-lg">홀별 상세 점수</h3>
-            <span className="text-sm text-green-100">{player.name}</span>
+            <span className="text-sm text-green-100">{player.name}{player.club ? ` (${player.club})` : ''}</span>
           </div>
           <button onClick={onClose} className="text-white text-2xl leading-none px-2">&times;</button>
         </div>
@@ -81,18 +81,16 @@ export default function DetailScoreModal({ player, is36Hole, onSave, onClose, re
             <thead>
               <tr className="border-b">
                 <th className="py-2 text-center w-16">홀</th>
-                <th className="py-2 text-center w-16">PAR</th>
                 <th className="py-2 text-center">타수</th>
               </tr>
             </thead>
             <tbody>
-              {PAR.map((par, idx) => {
-                const holeNum = idx + 1;
+              {Array.from({ length: HOLES }, (_, idx) => {
+                const holeNum = HOLES - idx;
                 const key = `${activeCourse}${holeNum}`;
                 return (
                   <tr key={holeNum} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                     <td className="py-2 text-center font-medium">{holeNum}</td>
-                    <td className="py-2 text-center text-gray-500">{par}</td>
                     <td className="py-2 text-center">
                       {readOnly ? (
                         <span className="font-semibold">{scores[key] ?? '-'}</span>
