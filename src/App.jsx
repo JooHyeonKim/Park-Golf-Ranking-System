@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useTournaments } from './hooks/useTournaments';
+import { useClubs } from './hooks/useClubs';
 import TournamentList from './components/tournament/TournamentList';
 import ScoreTable from './components/score/ScoreTable';
 import SummaryPage from './components/summary/SummaryPage';
+import ClubManagement from './components/club/ClubManagement';
 
 export default function App() {
   const {
@@ -14,7 +16,9 @@ export default function App() {
     setCurrentTournament
   } = useTournaments();
 
-  const [screenMode, setScreenMode] = useState('list'); // 'list' | 'score' | 'summary'
+  const { clubs, addClub, editClub, deleteClub } = useClubs();
+
+  const [screenMode, setScreenMode] = useState('list'); // 'list' | 'score' | 'summary' | 'clubs'
 
   const handleAddTournament = (name, date, holeCount) => {
     addTournament(name, date, holeCount);
@@ -42,7 +46,23 @@ export default function App() {
     setScreenMode('score');
   };
 
+  const handleGoToClubs = () => {
+    setScreenMode('clubs');
+  };
+
   // 화면 라우팅
+  if (screenMode === 'clubs') {
+    return (
+      <ClubManagement
+        clubs={clubs}
+        onAddClub={addClub}
+        onEditClub={editClub}
+        onDeleteClub={deleteClub}
+        onBack={handleBackToList}
+      />
+    );
+  }
+
   if (screenMode === 'list' || !currentTournament) {
     return (
       <TournamentList
@@ -51,6 +71,7 @@ export default function App() {
         onDelete={deleteTournament}
         onAdd={handleAddTournament}
         onViewSummary={handleViewSummary}
+        onGoToClubs={handleGoToClubs}
       />
     );
   }
@@ -67,6 +88,7 @@ export default function App() {
   return (
     <ScoreTable
       tournament={currentTournament}
+      clubs={clubs}
       onBack={handleBackToList}
       onUpdatePlayer={updatePlayer}
       onViewSummary={handleViewSummary}

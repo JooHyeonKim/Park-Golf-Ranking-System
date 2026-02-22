@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary }) {
+export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
@@ -28,12 +28,20 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-gray-800">파크골프 대회 관리</h1>
-          <button
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
-          >
-            + 새 대회
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={onGoToClubs}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              클럽 관리
+            </button>
+            <button
+              onClick={() => setShowAddForm(!showAddForm)}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+            >
+              + 새 대회
+            </button>
+          </div>
         </div>
 
         {/* 새 대회 추가 폼 */}

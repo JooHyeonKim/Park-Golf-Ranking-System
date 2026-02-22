@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRanking } from '../../hooks/useRanking';
-import { CLUBS } from '../../utils/data';
 import DetailScoreModal from './DetailScoreModal';
 
-export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewSummary }) {
+export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onViewSummary }) {
   const is36Hole = (tournament.holeCount || 36) === 36;
   const [sortBy, setSortBy] = useState('group'); // 'rank' | 'group'
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
@@ -54,14 +53,14 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
   const handleFillTestData = () => {
     const lastNames = ['김', '이', '박', '최', '정', '강', '조', '윤', '장', '임'];
     const firstNames = ['민수', '영희', '철수', '지영', '현우', '수진', '동현', '미영', '성민', '혜진'];
-    const clubs = CLUBS;
+    const clubList = clubs;
 
     tournament.players.forEach((player) => {
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
       const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
       const name = lastName + firstName;
       const gender = Math.random() > 0.5 ? '남' : '여';
-      const club = clubs[Math.floor(Math.random() * clubs.length)];
+      const club = clubList[Math.floor(Math.random() * clubList.length)];
       const scoreA = Math.floor(Math.random() * 15) + 20; // 20~34
       const scoreB = Math.floor(Math.random() * 15) + 20;
 
@@ -230,8 +229,8 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
                       className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500"
                     >
                       <option value="">-</option>
-                      {CLUBS.map((club) => (
-                        <option key={club} value={club}>{club}</option>
+                      {clubs.map((c) => (
+                        <option key={c} value={c}>{c}</option>
                       ))}
                     </select>
                   </td>
