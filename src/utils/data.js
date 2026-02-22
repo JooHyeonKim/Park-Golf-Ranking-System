@@ -1,12 +1,13 @@
 // 데이터 초기화 및 관리 유틸리티 함수
 
 /**
- * 초기 선수 데이터 생성 (144명)
+ * 초기 선수 데이터 생성 (18홀: 72명, 36홀: 144명)
+ * @param {number} holeCount - 홀 수 (18 또는 36)
  * @returns {Array} - 선수 목록
  */
-export function createInitialPlayers() {
+export function createInitialPlayers(holeCount = 36) {
   const players = [];
-  const courses = ['A', 'B', 'C', 'D'];
+  const courses = holeCount === 18 ? ['A', 'B'] : ['A', 'B', 'C', 'D'];
   const courseNames = [];
 
   // 36개 코스명 생성 (A-1 ~ D-9)
@@ -56,7 +57,7 @@ export function createTournament(name, date, holeCount = 36) {
     date,
     holeCount,
     createdAt: Date.now(),
-    players: createInitialPlayers()
+    players: createInitialPlayers(holeCount)
   };
 }
 

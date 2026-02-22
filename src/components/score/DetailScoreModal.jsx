@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 
 const PAR = [3, 4, 3, 4, 5, 3, 4, 3, 4];
 
-export default function DetailScoreModal({ player, is36Hole, onSave, onClose }) {
+export default function DetailScoreModal({ player, is36Hole, onSave, onClose, readOnly = false }) {
   const courses = is36Hole ? ['A', 'B', 'C', 'D'] : ['A', 'B'];
   const [activeCourse, setActiveCourse] = useState(courses[0]);
   const [scores, setScores] = useState(() => player.detailScores || {});
@@ -94,14 +94,18 @@ export default function DetailScoreModal({ player, is36Hole, onSave, onClose }) 
                     <td className="py-2 text-center font-medium">{holeNum}</td>
                     <td className="py-2 text-center text-gray-500">{par}</td>
                     <td className="py-2 text-center">
-                      <input
-                        type="number"
-                        min={1}
-                        max={12}
-                        value={scores[key] ?? ''}
-                        onChange={(e) => handleScoreChange(activeCourse, holeNum, e.target.value)}
-                        className="w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500"
-                      />
+                      {readOnly ? (
+                        <span className="font-semibold">{scores[key] ?? '-'}</span>
+                      ) : (
+                        <input
+                          type="number"
+                          min={1}
+                          max={12}
+                          value={scores[key] ?? ''}
+                          onChange={(e) => handleScoreChange(activeCourse, holeNum, e.target.value)}
+                          className="w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500"
+                        />
+                      )}
                     </td>
                   </tr>
                 );
@@ -129,16 +133,18 @@ export default function DetailScoreModal({ player, is36Hole, onSave, onClose }) 
         <div className="flex gap-2 p-4 border-t">
           <button
             onClick={onClose}
-            className="flex-1 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+            className={`flex-1 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors`}
           >
-            취소
+            {readOnly ? '닫기' : '취소'}
           </button>
-          <button
-            onClick={handleSave}
-            className="flex-1 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
-          >
-            저장
-          </button>
+          {!readOnly && (
+            <button
+              onClick={handleSave}
+              className="flex-1 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+            >
+              저장
+            </button>
+          )}
         </div>
       </div>
     </div>

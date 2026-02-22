@@ -37,7 +37,7 @@ export default function SummaryPage({ tournament, onBack }) {
           <div className="flex items-center justify-between mb-2">
             <button
               onClick={onBack}
-              className="text-gray-600 hover:text-gray-800 font-medium"
+              className="text-gray-700 hover:text-gray-900 font-bold text-lg"
             >
               ← 점수 입력
             </button>

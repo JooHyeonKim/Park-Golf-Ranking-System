@@ -9,7 +9,11 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
   const sortMenuRef = useRef(null);
-  const { sortedPlayers } = useRanking(tournament.players, sortBy, isRankingCalculated);
+  const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, isRankingCalculated);
+  // 18홀일 때 C/D 코스 선수 행 숨김
+  const sortedPlayers = is36Hole
+    ? allSortedPlayers
+    : allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B'));
 
   // 드롭다운 외부 클릭 감지
   useEffect(() => {
@@ -80,7 +84,7 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
           <div className="flex items-center justify-between mb-2">
             <button
               onClick={onBack}
-              className="text-gray-600 hover:text-gray-800 font-medium"
+              className="text-gray-700 hover:text-gray-900 font-bold text-lg"
             >
               ← 대회 목록
             </button>
@@ -302,13 +306,23 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
                     <div className="flex items-center justify-center gap-1">
                       <span>{player.rank ?? '-'}</span>
                       {isRankingCalculated && player.needsDetail && (
-                        <button
-                          onClick={() => setDetailModalPlayer(player)}
-                          className="ml-1 px-1.5 py-0.5 text-xs bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors animate-pulse"
-                          title="동점자 - 상세 점수 입력 필요"
-                        >
-                          !
-                        </button>
+                        player.detailScores && Object.keys(player.detailScores).length > 0 ? (
+                          <button
+                            onClick={() => setDetailModalPlayer(player)}
+                            className="ml-1 px-1.5 py-0.5 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                            title="동점자 - 상세 점수 입력 완료"
+                          >
+                            ✓
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => setDetailModalPlayer(player)}
+                            className="ml-1 px-1.5 py-0.5 text-xs bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors animate-pulse"
+                            title="동점자 - 상세 점수 입력 필요"
+                          >
+                            !
+                          </button>
+                        )
                       )}
                     </div>
                   </td>
