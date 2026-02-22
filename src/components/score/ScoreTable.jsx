@@ -46,7 +46,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
   };
 
   const handleCalculateRanking = () => {
-    setIsRankingCalculated(true);
+    setIsRankingCalculated(prev => !prev);
   };
 
   // 테스트 데이터 생성
@@ -88,66 +88,70 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
             >
               ← 대회 목록
             </button>
-            <div className="flex gap-2">
-              <button
-                onClick={handleFillTestData}
-                className="px-3 py-1 rounded-lg font-medium transition-colors bg-orange-500 text-white hover:bg-orange-600"
-              >
-                테스트 데이터
-              </button>
-              <button
-                onClick={handleCalculateRanking}
-                className="px-3 py-1 rounded-lg font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700"
-              >
-                등수 계산하기
-              </button>
-              <div className="relative" ref={sortMenuRef}>
-                <button
-                  onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
-                  className="px-3 py-1 rounded-lg font-medium transition-colors bg-green-600 text-white hover:bg-green-700 flex items-center gap-1"
-                >
-                  정렬: {sortBy === 'rank' ? '순위' : '조'}
-                  <span className="text-xs">▼</span>
-                </button>
-                {isSortMenuOpen && (
-                  <div className="absolute right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[120px]">
-                    <button
-                      onClick={() => {
-                        setSortBy('rank');
-                        setIsSortMenuOpen(false);
-                      }}
-                      className={`w-full px-4 py-2 text-left hover:bg-gray-100 rounded-t-lg ${
-                        sortBy === 'rank' ? 'bg-green-50 font-semibold text-green-700' : 'text-gray-700'
-                      }`}
-                    >
-                      순위
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSortBy('group');
-                        setIsSortMenuOpen(false);
-                      }}
-                      className={`w-full px-4 py-2 text-left hover:bg-gray-100 rounded-b-lg ${
-                        sortBy === 'group' ? 'bg-green-50 font-semibold text-green-700' : 'text-gray-700'
-                      }`}
-                    >
-                      조
-                    </button>
-                  </div>
-                )}
-              </div>
+            <div>
+              <h2 className="text-xl font-bold text-gray-800 text-right">{tournament.name}</h2>
+              <p className="text-sm text-gray-500 text-right">{tournament.date}</p>
             </div>
           </div>
-          <div>
-            <h2 className="text-xl font-bold text-gray-800">{tournament.name}</h2>
-            <p className="text-sm text-gray-500">{tournament.date}</p>
+          <div className="flex gap-2 justify-end">
+            <button
+              onClick={() => onViewSummary()}
+              className="flex-1 py-3 text-lg rounded-lg font-extrabold transition-colors bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg"
+            >
+              🏆 결과 보기
+            </button>
+            <button
+              onClick={handleFillTestData}
+              className="px-5 py-3 text-lg rounded-lg font-bold transition-colors bg-orange-500 text-white hover:bg-orange-600"
+            >
+              테스트 데이터
+            </button>
+            <button
+              onClick={handleCalculateRanking}
+              className={`px-5 py-3 text-lg rounded-lg font-bold transition-colors ${
+                isRankingCalculated
+                  ? 'bg-gray-500 text-white hover:bg-gray-600'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              {isRankingCalculated ? '수정하기' : '등수 계산하기'}
+            </button>
+            <div className="relative" ref={sortMenuRef}>
+              <button
+                onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
+                className="px-5 py-3 text-lg rounded-lg font-bold transition-colors bg-gray-300 text-gray-700 hover:bg-gray-400 flex items-center gap-1"
+              >
+                정렬: {sortBy === 'rank' ? '순위' : '조'}
+                <span className="text-xs">▼</span>
+              </button>
+              {isSortMenuOpen && (
+                <div className="absolute right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[120px]">
+                  <button
+                    onClick={() => {
+                      setSortBy('rank');
+                      setIsSortMenuOpen(false);
+                    }}
+                    className={`w-full px-4 py-2 text-left hover:bg-gray-100 rounded-t-lg ${
+                      sortBy === 'rank' ? 'bg-green-50 font-semibold text-green-700' : 'text-gray-700'
+                    }`}
+                  >
+                    순위
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortBy('group');
+                      setIsSortMenuOpen(false);
+                    }}
+                    className={`w-full px-4 py-2 text-left hover:bg-gray-100 rounded-b-lg ${
+                      sortBy === 'group' ? 'bg-green-50 font-semibold text-green-700' : 'text-gray-700'
+                    }`}
+                  >
+                    조
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-          <button
-            onClick={() => onViewSummary()}
-            className="w-full mt-2 py-3 rounded-lg font-bold text-lg transition-colors bg-emerald-600 text-white hover:bg-emerald-700 shadow-md"
-          >
-            결과 보기
-          </button>
         </div>
       </div>
 
@@ -203,7 +207,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       type="text"
                       value={player.name || ''}
                       onChange={(e) => handleInputChange(player.id, 'name', e.target.value)}
-                      className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500"
+                      disabled={isRankingCalculated}
+                      className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
                       placeholder="이름"
                     />
                   </td>
@@ -213,7 +218,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                     <select
                       value={player.gender || ''}
                       onChange={(e) => handleInputChange(player.id, 'gender', e.target.value)}
-                      className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500"
+                      disabled={isRankingCalculated}
+                      className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
                     >
                       <option value="">-</option>
                       <option value="남">남</option>
@@ -226,7 +232,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                     <select
                       value={player.club || ''}
                       onChange={(e) => handleInputChange(player.id, 'club', e.target.value)}
-                      className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500"
+                      disabled={isRankingCalculated}
+                      className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
                     >
                       <option value="">-</option>
                       {clubs.map((c) => (
@@ -243,7 +250,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       max="12"
                       value={player.scoreA ?? ''}
                       onChange={(e) => handleScoreChange(player.id, 'scoreA', e.target.value)}
-                      className="w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500"
+                      disabled={isRankingCalculated}
+                      className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
                     />
                   </td>
 
@@ -255,7 +263,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       max="12"
                       value={player.scoreB ?? ''}
                       onChange={(e) => handleScoreChange(player.id, 'scoreB', e.target.value)}
-                      className="w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500"
+                      disabled={isRankingCalculated}
+                      className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
                     />
                   </td>
 
@@ -273,7 +282,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                         max="12"
                         value={player.scoreC ?? ''}
                         onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
-                        className="w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500"
+                        disabled={isRankingCalculated}
+                        className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
                       />
                     </td>
                   )}
@@ -287,7 +297,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                         max="12"
                         value={player.scoreD ?? ''}
                         onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
-                        className="w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500"
+                        disabled={isRankingCalculated}
+                        className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
                       />
                     </td>
                   )}

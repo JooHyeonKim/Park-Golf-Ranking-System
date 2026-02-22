@@ -7,13 +7,6 @@ export default function DetailScoreModal({ player, is36Hole, onSave, onClose, re
   const [activeCourse, setActiveCourse] = useState(courses[0]);
   const [scores, setScores] = useState(() => player.detailScores || {});
 
-  const courseScoreMap = {
-    A: player.scoreA,
-    B: player.scoreB,
-    C: player.scoreC,
-    D: player.scoreD,
-  };
-
   const handleScoreChange = (course, holeNum, value) => {
     const key = `${course}${holeNum}`;
     const numValue = value === '' ? null : parseInt(value, 10);
@@ -33,9 +26,7 @@ export default function DetailScoreModal({ player, is36Hole, onSave, onClose, re
     return hasAny ? sum : null;
   }, [scores, activeCourse]);
 
-  const expectedTotal = courseScoreMap[activeCourse];
-  const hasMismatch = courseTotal !== null && expectedTotal !== null && courseTotal !== expectedTotal;
-  const isMatch = courseTotal !== null && expectedTotal !== null && courseTotal === expectedTotal;
+
 
   const handleSave = () => {
     onSave(player.id, { detailScores: scores });
@@ -111,19 +102,11 @@ export default function DetailScoreModal({ player, is36Hole, onSave, onClose, re
             </tbody>
           </table>
 
-          {/* 코스 합계 + 검증 */}
-          <div className="mt-3 flex items-center justify-between px-2 py-2 bg-gray-100 rounded">
+          {/* 코스 합계 */}
+          <div className="mt-3 flex items-center px-2 py-2 bg-gray-100 rounded">
             <span className="font-semibold">
               {activeCourse}코스 합계: {courseTotal ?? '-'}
             </span>
-            {hasMismatch && (
-              <span className="text-red-500 text-xs">
-                코스 점수({expectedTotal})와 불일치
-              </span>
-            )}
-            {isMatch && (
-              <span className="text-green-600 text-xs font-medium">일치</span>
-            )}
           </div>
         </div>
 
