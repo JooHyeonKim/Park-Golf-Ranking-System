@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRanking } from '../../hooks/useRanking';
 
 export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewSummary }) {
+  const is36Hole = (tournament.holeCount || 36) === 36;
   const [sortBy, setSortBy] = useState('group'); // 'rank' | 'group'
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
@@ -56,18 +57,14 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
       const club = clubs[Math.floor(Math.random() * clubs.length)];
       const scoreA = Math.floor(Math.random() * 15) + 20; // 20~34
       const scoreB = Math.floor(Math.random() * 15) + 20;
-      const scoreC = Math.floor(Math.random() * 15) + 20;
-      const scoreD = Math.floor(Math.random() * 15) + 20;
 
-      onUpdatePlayer(tournament.id, player.id, {
-        name,
-        gender,
-        club,
-        scoreA,
-        scoreB,
-        scoreC,
-        scoreD
-      });
+      const updates = { name, gender, club, scoreA, scoreB };
+      if (is36Hole) {
+        updates.scoreC = Math.floor(Math.random() * 15) + 20;
+        updates.scoreD = Math.floor(Math.random() * 15) + 20;
+      }
+
+      onUpdatePlayer(tournament.id, player.id, updates);
     });
 
     setIsRankingCalculated(false);
@@ -166,13 +163,17 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
                 <th className="bg-sky-200 py-3 px-2 text-center border-r">B코스</th>
                 <th className="bg-sky-300 py-3 px-2 text-center border-r">A+B</th>
 
-                {/* 연두색 그룹 (C+D) */}
-                <th className="bg-lime-200 py-3 px-2 text-center border-r">C코스</th>
-                <th className="bg-lime-200 py-3 px-2 text-center border-r">D코스</th>
-                <th className="bg-lime-300 py-3 px-2 text-center border-r">C+D</th>
+                {/* 연두색 그룹 (C+D) - 36홀만 표시 */}
+                {is36Hole && (
+                  <>
+                    <th className="bg-lime-200 py-3 px-2 text-center border-r">C코스</th>
+                    <th className="bg-lime-200 py-3 px-2 text-center border-r">D코스</th>
+                    <th className="bg-lime-300 py-3 px-2 text-center border-r">C+D</th>
+                  </>
+                )}
 
                 {/* 노란색 (합계) */}
-                <th className="bg-yellow-200 py-3 px-2 text-center border-r">36홀 합계</th>
+                <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
 
                 {/* 회색 (순위) */}
                 <th className="bg-gray-300 py-3 px-2 text-center min-w-[60px]">순위</th>
@@ -254,34 +255,40 @@ export default function ScoreTable({ tournament, onBack, onUpdatePlayer, onViewS
                     {player.ab ?? '-'}
                   </td>
 
-                  {/* C코스 */}
-                  <td className="py-2 px-2 border-r">
-                    <input
-                      type="number"
-                      min="1"
-                      max="12"
-                      value={player.scoreC ?? ''}
-                      onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
-                      className="w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500"
-                    />
-                  </td>
+                  {/* C코스 - 36홀만 표시 */}
+                  {is36Hole && (
+                    <td className="py-2 px-2 border-r">
+                      <input
+                        type="number"
+                        min="1"
+                        max="12"
+                        value={player.scoreC ?? ''}
+                        onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
+                        className="w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500"
+                      />
+                    </td>
+                  )}
 
-                  {/* D코스 */}
-                  <td className="py-2 px-2 border-r">
-                    <input
-                      type="number"
-                      min="1"
-                      max="12"
-                      value={player.scoreD ?? ''}
-                      onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
-                      className="w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500"
-                    />
-                  </td>
+                  {/* D코스 - 36홀만 표시 */}
+                  {is36Hole && (
+                    <td className="py-2 px-2 border-r">
+                      <input
+                        type="number"
+                        min="1"
+                        max="12"
+                        value={player.scoreD ?? ''}
+                        onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
+                        className="w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500"
+                      />
+                    </td>
+                  )}
 
-                  {/* C+D */}
-                  <td className="py-2 px-2 text-center border-r font-semibold bg-lime-50">
-                    {player.cd ?? '-'}
-                  </td>
+                  {/* C+D - 36홀만 표시 */}
+                  {is36Hole && (
+                    <td className="py-2 px-2 text-center border-r font-semibold bg-lime-50">
+                      {player.cd ?? '-'}
+                    </td>
+                  )}
 
                   {/* 36홀 합계 */}
                   <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">

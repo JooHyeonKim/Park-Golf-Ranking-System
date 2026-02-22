@@ -4,12 +4,14 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
+  const [newHoleCount, setNewHoleCount] = useState(36);
 
   const handleAdd = () => {
     if (newName.trim()) {
-      onAdd(newName.trim(), newDate);
+      onAdd(newName.trim(), newDate, newHoleCount);
       setNewName('');
       setNewDate(new Date().toISOString().split('T')[0]);
+      setNewHoleCount(36);
       setShowAddForm(false);
     }
   };
@@ -53,6 +55,33 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                 className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-700 mb-2">홀 수 선택</label>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setNewHoleCount(18)}
+                  className={`flex-1 py-2 rounded-lg font-medium transition-colors ${
+                    newHoleCount === 18
+                      ? 'bg-green-600 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  18홀
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNewHoleCount(36)}
+                  className={`flex-1 py-2 rounded-lg font-medium transition-colors ${
+                    newHoleCount === 36
+                      ? 'bg-green-600 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  36홀
+                </button>
+              </div>
+            </div>
             <div className="flex gap-2">
               <button
                 onClick={handleAdd}
@@ -92,6 +121,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                       <h3 className="font-bold text-lg text-gray-800">📋 {tournament.name}</h3>
                       <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
                         <span>{tournament.date}</span>
+                        <span>{tournament.holeCount || 36}홀</span>
                         <span>참가: {playerCount}명</span>
                       </div>
                     </div>

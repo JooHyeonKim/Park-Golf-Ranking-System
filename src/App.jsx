@@ -16,8 +16,8 @@ export default function App() {
 
   const [screenMode, setScreenMode] = useState('list'); // 'list' | 'score' | 'summary'
 
-  const handleAddTournament = (name, date) => {
-    addTournament(name, date);
+  const handleAddTournament = (name, date, holeCount) => {
+    addTournament(name, date, holeCount);
     setScreenMode('score');
   };
 

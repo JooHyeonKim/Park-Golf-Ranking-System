@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRanking } from '../../../hooks/useRanking';
 
 export default function OverviewTab({ tournament }) {
+  const is36Hole = (tournament.holeCount || 36) === 36;
   const [sortBy, setSortBy] = useState('rank');
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const sortMenuRef = useRef(null);
@@ -77,10 +78,14 @@ export default function OverviewTab({ tournament }) {
               <th className="bg-sky-200 py-3 px-2 text-center border-r">A코스</th>
               <th className="bg-sky-200 py-3 px-2 text-center border-r">B코스</th>
               <th className="bg-sky-300 py-3 px-2 text-center border-r">A+B</th>
-              <th className="bg-lime-200 py-3 px-2 text-center border-r">C코스</th>
-              <th className="bg-lime-200 py-3 px-2 text-center border-r">D코스</th>
-              <th className="bg-lime-300 py-3 px-2 text-center border-r">C+D</th>
-              <th className="bg-yellow-200 py-3 px-2 text-center border-r">36홀 합계</th>
+              {is36Hole && (
+                <>
+                  <th className="bg-lime-200 py-3 px-2 text-center border-r">C코스</th>
+                  <th className="bg-lime-200 py-3 px-2 text-center border-r">D코스</th>
+                  <th className="bg-lime-300 py-3 px-2 text-center border-r">C+D</th>
+                </>
+              )}
+              <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
               <th className="bg-gray-300 py-3 px-2 text-center min-w-[60px]">순위</th>
             </tr>
           </thead>
@@ -98,9 +103,13 @@ export default function OverviewTab({ tournament }) {
                 <td className="py-2 px-2 text-center border-r">{player.scoreA ?? '-'}</td>
                 <td className="py-2 px-2 text-center border-r">{player.scoreB ?? '-'}</td>
                 <td className="py-2 px-2 text-center border-r font-semibold bg-sky-50">{player.ab ?? '-'}</td>
-                <td className="py-2 px-2 text-center border-r">{player.scoreC ?? '-'}</td>
-                <td className="py-2 px-2 text-center border-r">{player.scoreD ?? '-'}</td>
-                <td className="py-2 px-2 text-center border-r font-semibold bg-lime-50">{player.cd ?? '-'}</td>
+                {is36Hole && (
+                  <>
+                    <td className="py-2 px-2 text-center border-r">{player.scoreC ?? '-'}</td>
+                    <td className="py-2 px-2 text-center border-r">{player.scoreD ?? '-'}</td>
+                    <td className="py-2 px-2 text-center border-r font-semibold bg-lime-50">{player.cd ?? '-'}</td>
+                  </>
+                )}
                 <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">{player.total ?? '-'}</td>
                 <td className="py-2 px-2 text-center font-bold text-red-600 text-lg">{player.rank ?? '-'}</td>
               </tr>

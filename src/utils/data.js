@@ -46,13 +46,15 @@ export function createInitialPlayers() {
  * 새 대회 생성
  * @param {string} name - 대회명
  * @param {string} date - 날짜 (YYYY-MM-DD)
+ * @param {number} holeCount - 홀 수 (18 또는 36)
  * @returns {Object} - 대회 객체
  */
-export function createTournament(name, date) {
+export function createTournament(name, date, holeCount = 36) {
   return {
     id: Date.now(),
     name,
     date,
+    holeCount,
     createdAt: Date.now(),
     players: createInitialPlayers()
   };
