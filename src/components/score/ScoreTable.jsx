@@ -174,7 +174,18 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
               )}
             </div>
           </div>
-
+          {(() => {
+            if (!isRankingCalculated) return null;
+            const missing = sortedPlayers.filter(
+              p => p.needsDetail && (!p.detailScores || Object.keys(p.detailScores).length === 0)
+            );
+            if (missing.length === 0) return null;
+            return (
+              <p className="mt-2 text-sm font-semibold text-red-600">
+                백카운트 미입력: {missing.map(p => p.name || `(${p.course} ${p.group}조)`).join(', ')}
+              </p>
+            );
+          })()}
         </div>
       </div>
 
