@@ -98,7 +98,7 @@ export default function TeamTab({ tournament }) {
           </button>
         </div>
       </div>
-      <div ref={tableRef} className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div ref={tableRef} data-capture-id="단체전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
         <h3 className="text-center font-bold text-2xl py-5 bg-white">👥 {tournament.name} - 단체전</h3>
         <table className="w-full text-sm border-collapse">
           <thead>

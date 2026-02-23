@@ -15,6 +15,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
+  const [backCountWarning, setBackCountWarning] = useState('');
   const sortMenuRef = useRef(null);
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, isRankingCalculated);
   // 18홀일 때 C/D 코스 선수 행 숨김
@@ -50,11 +51,13 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
     if (numValue !== null && numValue > 100) return;
     const updates = { [field]: numValue };
     setIsRankingCalculated(false); // 점수 수정 시 순위 초기화
+    setBackCountWarning('');
     onUpdatePlayer(tournament.id, playerId, updates);
   };
 
   const handleCalculateRanking = () => {
     setIsRankingCalculated(prev => !prev);
+    setBackCountWarning('');
   };
 
   // 테스트 데이터 생성
@@ -103,7 +106,20 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
           </div>
           <div className="flex gap-2 justify-end">
             <button
-              onClick={() => onViewSummary()}
+              onClick={() => {
+                if (isRankingCalculated) {
+                  const missingPlayers = sortedPlayers.filter(
+                    p => p.needsDetail && (!p.detailScores || Object.keys(p.detailScores).length === 0)
+                  );
+                  if (missingPlayers.length > 0) {
+                    const names = missingPlayers.map(p => p.name || `(${p.course} ${p.group}조)`).join(', ');
+                    setBackCountWarning(`백카운트 미입력: ${names}`);
+                    return;
+                  }
+                }
+                setBackCountWarning('');
+                onViewSummary();
+              }}
               className="flex-1 py-3 text-lg rounded-lg font-extrabold transition-colors bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg"
             >
               🏆 결과 보기
@@ -160,6 +176,11 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
               )}
             </div>
           </div>
+          {backCountWarning && (
+            <p className="mt-2 text-sm font-semibold text-red-600 animate-pulse">
+              {backCountWarning}
+            </p>
+          )}
         </div>
       </div>
 
@@ -327,33 +348,33 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
 
                       {/* 36홀 합계 */}
                       <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">
-                        {player.total ?? '-'}
-                      </td>
-
-                      {/* 순위 */}
-                      <td className="py-2 px-2 text-center font-bold text-red-600 text-lg">
                         <div className="flex items-center justify-center gap-1">
-                          <span>{player.rank ?? '-'}</span>
+                          <span>{player.total ?? '-'}</span>
                           {isRankingCalculated && player.needsDetail && (
                             player.detailScores && Object.keys(player.detailScores).length > 0 ? (
                               <button
                                 onClick={() => setDetailModalPlayer(player)}
-                                className="ml-1 px-1.5 py-0.5 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-                                title="동점자 - 상세 점수 입력 완료"
+                                className="ml-1 px-1.5 py-0.5 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition-colors whitespace-nowrap"
+                                title="동점자 - 백카운트 입력 완료"
                               >
-                                ✓
+                                백카운트 ✓
                               </button>
                             ) : (
                               <button
                                 onClick={() => setDetailModalPlayer(player)}
-                                className="ml-1 px-1.5 py-0.5 text-xs bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors animate-pulse"
-                                title="동점자 - 상세 점수 입력 필요"
+                                className="ml-1 px-1.5 py-0.5 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors animate-pulse whitespace-nowrap"
+                                title="동점자 - 백카운트 입력 필요"
                               >
-                                !
+                                백카운트
                               </button>
                             )
                           )}
                         </div>
+                      </td>
+
+                      {/* 순위 */}
+                      <td className="py-2 px-2 text-center font-bold text-red-600 text-lg">
+                        {player.rank ?? '-'}
                       </td>
                     </tr>
                   );

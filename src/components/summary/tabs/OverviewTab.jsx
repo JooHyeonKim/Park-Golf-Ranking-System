@@ -76,7 +76,7 @@ export default function OverviewTab({ tournament }) {
       </div>
 
       {/* 테이블 */}
-      <div ref={tableRef} className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div ref={tableRef} data-capture-id="전체현황" className="bg-white rounded-lg shadow-sm overflow-x-auto">
         <h3 className="text-center font-bold text-2xl py-5 bg-white">🏆 {tournament.name} - 전체 현황</h3>
         <table className="w-full text-sm border-collapse">
           <thead>

@@ -26,7 +26,7 @@ export default function IndividualTab({ tournament }) {
       <div className="flex justify-end mb-3">
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
       </div>
-      <div ref={tableRef} className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div ref={tableRef} data-capture-id="개인전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
         <h3 className="text-center font-bold text-2xl py-5 bg-white">🏅 {tournament.name} - 개인전</h3>
         <table className="w-full text-sm border-collapse">
           <thead>
