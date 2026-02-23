@@ -304,6 +304,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           type="text"
                           value={player.name || ''}
                           onChange={(e) => handleInputChange(player.id, 'name', e.target.value)}
+                          onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) { handleNameBlur(player.id, e.target.value); e.target.blur(); } }}
                           onBlur={(e) => handleNameBlur(player.id, e.target.value)}
                           disabled={isRankingCalculated}
                           className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
