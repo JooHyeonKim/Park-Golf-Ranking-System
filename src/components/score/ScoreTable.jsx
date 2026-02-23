@@ -15,7 +15,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
-  const [backCountWarning, setBackCountWarning] = useState('');
+
   const sortMenuRef = useRef(null);
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, isRankingCalculated);
   // 18홀일 때 C/D 코스 선수 행 숨김
@@ -51,13 +51,13 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
     if (numValue !== null && numValue > 100) return;
     const updates = { [field]: numValue };
     setIsRankingCalculated(false); // 점수 수정 시 순위 초기화
-    setBackCountWarning('');
+
     onUpdatePlayer(tournament.id, playerId, updates);
   };
 
   const handleCalculateRanking = () => {
     setIsRankingCalculated(prev => !prev);
-    setBackCountWarning('');
+
   };
 
   // 테스트 데이터 생성
@@ -113,11 +113,9 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                   );
                   if (missingPlayers.length > 0) {
                     const names = missingPlayers.map(p => p.name || `(${p.course} ${p.group}조)`).join(', ');
-                    setBackCountWarning(`백카운트 미입력: ${names}`);
-                    return;
+                    if (!confirm(`백카운트 미입력 선수가 있습니다.\n${names}\n\n결과를 보시겠습니까?`)) return;
                   }
                 }
-                setBackCountWarning('');
                 onViewSummary();
               }}
               className="flex-1 py-3 text-lg rounded-lg font-extrabold transition-colors bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg"
@@ -176,11 +174,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
               )}
             </div>
           </div>
-          {backCountWarning && (
-            <p className="mt-2 text-sm font-semibold text-red-600 animate-pulse">
-              {backCountWarning}
-            </p>
-          )}
+
         </div>
       </div>
 
