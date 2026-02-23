@@ -9,6 +9,7 @@ import {
   updateTournament as updateTournamentUtil,
   deleteTournament as deleteTournamentUtil,
   updatePlayer as updatePlayerUtil,
+  addPlayerToCourse as addPlayerToCourseUtil,
   countParticipants
 } from '../utils/data';
 
@@ -78,6 +79,19 @@ export function useTournaments() {
     });
   }, []);
 
+  // 코스 그룹에 선수 추가
+  const addPlayerToCourse = useCallback((tournamentId, baseCourse, group) => {
+    setTournaments(prev => prev.map(tournament => {
+      if (tournament.id === tournamentId) {
+        return {
+          ...tournament,
+          players: addPlayerToCourseUtil(tournament.players, baseCourse, group)
+        };
+      }
+      return tournament;
+    }));
+  }, []);
+
   // 현재 대회 가져오기
   const getCurrentTournament = useCallback(() => {
     if (currentTournamentId === null) return null;
@@ -108,6 +122,7 @@ export function useTournaments() {
     deleteTournament,
     updateTournament,
     updatePlayer,
+    addPlayerToCourse,
     setCurrentTournament,
     getTournamentStats
   };

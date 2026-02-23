@@ -199,3 +199,63 @@ export function updatePlayer(players, id, updates) {
 export function countParticipants(players) {
   return players.filter(p => p.name && p.name.trim() !== '').length;
 }
+
+/**
+ * 코스 그룹 소속 여부 판단
+ * "A-1-1"은 "A-1" 그룹, "A-10"은 "A-1" 그룹 아님
+ */
+function belongsToCourseGroup(course, baseCourse) {
+  return course === baseCourse || course.startsWith(baseCourse + '-');
+}
+
+/**
+ * 특정 코스의 추가 선수 수 카운트
+ * @param {Array} players - 선수 목록
+ * @param {string} baseCourse - 기본 코스명 (예: "A-1")
+ * @returns {number} - 추가 선수 수
+ */
+export function countExtraPlayers(players, baseCourse) {
+  return players.filter(p =>
+    p.course !== baseCourse && belongsToCourseGroup(p.course, baseCourse)
+  ).length;
+}
+
+/**
+ * 추가 선수를 코스 그룹에 삽입 (최대 4명)
+ * 추가된 선수의 코스명은 항상 baseCourse + "-1" (예: A-1 → A-1-1)
+ * @param {Array} players - 선수 목록
+ * @param {string} baseCourse - 기본 코스명 (예: "A-1")
+ * @param {number} group - 조 번호
+ * @returns {Array} - 업데이트된 선수 목록
+ */
+export function addPlayerToCourse(players, baseCourse, group) {
+  const extraCount = countExtraPlayers(players, baseCourse);
+  if (extraCount >= 4) return players;
+
+  const newId = Math.max(0, ...players.map(p => p.id)) + 1;
+  const newPlayer = {
+    id: newId,
+    group,
+    course: `${baseCourse}-1`,
+    name: '',
+    gender: '',
+    club: '',
+    scoreA: null,
+    scoreB: null,
+    scoreC: null,
+    scoreD: null,
+    detailScores: null
+  };
+
+  // 해당 코스 그룹의 마지막 위치 뒤에 삽입
+  let insertIndex = -1;
+  for (let i = 0; i < players.length; i++) {
+    if (belongsToCourseGroup(players[i].course, baseCourse)) {
+      insertIndex = i;
+    }
+  }
+
+  const result = [...players];
+  result.splice(insertIndex + 1, 0, newPlayer);
+  return result;
+}

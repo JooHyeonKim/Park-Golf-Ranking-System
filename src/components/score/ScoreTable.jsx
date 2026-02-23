@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRanking } from '../../hooks/useRanking';
+import { countExtraPlayers } from '../../utils/data';
 import DetailScoreModal from './DetailScoreModal';
 
-export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onViewSummary }) {
+// 코스명에서 기본 코스 추출 ("A-1-1" → "A-1", "A-1" → "A-1")
+function getBaseCourse(course) {
+  const parts = course.split('-');
+  return `${parts[0]}-${parts[1]}`;
+}
+
+export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onAddPlayerToCourse, onViewSummary }) {
   const is36Hole = (tournament.holeCount || 36) === 36;
   const [sortBy, setSortBy] = useState('group'); // 'rank' | 'group'
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
@@ -191,158 +198,195 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
               </tr>
             </thead>
             <tbody>
-              {sortedPlayers.map((player, index) => (
-                <tr
-                  key={player.id}
-                  className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-                >
-                  {/* 조 */}
-                  <td className="py-2 px-2 text-center border-r font-medium">{player.group}</td>
+              {(() => {
+                const rows = [];
+                const showAddButton = sortBy === 'group' && !isRankingCalculated;
+                let playerRowIndex = 0;
 
-                  {/* 코스 */}
-                  <td className="py-2 px-2 text-center border-r">{player.course}</td>
+                for (let i = 0; i < sortedPlayers.length; i++) {
+                  const player = sortedPlayers[i];
+                  const rowClass = playerRowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+                  playerRowIndex++;
 
-                  {/* 성명 */}
-                  <td className="py-2 px-2 border-r">
-                    <input
-                      type="text"
-                      value={player.name || ''}
-                      onChange={(e) => handleInputChange(player.id, 'name', e.target.value)}
-                      disabled={isRankingCalculated}
-                      className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
-                      placeholder="이름"
-                    />
-                  </td>
+                  rows.push(
+                    <tr key={player.id} className={rowClass}>
+                      {/* 조 */}
+                      <td className="py-2 px-2 text-center border-r font-medium">{player.group}</td>
 
-                  {/* 성별 */}
-                  <td className="py-2 px-2 border-r">
-                    <select
-                      value={player.gender || ''}
-                      onChange={(e) => handleInputChange(player.id, 'gender', e.target.value)}
-                      disabled={isRankingCalculated}
-                      className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
-                    >
-                      <option value="">-</option>
-                      <option value="남">남</option>
-                      <option value="여">여</option>
-                    </select>
-                  </td>
+                      {/* 코스 */}
+                      <td className="py-2 px-2 text-center border-r">{player.course}</td>
 
-                  {/* 클럽 */}
-                  <td className="py-2 px-2 border-r">
-                    <select
-                      value={player.club || ''}
-                      onChange={(e) => handleInputChange(player.id, 'club', e.target.value)}
-                      disabled={isRankingCalculated}
-                      className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
-                    >
-                      <option value="">-</option>
-                      {clubs.map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
-                  </td>
+                      {/* 성명 */}
+                      <td className="py-2 px-2 border-r">
+                        <input
+                          type="text"
+                          value={player.name || ''}
+                          onChange={(e) => handleInputChange(player.id, 'name', e.target.value)}
+                          disabled={isRankingCalculated}
+                          className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                          placeholder="이름"
+                        />
+                      </td>
 
-                  {/* A코스 */}
-                  <td className="py-2 px-2 border-r">
-                    <input
-                      type="number"
-                      min="1"
-                      max="12"
-                      value={player.scoreA ?? ''}
-                      onChange={(e) => handleScoreChange(player.id, 'scoreA', e.target.value)}
-                      disabled={isRankingCalculated}
-                      className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
-                    />
-                  </td>
+                      {/* 성별 */}
+                      <td className="py-2 px-2 border-r">
+                        <select
+                          value={player.gender || ''}
+                          onChange={(e) => handleInputChange(player.id, 'gender', e.target.value)}
+                          disabled={isRankingCalculated}
+                          className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                        >
+                          <option value="">-</option>
+                          <option value="남">남</option>
+                          <option value="여">여</option>
+                        </select>
+                      </td>
 
-                  {/* B코스 */}
-                  <td className="py-2 px-2 border-r">
-                    <input
-                      type="number"
-                      min="1"
-                      max="12"
-                      value={player.scoreB ?? ''}
-                      onChange={(e) => handleScoreChange(player.id, 'scoreB', e.target.value)}
-                      disabled={isRankingCalculated}
-                      className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
-                    />
-                  </td>
+                      {/* 클럽 */}
+                      <td className="py-2 px-2 border-r">
+                        <select
+                          value={player.club || ''}
+                          onChange={(e) => handleInputChange(player.id, 'club', e.target.value)}
+                          disabled={isRankingCalculated}
+                          className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                        >
+                          <option value="">-</option>
+                          {clubs.map((c) => (
+                            <option key={c} value={c}>{c}</option>
+                          ))}
+                        </select>
+                      </td>
 
-                  {/* A+B */}
-                  <td className="py-2 px-2 text-center border-r font-semibold bg-sky-50">
-                    {player.ab ?? '-'}
-                  </td>
+                      {/* A코스 */}
+                      <td className="py-2 px-2 border-r">
+                        <input
+                          type="number"
+                          min="1"
+                          max="12"
+                          value={player.scoreA ?? ''}
+                          onChange={(e) => handleScoreChange(player.id, 'scoreA', e.target.value)}
+                          disabled={isRankingCalculated}
+                          className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                        />
+                      </td>
 
-                  {/* C코스 - 36홀만 표시 */}
-                  {is36Hole && (
-                    <td className="py-2 px-2 border-r">
-                      <input
-                        type="number"
-                        min="1"
-                        max="12"
-                        value={player.scoreC ?? ''}
-                        onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
-                        disabled={isRankingCalculated}
-                        className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
-                      />
-                    </td>
-                  )}
+                      {/* B코스 */}
+                      <td className="py-2 px-2 border-r">
+                        <input
+                          type="number"
+                          min="1"
+                          max="12"
+                          value={player.scoreB ?? ''}
+                          onChange={(e) => handleScoreChange(player.id, 'scoreB', e.target.value)}
+                          disabled={isRankingCalculated}
+                          className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                        />
+                      </td>
 
-                  {/* D코스 - 36홀만 표시 */}
-                  {is36Hole && (
-                    <td className="py-2 px-2 border-r">
-                      <input
-                        type="number"
-                        min="1"
-                        max="12"
-                        value={player.scoreD ?? ''}
-                        onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
-                        disabled={isRankingCalculated}
-                        className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
-                      />
-                    </td>
-                  )}
+                      {/* A+B */}
+                      <td className="py-2 px-2 text-center border-r font-semibold bg-sky-50">
+                        {player.ab ?? '-'}
+                      </td>
 
-                  {/* C+D - 36홀만 표시 */}
-                  {is36Hole && (
-                    <td className="py-2 px-2 text-center border-r font-semibold bg-lime-50">
-                      {player.cd ?? '-'}
-                    </td>
-                  )}
-
-                  {/* 36홀 합계 */}
-                  <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">
-                    {player.total ?? '-'}
-                  </td>
-
-                  {/* 순위 */}
-                  <td className="py-2 px-2 text-center font-bold text-red-600 text-lg">
-                    <div className="flex items-center justify-center gap-1">
-                      <span>{player.rank ?? '-'}</span>
-                      {isRankingCalculated && player.needsDetail && (
-                        player.detailScores && Object.keys(player.detailScores).length > 0 ? (
-                          <button
-                            onClick={() => setDetailModalPlayer(player)}
-                            className="ml-1 px-1.5 py-0.5 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-                            title="동점자 - 상세 점수 입력 완료"
-                          >
-                            ✓
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => setDetailModalPlayer(player)}
-                            className="ml-1 px-1.5 py-0.5 text-xs bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors animate-pulse"
-                            title="동점자 - 상세 점수 입력 필요"
-                          >
-                            !
-                          </button>
-                        )
+                      {/* C코스 - 36홀만 표시 */}
+                      {is36Hole && (
+                        <td className="py-2 px-2 border-r">
+                          <input
+                            type="number"
+                            min="1"
+                            max="12"
+                            value={player.scoreC ?? ''}
+                            onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
+                            disabled={isRankingCalculated}
+                            className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                          />
+                        </td>
                       )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+
+                      {/* D코스 - 36홀만 표시 */}
+                      {is36Hole && (
+                        <td className="py-2 px-2 border-r">
+                          <input
+                            type="number"
+                            min="1"
+                            max="12"
+                            value={player.scoreD ?? ''}
+                            onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
+                            disabled={isRankingCalculated}
+                            className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                          />
+                        </td>
+                      )}
+
+                      {/* C+D - 36홀만 표시 */}
+                      {is36Hole && (
+                        <td className="py-2 px-2 text-center border-r font-semibold bg-lime-50">
+                          {player.cd ?? '-'}
+                        </td>
+                      )}
+
+                      {/* 36홀 합계 */}
+                      <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">
+                        {player.total ?? '-'}
+                      </td>
+
+                      {/* 순위 */}
+                      <td className="py-2 px-2 text-center font-bold text-red-600 text-lg">
+                        <div className="flex items-center justify-center gap-1">
+                          <span>{player.rank ?? '-'}</span>
+                          {isRankingCalculated && player.needsDetail && (
+                            player.detailScores && Object.keys(player.detailScores).length > 0 ? (
+                              <button
+                                onClick={() => setDetailModalPlayer(player)}
+                                className="ml-1 px-1.5 py-0.5 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                                title="동점자 - 상세 점수 입력 완료"
+                              >
+                                ✓
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => setDetailModalPlayer(player)}
+                                className="ml-1 px-1.5 py-0.5 text-xs bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors animate-pulse"
+                                title="동점자 - 상세 점수 입력 필요"
+                              >
+                                !
+                              </button>
+                            )
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+
+                  // 코스 그룹 경계에서 "+ 선수 추가" 버튼 삽입
+                  if (showAddButton) {
+                    const baseCourse = getBaseCourse(player.course);
+                    const nextPlayer = sortedPlayers[i + 1];
+                    const isLastInGroup = !nextPlayer || getBaseCourse(nextPlayer.course) !== baseCourse;
+
+                    if (isLastInGroup) {
+                      const extraCount = countExtraPlayers(tournament.players, baseCourse);
+                      if (extraCount < 4) {
+                        rows.push(
+                          <tr key={`add-${baseCourse}`} className="bg-gray-100">
+                            <td colSpan={is36Hole ? 13 : 10} className="py-1 text-center">
+                              <button
+                                onClick={() => onAddPlayerToCourse(tournament.id, baseCourse, player.group)}
+                                className="px-3 py-1 text-xs text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition-colors"
+                                title={`${baseCourse} 선수 추가`}
+                              >
+                                + 선수 추가
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      }
+                    }
+                  }
+                }
+
+                return rows;
+              })()}
             </tbody>
           </table>
         </div>

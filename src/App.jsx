@@ -13,6 +13,7 @@ export default function App() {
     addTournament,
     deleteTournament,
     updatePlayer,
+    addPlayerToCourse,
     setCurrentTournament
   } = useTournaments();
 
@@ -91,6 +92,7 @@ export default function App() {
       clubs={clubs}
       onBack={handleBackToList}
       onUpdatePlayer={updatePlayer}
+      onAddPlayerToCourse={addPlayerToCourse}
       onViewSummary={handleViewSummary}
     />
   );
