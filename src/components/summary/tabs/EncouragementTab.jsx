@@ -1,5 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { calculateRankings, calculateTotal } from '../../../utils/ranking';
+import { useImageCapture } from '../../../hooks/useImageCapture';
+import ImageDownloadButton from '../../common/ImageDownloadButton';
 
 const DEFAULT_MAX_RANK = 10;
 const RANK_OPTIONS = [10, 11, 12, 13, 14, 15];
@@ -9,6 +11,7 @@ export default function EncouragementTab({ tournament }) {
   const [maxRank, setMaxRank] = useState(DEFAULT_MAX_RANK);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '장려상');
 
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -52,11 +55,12 @@ export default function EncouragementTab({ tournament }) {
   return (
     <div>
       {/* 순위 범위 선택 드롭다운 */}
-      <div className="flex justify-end mb-3">
+      <div className="flex justify-end mb-3 gap-2">
+        <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="px-3 py-1 rounded-lg font-medium transition-colors bg-green-600 text-white hover:bg-green-700 flex items-center gap-1"
+            className="px-4 py-2 rounded-lg font-bold text-base transition-colors bg-green-600 text-white hover:bg-green-700 flex items-center gap-1 shadow"
           >
             {maxRank}위까지
             <span className="text-xs">▼</span>
@@ -89,7 +93,8 @@ export default function EncouragementTab({ tournament }) {
       </div>
 
       {/* 장려상 테이블 */}
-      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div ref={tableRef} className="bg-white rounded-lg shadow-sm overflow-x-auto">
+        <h3 className="text-center font-bold text-2xl py-5 bg-white">🎖️ {tournament.name} - 장려상</h3>
         <table className="w-full text-sm border-collapse">
           <thead>
             {/* 첫번째 줄: 남자 / 순위 / 여자 */}

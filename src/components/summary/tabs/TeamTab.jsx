@@ -1,10 +1,13 @@
 import { useState, useMemo, Fragment } from 'react';
 import { calculateRankings, calculateTotal } from '../../../utils/ranking';
+import { useImageCapture } from '../../../hooks/useImageCapture';
+import ImageDownloadButton from '../../common/ImageDownloadButton';
 
 const INDIVIDUAL_TOP = 5;
 
 export default function TeamTab({ tournament }) {
   const [excludeTop, setExcludeTop] = useState(true);
+  const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '단체전');
 
   const teamRankings = useMemo(() => {
     const ranked = calculateRankings(tournament.players);
@@ -70,7 +73,8 @@ export default function TeamTab({ tournament }) {
 
   return (
     <div>
-      <div className="flex justify-end mb-2">
+      <div className="flex justify-end mb-2 gap-2">
+        <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
         <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
           <button
             onClick={() => setExcludeTop(false)}
@@ -94,7 +98,8 @@ export default function TeamTab({ tournament }) {
           </button>
         </div>
       </div>
-      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div ref={tableRef} className="bg-white rounded-lg shadow-sm overflow-x-auto">
+        <h3 className="text-center font-bold text-2xl py-5 bg-white">👥 {tournament.name} - 단체전</h3>
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="border-b">

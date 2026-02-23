@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import html2canvas from 'html2canvas';
+import { useState, useRef, useEffect } from 'react';
 import { useRanking } from '../../../hooks/useRanking';
+import { useImageCapture } from '../../../hooks/useImageCapture';
+import ImageDownloadButton from '../../common/ImageDownloadButton';
 import DetailScoreModal from '../../score/DetailScoreModal';
 
 export default function OverviewTab({ tournament }) {
@@ -8,46 +9,13 @@ export default function OverviewTab({ tournament }) {
   const [sortBy, setSortBy] = useState('rank');
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
-  const [isCapturing, setIsCapturing] = useState(false);
   const sortMenuRef = useRef(null);
-  const tableRef = useRef(null);
+  const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '전체현황');
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, true);
   // 18홀일 때 C/D 코스 선수 행 숨김
   const sortedPlayers = is36Hole
     ? allSortedPlayers
     : allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B'));
-
-  const handleCaptureImage = useCallback(async () => {
-    if (!tableRef.current || isCapturing) return;
-    setIsCapturing(true);
-    const tableElement = tableRef.current;
-    const originalOverflow = tableElement.style.overflow;
-    const originalWidth = tableElement.style.width;
-    try {
-      tableElement.style.overflow = 'visible';
-      tableElement.style.width = 'auto';
-      const canvas = await html2canvas(tableElement, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: tableElement.scrollWidth,
-      });
-      const sanitizedName = (tournament.name || '대회').replace(/[/\\?%*:|"<>]/g, '_');
-      const link = document.createElement('a');
-      link.download = `${sanitizedName}_전체현황.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    } catch (error) {
-      console.error('이미지 캡쳐 실패:', error);
-      alert('이미지 캡쳐에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      tableElement.style.overflow = originalOverflow;
-      tableElement.style.width = originalWidth;
-      setIsCapturing(false);
-    }
-  }, [tournament.name, isCapturing]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -69,17 +37,7 @@ export default function OverviewTab({ tournament }) {
     <div>
       {/* 정렬 버튼 */}
       <div className="flex justify-end mb-3 gap-2">
-        <button
-          onClick={handleCaptureImage}
-          disabled={isCapturing}
-          className={`px-4 py-2 rounded-lg font-bold text-base transition-colors flex items-center gap-1 shadow ${
-            isCapturing
-              ? 'bg-blue-400 text-white cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-          }`}
-        >
-          {isCapturing ? '⏳ 다운로드 중...' : '📷 이미지 다운로드'}
-        </button>
+        <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
         <div className="relative" ref={sortMenuRef}>
           <button
             onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
@@ -119,6 +77,7 @@ export default function OverviewTab({ tournament }) {
 
       {/* 테이블 */}
       <div ref={tableRef} className="bg-white rounded-lg shadow-sm overflow-x-auto">
+        <h3 className="text-center font-bold text-2xl py-5 bg-white">🏆 {tournament.name} - 전체 현황</h3>
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="border-b-2">
