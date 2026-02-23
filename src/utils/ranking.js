@@ -95,30 +95,6 @@ export function calculateTotal(player) {
 }
 
 /**
- * A+B 합계 계산
- * @param {Object} player - 선수 객체
- * @returns {number|null} - 합계
- */
-export function calculateAB(player) {
-  const { scoreA, scoreB } = player;
-
-  if (scoreA === null && scoreB === null) return null;
-  return (scoreA ?? 0) + (scoreB ?? 0);
-}
-
-/**
- * C+D 합계 계산
- * @param {Object} player - 선수 객체
- * @returns {number|null} - 합계
- */
-export function calculateCD(player) {
-  const { scoreC, scoreD } = player;
-
-  if (scoreC === null && scoreD === null) return null;
-  return (scoreC ?? 0) + (scoreD ?? 0);
-}
-
-/**
  * 선수 목록에 순위 부여
  * @param {Array} players - 선수 목록
  * @returns {Array} - 순위가 부여된 선수 목록
