@@ -110,7 +110,7 @@ export default function OverviewTab({ tournament }) {
                 key={player.id}
                 className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
               >
-                <td className="py-2 px-2 text-center border-r font-medium">{player.group}</td>
+                <td className="py-2 px-2 text-center border-r font-medium">{player.course.split('-').length >= 3 ? `${player.group}-1` : player.group}</td>
                 <td className="py-2 px-2 text-center border-r">{player.course}</td>
                 <td className="py-2 px-3 border-r font-medium">{player.name || '-'}</td>
                 <td className="py-2 px-2 text-center border-r">{player.gender || '-'}</td>

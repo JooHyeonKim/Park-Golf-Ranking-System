@@ -228,3 +228,17 @@ export function addPlayerToCourse(players, baseCourse, group) {
   result.splice(insertIndex + 1, 0, newPlayer);
   return result;
 }
+
+/**
+ * 추가된 선수를 코스 그룹에서 제거
+ * @param {Array} players - 선수 목록
+ * @param {number} playerId - 제거할 선수 ID
+ * @returns {Array} - 업데이트된 선수 목록
+ */
+export function removePlayerFromCourse(players, playerId) {
+  const player = players.find(p => p.id === playerId);
+  if (!player) return players;
+  // 추가된 선수만 삭제 가능 (코스명에 "-"가 2개 이상, 예: A-1-1)
+  if (player.course.split('-').length < 3) return players;
+  return players.filter(p => p.id !== playerId);
+}
