@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRanking } from '../../../hooks/useRanking';
 import { useImageCapture } from '../../../hooks/useImageCapture';
+import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
 import ImageDownloadButton from '../../common/ImageDownloadButton';
+import PdfDownloadButton from '../../common/PdfDownloadButton';
 import DetailScoreModal from '../../score/DetailScoreModal';
 
 export default function OverviewTab({ tournament }) {
@@ -11,6 +13,7 @@ export default function OverviewTab({ tournament }) {
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
   const sortMenuRef = useRef(null);
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '전체현황');
+  const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '전체현황');
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, true);
   // 18홀일 때 C/D 코스 선수 행 숨김
   const sortedPlayers = is36Hole
@@ -37,6 +40,7 @@ export default function OverviewTab({ tournament }) {
     <div>
       {/* 정렬 버튼 */}
       <div className="flex justify-end mb-3 gap-2">
+        <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
         <div className="relative" ref={sortMenuRef}>
           <button

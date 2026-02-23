@@ -1,7 +1,9 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { calculateRankings, calculateTotal } from '../../../utils/ranking';
 import { useImageCapture } from '../../../hooks/useImageCapture';
+import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
 import ImageDownloadButton from '../../common/ImageDownloadButton';
+import PdfDownloadButton from '../../common/PdfDownloadButton';
 
 const DEFAULT_MAX_RANK = 10;
 const RANK_OPTIONS = [10, 11, 12, 13, 14, 15];
@@ -12,6 +14,7 @@ export default function EncouragementTab({ tournament }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '장려상');
+  const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '장려상');
 
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -56,6 +59,7 @@ export default function EncouragementTab({ tournament }) {
     <div>
       {/* 순위 범위 선택 드롭다운 */}
       <div className="flex justify-end mb-3 gap-2">
+        <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
         <div className="relative" ref={dropdownRef}>
           <button

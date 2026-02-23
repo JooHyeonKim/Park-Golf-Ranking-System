@@ -1,13 +1,16 @@
 import { useState, useMemo, Fragment } from 'react';
 import { calculateRankings, calculateTotal } from '../../../utils/ranking';
 import { useImageCapture } from '../../../hooks/useImageCapture';
+import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
 import ImageDownloadButton from '../../common/ImageDownloadButton';
+import PdfDownloadButton from '../../common/PdfDownloadButton';
 
 const INDIVIDUAL_TOP = 5;
 
 export default function TeamTab({ tournament }) {
   const [excludeTop, setExcludeTop] = useState(true);
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '단체전');
+  const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '단체전');
 
   const teamRankings = useMemo(() => {
     const ranked = calculateRankings(tournament.players);
@@ -74,6 +77,7 @@ export default function TeamTab({ tournament }) {
   return (
     <div>
       <div className="flex justify-end mb-2 gap-2">
+        <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
         <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
           <button

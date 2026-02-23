@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 import { calculateRankings, calculateTotal } from '../../../utils/ranking';
 import { useImageCapture } from '../../../hooks/useImageCapture';
+import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
 import ImageDownloadButton from '../../common/ImageDownloadButton';
+import PdfDownloadButton from '../../common/PdfDownloadButton';
 
 const RANKS = ['우승', '준우승', '3위', '4위', '5위'];
 
 export default function IndividualTab({ tournament }) {
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '개인전');
+  const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '개인전');
 
   const { males, females } = useMemo(() => {
     // 전체 순위 계산 (타수 오름차순, 동점 처리 포함)
@@ -23,7 +26,8 @@ export default function IndividualTab({ tournament }) {
 
   return (
     <div>
-      <div className="flex justify-end mb-3">
+      <div className="flex justify-end mb-3 gap-2">
+        <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
       </div>
       <div ref={tableRef} data-capture-id="개인전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
