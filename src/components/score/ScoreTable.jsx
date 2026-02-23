@@ -244,17 +244,15 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                 <th className="bg-gray-300 py-3 px-2 text-center border-r min-w-[50px]">성별</th>
                 <th className="bg-gray-300 py-3 px-3 text-center border-r min-w-[80px]">클럽</th>
 
-                {/* 하늘색 그룹 (A+B) */}
+                {/* 하늘색 그룹 */}
                 <th className="bg-sky-200 py-3 px-2 text-center border-r">A코스</th>
                 <th className="bg-sky-200 py-3 px-2 text-center border-r">B코스</th>
-                <th className="bg-sky-300 py-3 px-2 text-center border-r">A+B</th>
 
-                {/* 연두색 그룹 (C+D) - 36홀만 표시 */}
+                {/* 연두색 그룹 - 36홀만 표시 */}
                 {is36Hole && (
                   <>
                     <th className="bg-lime-200 py-3 px-2 text-center border-r">C코스</th>
                     <th className="bg-lime-200 py-3 px-2 text-center border-r">D코스</th>
-                    <th className="bg-lime-300 py-3 px-2 text-center border-r">C+D</th>
                   </>
                 )}
 
@@ -370,11 +368,6 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                         />
                       </td>
 
-                      {/* A+B */}
-                      <td className="py-2 px-2 text-center border-r font-semibold bg-sky-50">
-                        {player.ab ?? '-'}
-                      </td>
-
                       {/* C코스 - 36홀만 표시 */}
                       {is36Hole && (
                         <td className="py-2 px-2 border-r">
@@ -402,13 +395,6 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                             disabled={isRankingCalculated}
                             className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                           />
-                        </td>
-                      )}
-
-                      {/* C+D - 36홀만 표시 */}
-                      {is36Hole && (
-                        <td className="py-2 px-2 text-center border-r font-semibold bg-lime-50">
-                          {player.cd ?? '-'}
                         </td>
                       )}
 

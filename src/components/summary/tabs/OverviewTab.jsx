@@ -92,12 +92,10 @@ export default function OverviewTab({ tournament }) {
               <th className="bg-gray-300 py-3 px-3 text-center border-r min-w-[80px]">클럽</th>
               <th className="bg-sky-200 py-3 px-2 text-center border-r">A코스</th>
               <th className="bg-sky-200 py-3 px-2 text-center border-r">B코스</th>
-              <th className="bg-sky-300 py-3 px-2 text-center border-r">A+B</th>
               {is36Hole && (
                 <>
                   <th className="bg-lime-200 py-3 px-2 text-center border-r">C코스</th>
                   <th className="bg-lime-200 py-3 px-2 text-center border-r">D코스</th>
-                  <th className="bg-lime-300 py-3 px-2 text-center border-r">C+D</th>
                 </>
               )}
               <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
@@ -117,12 +115,10 @@ export default function OverviewTab({ tournament }) {
                 <td className="py-2 px-3 border-r">{player.club || '-'}</td>
                 <td className="py-2 px-2 text-center border-r">{player.scoreA ?? '-'}</td>
                 <td className="py-2 px-2 text-center border-r">{player.scoreB ?? '-'}</td>
-                <td className="py-2 px-2 text-center border-r font-semibold bg-sky-50">{player.ab ?? '-'}</td>
                 {is36Hole && (
                   <>
                     <td className="py-2 px-2 text-center border-r">{player.scoreC ?? '-'}</td>
                     <td className="py-2 px-2 text-center border-r">{player.scoreD ?? '-'}</td>
-                    <td className="py-2 px-2 text-center border-r font-semibold bg-lime-50">{player.cd ?? '-'}</td>
                   </>
                 )}
                 <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">{player.total ?? '-'}</td>

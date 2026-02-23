@@ -2,8 +2,6 @@ import { useMemo } from 'react';
 import {
   calculateRankings,
   calculateTotal,
-  calculateAB,
-  calculateCD,
   needsDetailScores
 } from '../utils/ranking';
 
@@ -30,8 +28,6 @@ export function useRanking(players, sortBy = 'rank', isRankingCalculated = false
     const allPlayers = rankedPlayers.map(p => ({
       ...p,
       total: calculateTotal(p),
-      ab: calculateAB(p),
-      cd: calculateCD(p),
       needsDetail: needsDetailScores(p, players)
     }));
 
