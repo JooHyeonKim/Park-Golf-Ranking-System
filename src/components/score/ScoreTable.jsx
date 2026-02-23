@@ -70,7 +70,10 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
 
     const matches = searchByName(trimmed);
 
-    if (matches.length === 0) return;
+    if (matches.length === 0) {
+      onUpdatePlayer(tournament.id, playerId, { gender: '', club: '' });
+      return;
+    }
 
     if (matches.length === 1) {
       const member = matches[0];
