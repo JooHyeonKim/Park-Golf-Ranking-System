@@ -6,6 +6,14 @@ import TournamentList from './components/tournament/TournamentList';
 import ScoreTable from './components/score/ScoreTable';
 import SummaryPage from './components/summary/SummaryPage';
 import ClubManagement from './components/club/ClubManagement';
+import CollabModeSelect from './components/collab/CollabModeSelect';
+import CollabRoleSelect from './components/collab/CollabRoleSelect';
+import CollabLeaderSetup from './components/collab/CollabLeaderSetup';
+import CollabLeaderDashboard from './components/collab/CollabLeaderDashboard';
+import CollabJoinScreen from './components/collab/CollabJoinScreen';
+import CollabGroupSelect from './components/collab/CollabGroupSelect';
+import CollabScoreCard from './components/collab/CollabScoreCard';
+import CollabSubmissionStatus from './components/collab/CollabSubmissionStatus';
 
 export default function App() {
   const {
@@ -30,8 +38,19 @@ export default function App() {
     updateMembersClub
   } = useMembers();
 
-  const [screenMode, setScreenMode] = useState('list'); // 'list' | 'score' | 'summary' | 'clubs'
+  // 화면 모드
+  // 'mode-select' | 'list' | 'score' | 'summary' | 'clubs'
+  // | 'collab-role' | 'collab-leader-setup' | 'collab-leader-dashboard'
+  // | 'collab-join' | 'collab-group-select' | 'collab-scorecard' | 'collab-submission-status'
+  const [screenMode, setScreenMode] = useState('mode-select');
 
+  // 협동입력 관련 state
+  const [collabTournamentId, setCollabTournamentId] = useState(null);
+  const [collabTournament, setCollabTournament] = useState(null);
+  const [collabGroupNumber, setCollabGroupNumber] = useState(null);
+  const [collabNickname, setCollabNickname] = useState('');
+
+  // ==================== 혼자입력 핸들러 (기존 그대로) ====================
   const handleAddTournament = (name, date, holeCount) => {
     addTournament(name, date, holeCount);
     setScreenMode('score');
@@ -62,7 +81,6 @@ export default function App() {
     setScreenMode('clubs');
   };
 
-  // 클럽명 변경 시 회원의 club 필드도 함께 업데이트
   const handleEditClub = async (oldName, newName) => {
     const success = await editClub(oldName, newName);
     if (success) {
@@ -71,7 +89,164 @@ export default function App() {
     return success;
   };
 
-  // 화면 라우팅
+  // ==================== 모드 선택 핸들러 ====================
+  const handleSelectSolo = () => {
+    setScreenMode('list');
+  };
+
+  const handleSelectCollab = () => {
+    setScreenMode('collab-role');
+  };
+
+  const handleBackToModeSelect = () => {
+    setCollabTournamentId(null);
+    setCollabTournament(null);
+    setCollabGroupNumber(null);
+    setCollabNickname('');
+    setScreenMode('mode-select');
+  };
+
+  // ==================== 협동입력 핸들러 ====================
+  const handleSelectLeader = () => {
+    setScreenMode('collab-leader-setup');
+  };
+
+  const handleSelectParticipant = () => {
+    setScreenMode('collab-join');
+  };
+
+  const handleLeaderSetupComplete = (tournamentId) => {
+    setCollabTournamentId(tournamentId);
+    setScreenMode('collab-leader-dashboard');
+  };
+
+  const handleJoinSuccess = (tournamentId, tournament, nickname) => {
+    setCollabTournamentId(tournamentId);
+    setCollabTournament(tournament);
+    setCollabNickname(nickname);
+    setScreenMode('collab-group-select');
+  };
+
+  const handleSelectGroup = (groupNumber) => {
+    setCollabGroupNumber(groupNumber);
+    setScreenMode('collab-scorecard');
+  };
+
+  const handleScoreSubmitted = () => {
+    setScreenMode('collab-submission-status');
+  };
+
+  const handleBackToGroupSelect = () => {
+    setCollabGroupNumber(null);
+    setScreenMode('collab-group-select');
+  };
+
+  const handleResubmit = () => {
+    setScreenMode('collab-scorecard');
+  };
+
+  const handleCollabViewSummary = (tournamentData) => {
+    // 협동모드 결과를 SummaryPage에 전달하기 위해 collabTournament에 저장
+    setCollabTournament(tournamentData);
+    setScreenMode('summary');
+  };
+
+  const handleBackFromCollabSummary = () => {
+    setScreenMode('collab-leader-dashboard');
+  };
+
+  // ==================== 화면 라우팅 ====================
+
+  // 모드 선택 화면
+  if (screenMode === 'mode-select') {
+    return (
+      <CollabModeSelect
+        onSelectSolo={handleSelectSolo}
+        onSelectCollab={handleSelectCollab}
+      />
+    );
+  }
+
+  // 협동입력 - 역할 선택
+  if (screenMode === 'collab-role') {
+    return (
+      <CollabRoleSelect
+        onSelectLeader={handleSelectLeader}
+        onSelectParticipant={handleSelectParticipant}
+        onBack={handleBackToModeSelect}
+      />
+    );
+  }
+
+  // 협동입력 - 팀장 설정
+  if (screenMode === 'collab-leader-setup') {
+    return (
+      <CollabLeaderSetup
+        searchByName={searchByName}
+        onComplete={handleLeaderSetupComplete}
+        onBack={() => setScreenMode('collab-role')}
+      />
+    );
+  }
+
+  // 협동입력 - 팀장 대시보드
+  if (screenMode === 'collab-leader-dashboard') {
+    return (
+      <CollabLeaderDashboard
+        tournamentId={collabTournamentId}
+        onViewSummary={handleCollabViewSummary}
+        onBack={handleBackToModeSelect}
+      />
+    );
+  }
+
+  // 협동입력 - 참여자 코드 입력
+  if (screenMode === 'collab-join') {
+    return (
+      <CollabJoinScreen
+        onJoinSuccess={handleJoinSuccess}
+        onBack={() => setScreenMode('collab-role')}
+      />
+    );
+  }
+
+  // 협동입력 - 참여자 조 선택
+  if (screenMode === 'collab-group-select') {
+    return (
+      <CollabGroupSelect
+        tournamentId={collabTournamentId}
+        onSelectGroup={handleSelectGroup}
+        onBack={handleBackToModeSelect}
+      />
+    );
+  }
+
+  // 협동입력 - 스코어카드 입력
+  if (screenMode === 'collab-scorecard') {
+    return (
+      <CollabScoreCard
+        tournamentId={collabTournamentId}
+        groupNumber={collabGroupNumber}
+        nickname={collabNickname}
+        onSubmitted={handleScoreSubmitted}
+        onBack={handleBackToGroupSelect}
+      />
+    );
+  }
+
+  // 협동입력 - 제출 상태
+  if (screenMode === 'collab-submission-status') {
+    return (
+      <CollabSubmissionStatus
+        tournamentId={collabTournamentId}
+        groupNumber={collabGroupNumber}
+        onResubmit={handleResubmit}
+        onBackToGroups={handleBackToGroupSelect}
+      />
+    );
+  }
+
+  // 클럽 관리 (기존)
   if (screenMode === 'clubs') {
     return (
       <ClubManagement
@@ -89,6 +264,19 @@ export default function App() {
     );
   }
 
+  // 결과 보기 (혼자입력 또는 협동입력 공용)
+  if (screenMode === 'summary') {
+    const tournamentData = collabTournament || currentTournament;
+    const backHandler = collabTournament ? handleBackFromCollabSummary : handleBackToScore;
+    return (
+      <SummaryPage
+        tournament={tournamentData}
+        onBack={backHandler}
+      />
+    );
+  }
+
+  // 대회 목록 (기존)
   if (screenMode === 'list' || !currentTournament) {
     return (
       <TournamentList
@@ -102,15 +290,7 @@ export default function App() {
     );
   }
 
-  if (screenMode === 'summary') {
-    return (
-      <SummaryPage
-        tournament={currentTournament}
-        onBack={handleBackToScore}
-      />
-    );
-  }
-
+  // 점수 입력 (기존)
   return (
     <ScoreTable
       tournament={currentTournament}
@@ -124,25 +304,3 @@ export default function App() {
     />
   );
 }
-
-/*
-=============================================================================
-BACKUP: 기존 App.jsx (단순 점수판)
-=============================================================================
-
-기존 코드는 주석으로 보존됨. 필요시 참고용으로 사용 가능.
-
-import React, { useState, useEffect, useCallback } from 'react';
-
-// 설정값
-const HOLES = 9;
-const PAR = [3, 4, 3, 4, 5, 3, 4, 3, 4]; // 각 홀별 파
-const TOTAL_PAR = PAR.reduce((a, b) => a + b, 0);
-
-// 로컬 스토리지 키
-const STORAGE_KEY = 'parkgolf-data';
-
-// ... (나머지 코드 생략)
-
-=============================================================================
-*/
