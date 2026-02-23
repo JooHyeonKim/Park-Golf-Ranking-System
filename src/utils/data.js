@@ -1,36 +1,5 @@
 // 데이터 초기화 및 관리 유틸리티 함수
-
-export const DEFAULT_CLUBS = [
-  '방배', '양재', '잠원', '반포', '서리풀',
-  '서래', '우면', '서초', '내곡', '청계',
-  '이수', '매헌', '향목'
-];
-
-/**
- * localStorage에서 클럽 목록 로드
- * @returns {Array} - 클럽 이름 목록
- */
-export function loadClubs() {
-  try {
-    const data = localStorage.getItem('parkgolf-clubs');
-    return data ? JSON.parse(data) : DEFAULT_CLUBS;
-  } catch (error) {
-    console.error('Failed to load clubs:', error);
-    return DEFAULT_CLUBS;
-  }
-}
-
-/**
- * localStorage에 클럽 목록 저장
- * @param {Array} clubs - 클럽 이름 목록
- */
-export function saveClubs(clubs) {
-  try {
-    localStorage.setItem('parkgolf-clubs', JSON.stringify(clubs));
-  } catch (error) {
-    console.error('Failed to save clubs:', error);
-  }
-}
+// 클럽/회원 데이터는 IndexedDB로 이동 (src/utils/db.js 참고)
 
 /**
  * 초기 선수 데이터 생성 (18홀: 72명, 36홀: 144명)

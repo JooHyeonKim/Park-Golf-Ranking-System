@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTournaments } from './hooks/useTournaments';
 import { useClubs } from './hooks/useClubs';
+import { useMembers } from './hooks/useMembers';
 import TournamentList from './components/tournament/TournamentList';
 import ScoreTable from './components/score/ScoreTable';
 import SummaryPage from './components/summary/SummaryPage';
@@ -18,6 +19,15 @@ export default function App() {
   } = useTournaments();
 
   const { clubs, addClub, editClub, deleteClub } = useClubs();
+  const {
+    members,
+    addMember,
+    editMember,
+    deleteMember,
+    searchByName,
+    getMembersByClub,
+    updateMembersClub
+  } = useMembers();
 
   const [screenMode, setScreenMode] = useState('list'); // 'list' | 'score' | 'summary' | 'clubs'
 
@@ -51,15 +61,29 @@ export default function App() {
     setScreenMode('clubs');
   };
 
+  // 클럽명 변경 시 회원의 club 필드도 함께 업데이트
+  const handleEditClub = async (oldName, newName) => {
+    const success = await editClub(oldName, newName);
+    if (success) {
+      await updateMembersClub(oldName, newName.trim());
+    }
+    return success;
+  };
+
   // 화면 라우팅
   if (screenMode === 'clubs') {
     return (
       <ClubManagement
         clubs={clubs}
         onAddClub={addClub}
-        onEditClub={editClub}
+        onEditClub={handleEditClub}
         onDeleteClub={deleteClub}
         onBack={handleBackToList}
+        members={members}
+        onAddMember={addMember}
+        onEditMember={editMember}
+        onDeleteMember={deleteMember}
+        getMembersByClub={getMembersByClub}
       />
     );
   }
@@ -94,6 +118,7 @@ export default function App() {
       onUpdatePlayer={updatePlayer}
       onAddPlayerToCourse={addPlayerToCourse}
       onViewSummary={handleViewSummary}
+      searchByName={searchByName}
     />
   );
 }

@@ -9,12 +9,16 @@ function getBaseCourse(course) {
   return `${parts[0]}-${parts[1]}`;
 }
 
-export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onAddPlayerToCourse, onViewSummary }) {
+export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onAddPlayerToCourse, onViewSummary, searchByName }) {
   const is36Hole = (tournament.holeCount || 36) === 36;
   const [sortBy, setSortBy] = useState('group'); // 'rank' | 'group'
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
+
+  // 동명이인 선택 모달 상태
+  const [duplicateMatches, setDuplicateMatches] = useState(null);
+  const [duplicateTargetPlayerId, setDuplicateTargetPlayerId] = useState(null);
 
   const sortMenuRef = useRef(null);
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, isRankingCalculated);
@@ -57,7 +61,41 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
 
   const handleCalculateRanking = () => {
     setIsRankingCalculated(prev => !prev);
+  };
 
+  // 이름 입력 후 blur 시 자동완성
+  const handleNameBlur = (playerId, nameValue) => {
+    const trimmed = nameValue.trim();
+    if (!trimmed || !searchByName) return;
+
+    const matches = searchByName(trimmed);
+
+    if (matches.length === 0) return;
+
+    if (matches.length === 1) {
+      const member = matches[0];
+      onUpdatePlayer(tournament.id, playerId, {
+        gender: member.gender,
+        club: member.club
+      });
+      return;
+    }
+
+    // 동명이인 - 선택 모달 표시
+    setDuplicateMatches(matches);
+    setDuplicateTargetPlayerId(playerId);
+  };
+
+  // 동명이인 선택 처리
+  const handleSelectDuplicate = (member) => {
+    if (duplicateTargetPlayerId) {
+      onUpdatePlayer(tournament.id, duplicateTargetPlayerId, {
+        gender: member.gender,
+        club: member.club
+      });
+    }
+    setDuplicateMatches(null);
+    setDuplicateTargetPlayerId(null);
   };
 
   // 테스트 데이터 생성
@@ -248,6 +286,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           type="text"
                           value={player.name || ''}
                           onChange={(e) => handleInputChange(player.id, 'name', e.target.value)}
+                          onBlur={(e) => handleNameBlur(player.id, e.target.value)}
                           disabled={isRankingCalculated}
                           className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                           placeholder="이름"
@@ -428,6 +467,47 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
           }}
           onClose={() => setDetailModalPlayer(null)}
         />
+      )}
+
+      {/* 동명이인 선택 모달 */}
+      {duplicateMatches && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" onClick={() => { setDuplicateMatches(null); setDuplicateTargetPlayerId(null); }} />
+          <div className="relative w-full max-w-sm bg-white rounded-t-2xl sm:rounded-2xl overflow-hidden">
+            <div className="px-4 py-3 border-b bg-green-600 text-white">
+              <h3 className="font-bold text-lg">동명이인 선택</h3>
+              <span className="text-sm text-green-100">같은 이름의 회원이 {duplicateMatches.length}명 있습니다</span>
+            </div>
+            <div className="divide-y max-h-60 overflow-y-auto">
+              {duplicateMatches.map(member => (
+                <button
+                  key={member.id}
+                  onClick={() => handleSelectDuplicate(member)}
+                  className="w-full px-4 py-3 text-left hover:bg-green-50 transition-colors flex items-center gap-2"
+                >
+                  <span className="font-medium">{member.name}</span>
+                  <span className={`text-sm px-1.5 py-0.5 rounded ${
+                    member.gender === '남' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'
+                  }`}>
+                    {member.gender}
+                  </span>
+                  <span className="text-gray-500">{member.club}</span>
+                  {member.birthDate && (
+                    <span className="text-sm text-gray-400">{member.birthDate}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+            <div className="p-4 border-t">
+              <button
+                onClick={() => { setDuplicateMatches(null); setDuplicateTargetPlayerId(null); }}
+                className="w-full py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+              >
+                취소 (직접 입력)
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
