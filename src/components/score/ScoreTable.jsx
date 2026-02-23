@@ -238,7 +238,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           value={player.name || ''}
                           onChange={(e) => handleInputChange(player.id, 'name', e.target.value)}
                           disabled={isRankingCalculated}
-                          className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                          className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                           placeholder="이름"
                         />
                       </td>
@@ -249,7 +249,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           value={player.gender || ''}
                           onChange={(e) => handleInputChange(player.id, 'gender', e.target.value)}
                           disabled={isRankingCalculated}
-                          className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                          className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                         >
                           <option value="">-</option>
                           <option value="남">남</option>
@@ -263,7 +263,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           value={player.club || ''}
                           onChange={(e) => handleInputChange(player.id, 'club', e.target.value)}
                           disabled={isRankingCalculated}
-                          className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                          className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                         >
                           <option value="">-</option>
                           {clubs.map((c) => (
@@ -281,7 +281,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           value={player.scoreA ?? ''}
                           onChange={(e) => handleScoreChange(player.id, 'scoreA', e.target.value)}
                           disabled={isRankingCalculated}
-                          className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                          className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                         />
                       </td>
 
@@ -294,7 +294,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           value={player.scoreB ?? ''}
                           onChange={(e) => handleScoreChange(player.id, 'scoreB', e.target.value)}
                           disabled={isRankingCalculated}
-                          className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                          className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                         />
                       </td>
 
@@ -313,7 +313,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                             value={player.scoreC ?? ''}
                             onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
                             disabled={isRankingCalculated}
-                            className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                            className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                           />
                         </td>
                       )}
@@ -328,7 +328,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                             value={player.scoreD ?? ''}
                             onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
                             disabled={isRankingCalculated}
-                            className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-100 text-gray-500' : ''}`}
+                            className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                           />
                         </td>
                       )}
