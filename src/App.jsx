@@ -15,6 +15,7 @@ export default function App() {
     deleteTournament,
     updatePlayer,
     addPlayerToCourse,
+    removePlayerFromCourse,
     setCurrentTournament
   } = useTournaments();
 
@@ -117,6 +118,7 @@ export default function App() {
       onBack={handleBackToList}
       onUpdatePlayer={updatePlayer}
       onAddPlayerToCourse={addPlayerToCourse}
+      onRemovePlayerFromCourse={removePlayerFromCourse}
       onViewSummary={handleViewSummary}
       searchByName={searchByName}
     />

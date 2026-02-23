@@ -9,7 +9,7 @@ function getBaseCourse(course) {
   return `${parts[0]}-${parts[1]}`;
 }
 
-export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onAddPlayerToCourse, onViewSummary, searchByName }) {
+export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onAddPlayerToCourse, onRemovePlayerFromCourse, onViewSummary, searchByName }) {
   const is36Hole = (tournament.holeCount || 36) === 36;
   const [sortBy, setSortBy] = useState('group'); // 'rank' | 'group'
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
@@ -70,7 +70,10 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
 
     const matches = searchByName(trimmed);
 
-    if (matches.length === 0) return;
+    if (matches.length === 0) {
+      onUpdatePlayer(tournament.id, playerId, { gender: '', club: '' });
+      return;
+    }
 
     if (matches.length === 1) {
       const member = matches[0];
@@ -233,6 +236,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b-2">
+                {!isRankingCalculated && <th className="bg-gray-300 py-3 px-1 border-r w-8"></th>}
                 {/* 회색 그룹 */}
                 <th className="bg-gray-300 py-3 px-2 text-center border-r">조</th>
                 <th className="bg-gray-300 py-3 px-2 text-center border-r">코스</th>
@@ -270,10 +274,27 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                   const rowClass = playerRowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50';
                   playerRowIndex++;
 
+                  const isExtraPlayer = player.course.split('-').length >= 3;
+
                   rows.push(
                     <tr key={player.id} className={rowClass}>
+                      {!isRankingCalculated && (
+                        <td className="py-2 px-1 text-center border-r w-8">
+                          {isExtraPlayer && (
+                            <button
+                              onClick={() => onRemovePlayerFromCourse(tournament.id, player.id)}
+                              className="text-gray-400 hover:text-red-500 transition-colors"
+                              title="추가 선수 제거"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          )}
+                        </td>
+                      )}
                       {/* 조 */}
-                      <td className="py-2 px-2 text-center border-r font-medium">{player.group}</td>
+                      <td className="py-2 px-2 text-center border-r font-medium">{isExtraPlayer ? `${player.group}-1` : player.group}</td>
 
                       {/* 코스 */}
                       <td className="py-2 px-2 text-center border-r">{player.course}</td>
@@ -284,6 +305,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           type="text"
                           value={player.name || ''}
                           onChange={(e) => handleInputChange(player.id, 'name', e.target.value)}
+                          onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) { handleNameBlur(player.id, e.target.value); e.target.blur(); } }}
                           onBlur={(e) => handleNameBlur(player.id, e.target.value)}
                           disabled={isRankingCalculated}
                           className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}

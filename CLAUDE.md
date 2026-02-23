@@ -56,20 +56,35 @@ src/
 ├── components/
 │   ├── tournament/
 │   │   └── TournamentList.jsx           # Tournament list screen
-│   └── score/
-│       └── ScoreTable.jsx               # Score input screen
+│   ├── score/
+│   │   └── ScoreTable.jsx               # Score input screen
+│   ├── summary/
+│   │   ├── SummaryPage.jsx              # Summary/ranking page with tabs
+│   │   └── tabs/
+│   │       ├── OverviewTab.jsx          # 전체 현황 tab
+│   │       ├── IndividualTab.jsx        # 개인전 tab
+│   │       ├── EncouragementTab.jsx     # 장려상 tab
+│   │       └── TeamTab.jsx             # 단체전 tab
+│   └── club/
+│       ├── ClubManagement.jsx           # Club list & management screen
+│       └── ClubMemberList.jsx           # Club member list screen
 ├── hooks/
 │   ├── useTournaments.js                # Tournament CRUD operations
-│   └── useRanking.js                    # Ranking calculation hook
+│   ├── useRanking.js                    # Ranking calculation hook
+│   ├── useClubs.js                      # Club CRUD operations (IndexedDB)
+│   └── useMembers.js                    # Member CRUD operations (IndexedDB)
 └── utils/
     ├── data.js                          # Data initialization, localStorage I/O
+    ├── db.js                            # IndexedDB setup (clubs, members)
     └── ranking.js                       # Ranking calculation functions
 ```
 
 ### Data Flow
 
-- **State Management**: React hooks (`useTournaments`) manage all tournament data
-- **Persistence**: localStorage with keys `parkgolf-tournaments` and `parkgolf-current-tournament`
+- **State Management**: React hooks (`useTournaments`, `useClubs`, `useMembers`)
+- **Persistence**:
+  - Tournaments: localStorage (`parkgolf-tournaments`, `parkgolf-current-tournament`)
+  - Clubs & Members: IndexedDB (`parkgolf-db`)
 - **No external API calls** - all data is local
 
 ## Tech Stack
