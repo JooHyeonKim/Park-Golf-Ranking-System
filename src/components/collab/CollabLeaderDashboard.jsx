@@ -3,12 +3,12 @@ import { useCollabTournament } from '../../hooks/useCollabTournament';
 import { checkAndVerify } from '../../hooks/useCollabVerification';
 import { setGroupVerified, setGroupConflict } from '../../utils/firestoreOps';
 
-export default function CollabLeaderDashboard({ tournamentId, onViewSummary, onBack }) {
+export default function CollabLeaderDashboard({ tournamentId, onViewSummary, onViewScoreTable, onBack }) {
   const {
     tournament,
     groups,
     isLoading,
-    getVerifiedResults,
+    getAllResults,
   } = useCollabTournament(tournamentId);
 
   // 2개 제출이 감지된 조에 대해 자동 검증 실행
@@ -37,9 +37,16 @@ export default function CollabLeaderDashboard({ tournamentId, onViewSummary, onB
   }, [groups, tournament, tournamentId]);
 
   const handleViewSummary = () => {
-    const results = getVerifiedResults();
+    const results = getAllResults();
     if (results) {
       onViewSummary(results);
+    }
+  };
+
+  const handleViewScoreTable = () => {
+    const results = getAllResults();
+    if (results) {
+      onViewScoreTable(results);
     }
   };
 
@@ -90,76 +97,82 @@ export default function CollabLeaderDashboard({ tournamentId, onViewSummary, onB
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
       <div className="sticky top-0 bg-white border-b shadow-sm z-10">
-        <div className="flex items-center px-4 py-3">
-          <button onClick={onBack} className="text-gray-600 mr-3">← 나가기</button>
+        <div className="flex items-center px-6 py-4">
+          <button onClick={onBack} className="text-gray-600 hover:text-gray-800 mr-4 font-medium">← 나가기</button>
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-green-800">{tournament.name}</h1>
-            <p className="text-xs text-gray-400">{tournament.date} | {tournament.holeCount}홀</p>
+            <h1 className="text-xl font-bold text-green-800">{tournament.name}</h1>
+            <p className="text-gray-500">{tournament.date} | {tournament.holeCount}홀</p>
           </div>
           <button
             onClick={handleCopyCode}
-            className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-lg font-medium"
+            className="bg-blue-100 text-blue-700 px-4 py-1.5 rounded-lg font-medium hover:bg-blue-200 transition-colors"
           >
             코드: {tournament.code}
           </button>
         </div>
       </div>
 
-      <div className="p-4 max-w-2xl mx-auto space-y-4">
+      <div className="p-6 space-y-5">
         {/* 진행 상황 요약 */}
-        <div className="grid grid-cols-4 gap-2">
-          <div className="bg-gray-100 rounded-xl p-3 text-center">
-            <div className="text-2xl font-bold text-gray-600">{pendingCount}</div>
-            <div className="text-xs text-gray-500">대기</div>
+        <div className="grid grid-cols-4 gap-4">
+          <div className="bg-gray-100 rounded-xl p-5 text-center">
+            <div className="text-3xl font-bold text-gray-600">{pendingCount}</div>
+            <div className="text-sm text-gray-500 mt-1">대기</div>
           </div>
-          <div className="bg-yellow-100 rounded-xl p-3 text-center">
-            <div className="text-2xl font-bold text-yellow-700">{submittedCount}</div>
-            <div className="text-xs text-yellow-600">입력중</div>
+          <div className="bg-yellow-100 rounded-xl p-5 text-center">
+            <div className="text-3xl font-bold text-yellow-700">{submittedCount}</div>
+            <div className="text-sm text-yellow-600 mt-1">입력중</div>
           </div>
-          <div className="bg-green-100 rounded-xl p-3 text-center">
-            <div className="text-2xl font-bold text-green-700">{verifiedCount}</div>
-            <div className="text-xs text-green-600">완료</div>
+          <div className="bg-green-100 rounded-xl p-5 text-center">
+            <div className="text-3xl font-bold text-green-700">{verifiedCount}</div>
+            <div className="text-sm text-green-600 mt-1">완료</div>
           </div>
-          <div className="bg-red-100 rounded-xl p-3 text-center">
-            <div className="text-2xl font-bold text-red-700">{conflictCount}</div>
-            <div className="text-xs text-red-600">충돌</div>
+          <div className="bg-red-100 rounded-xl p-5 text-center">
+            <div className="text-3xl font-bold text-red-700">{conflictCount}</div>
+            <div className="text-sm text-red-600 mt-1">충돌</div>
           </div>
         </div>
 
         {/* 진행률 바 */}
-        <div className="bg-white rounded-xl p-4 border">
-          <div className="flex justify-between text-sm mb-1">
-            <span className="text-gray-600">진행률</span>
+        <div className="bg-white rounded-xl p-5 border">
+          <div className="flex justify-between text-base mb-2">
+            <span className="text-gray-600 font-medium">진행률</span>
             <span className="font-bold text-green-700">{verifiedCount}/{totalGroups}</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3">
+          <div className="w-full bg-gray-200 rounded-full h-4">
             <div
-              className="bg-green-500 h-3 rounded-full transition-all duration-500"
+              className="bg-green-500 h-4 rounded-full transition-all duration-500"
               style={{ width: `${totalGroups > 0 ? (verifiedCount / totalGroups) * 100 : 0}%` }}
             />
           </div>
         </div>
 
-        {/* 결과 보기 버튼 */}
-        {verifiedCount > 0 && (
+        {/* 입력 현황 / 결과 보기 버튼 */}
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            onClick={handleViewScoreTable}
+            className="py-4 rounded-xl font-medium text-base bg-white border-2 border-blue-600 text-blue-700 hover:bg-blue-50 transition-colors"
+          >
+            입력 현황 보기
+          </button>
           <button
             onClick={handleViewSummary}
-            className={`w-full py-3 rounded-xl font-medium ${
-              verifiedCount === totalGroups
-                ? 'bg-green-600 text-white'
-                : 'bg-white border-2 border-green-600 text-green-700'
+            className={`py-4 rounded-xl font-medium text-base transition-colors ${
+              verifiedCount === totalGroups && totalGroups > 0
+                ? 'bg-green-600 text-white hover:bg-green-700'
+                : 'bg-white border-2 border-green-600 text-green-700 hover:bg-green-50'
             }`}
           >
-            {verifiedCount === totalGroups
+            {verifiedCount === totalGroups && totalGroups > 0
               ? '최종 결과 보기'
-              : `중간 결과 보기 (${verifiedCount}조 완료)`}
+              : `결과 보기 (${verifiedCount}/${totalGroups})`}
           </button>
-        )}
+        </div>
 
         {/* 조별 상태 그리드 */}
-        <div className="bg-white rounded-xl border p-4">
-          <h3 className="text-sm font-bold text-gray-700 mb-3">조별 현황</h3>
-          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+        <div className="bg-white rounded-xl border p-5">
+          <h3 className="text-base font-bold text-gray-700 mb-4">조별 현황</h3>
+          <div className="grid grid-cols-9 gap-3">
             {groups.map(group => {
               const subs = group.submissions || {};
               const subNames = Object.values(subs).map(s => s.nickname).join(', ');
@@ -167,13 +180,13 @@ export default function CollabLeaderDashboard({ tournamentId, onViewSummary, onB
               return (
                 <div
                   key={group.groupNumber}
-                  className={`p-2 rounded-lg border-2 text-center ${getGroupStyle(group)}`}
+                  className={`p-3 rounded-lg border-2 text-center ${getGroupStyle(group)}`}
                 >
-                  <div className="text-sm font-bold">{group.groupNumber}조</div>
+                  <div className="text-base font-bold">{group.groupNumber}조</div>
                   <div className="text-xs opacity-70">{group.course}</div>
-                  <div className="text-xs font-medium mt-0.5">{getGroupLabel(group)}</div>
+                  <div className="text-sm font-medium mt-1">{getGroupLabel(group)}</div>
                   {subNames && (
-                    <div className="text-xs opacity-50 mt-0.5 truncate">{subNames}</div>
+                    <div className="text-xs opacity-50 mt-1 truncate">{subNames}</div>
                   )}
                 </div>
               );
@@ -182,12 +195,12 @@ export default function CollabLeaderDashboard({ tournamentId, onViewSummary, onB
         </div>
 
         {/* 범례 */}
-        <div className="flex gap-4 text-xs text-gray-500 justify-center flex-wrap">
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-200" />대기</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-300" />1/2</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-300" />검증중</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-300" />완료</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-300" />충돌</span>
+        <div className="flex gap-6 text-sm text-gray-500 justify-center flex-wrap">
+          <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 rounded bg-gray-200" />대기</span>
+          <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 rounded bg-yellow-300" />1/2</span>
+          <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 rounded bg-blue-300" />검증중</span>
+          <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 rounded bg-green-300" />완료</span>
+          <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 rounded bg-red-300" />충돌</span>
         </div>
       </div>
     </div>

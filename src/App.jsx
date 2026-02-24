@@ -8,6 +8,7 @@ import SummaryPage from './components/summary/SummaryPage';
 import ClubManagement from './components/club/ClubManagement';
 import CollabModeSelect from './components/collab/CollabModeSelect';
 import CollabRoleSelect from './components/collab/CollabRoleSelect';
+import CollabLeaderAction from './components/collab/CollabLeaderAction';
 import CollabLeaderSetup from './components/collab/CollabLeaderSetup';
 import CollabLeaderDashboard from './components/collab/CollabLeaderDashboard';
 import CollabJoinScreen from './components/collab/CollabJoinScreen';
@@ -40,7 +41,8 @@ export default function App() {
 
   // 화면 모드
   // 'mode-select' | 'list' | 'score' | 'summary' | 'clubs'
-  // | 'collab-role' | 'collab-leader-setup' | 'collab-leader-dashboard'
+  // | 'collab-role' | 'collab-leader-action' | 'collab-leader-setup' | 'collab-leader-dashboard'
+  // | 'collab-score-view'
   // | 'collab-join' | 'collab-group-select' | 'collab-scorecard' | 'collab-submission-status'
   const [screenMode, setScreenMode] = useState('mode-select');
 
@@ -108,7 +110,16 @@ export default function App() {
 
   // ==================== 협동입력 핸들러 ====================
   const handleSelectLeader = () => {
+    setScreenMode('collab-leader-action');
+  };
+
+  const handleLeaderCreateNew = () => {
     setScreenMode('collab-leader-setup');
+  };
+
+  const handleLeaderJoinExisting = (tournamentId) => {
+    setCollabTournamentId(tournamentId);
+    setScreenMode('collab-leader-dashboard');
   };
 
   const handleSelectParticipant = () => {
@@ -146,12 +157,25 @@ export default function App() {
   };
 
   const handleCollabViewSummary = (tournamentData) => {
-    // 협동모드 결과를 SummaryPage에 전달하기 위해 collabTournament에 저장
     setCollabTournament(tournamentData);
     setScreenMode('summary');
   };
 
+  const handleCollabViewScoreTable = (tournamentData) => {
+    setCollabTournament(tournamentData);
+    setScreenMode('collab-score-view');
+  };
+
+  // 협동모드 입력현황 뷰에서 로컬 편집 (Firestore에 반영 안 됨)
+  const handleCollabViewUpdatePlayer = (tournamentId, playerId, updates) => {
+    setCollabTournament(prev => ({
+      ...prev,
+      players: prev.players.map(p => p.id === playerId ? { ...p, ...updates } : p)
+    }));
+  };
+
   const handleBackFromCollabSummary = () => {
+    setCollabTournament(null);
     setScreenMode('collab-leader-dashboard');
   };
 
@@ -178,13 +202,24 @@ export default function App() {
     );
   }
 
+  // 협동입력 - 팀장 액션 선택 (새 대회 / 기존 대회)
+  if (screenMode === 'collab-leader-action') {
+    return (
+      <CollabLeaderAction
+        onCreateNew={handleLeaderCreateNew}
+        onJoinExisting={handleLeaderJoinExisting}
+        onBack={() => setScreenMode('collab-role')}
+      />
+    );
+  }
+
   // 협동입력 - 팀장 설정
   if (screenMode === 'collab-leader-setup') {
     return (
       <CollabLeaderSetup
         searchByName={searchByName}
         onComplete={handleLeaderSetupComplete}
-        onBack={() => setScreenMode('collab-role')}
+        onBack={() => setScreenMode('collab-leader-action')}
       />
     );
   }
@@ -195,7 +230,26 @@ export default function App() {
       <CollabLeaderDashboard
         tournamentId={collabTournamentId}
         onViewSummary={handleCollabViewSummary}
+        onViewScoreTable={handleCollabViewScoreTable}
         onBack={handleBackToModeSelect}
+      />
+    );
+  }
+
+  // 협동입력 - 입력 현황 보기 (ScoreTable 양식)
+  if (screenMode === 'collab-score-view') {
+    return (
+      <ScoreTable
+        tournament={collabTournament}
+        clubs={collabTournament?.clubs || []}
+        onBack={handleBackFromCollabSummary}
+        onUpdatePlayer={handleCollabViewUpdatePlayer}
+        onAddPlayerToCourse={() => {}}
+        onRemovePlayerFromCourse={() => {}}
+        onViewSummary={() => {
+          setScreenMode('summary');
+        }}
+        searchByName={searchByName}
       />
     );
   }

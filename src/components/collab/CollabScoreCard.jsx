@@ -177,11 +177,11 @@ export default function CollabScoreCard({ tournamentId, groupNumber, nickname, o
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* 헤더 */}
       <div className="sticky top-0 bg-white border-b shadow-sm z-20">
-        <div className="flex items-center px-4 py-2">
-          <button onClick={onBack} className="text-gray-600 mr-3 text-sm">← 뒤로</button>
+        <div className="flex items-center px-6 py-3">
+          <button onClick={onBack} className="text-gray-600 hover:text-gray-800 mr-4 font-medium">← 뒤로</button>
           <div className="flex-1">
-            <h1 className="text-base font-bold text-green-800">{groupNumber}조 점수 입력</h1>
-            <p className="text-xs text-gray-400">{group.course} | {activePlayers.length}명</p>
+            <h1 className="text-xl font-bold text-green-800">{groupNumber}조 점수 입력</h1>
+            <p className="text-sm text-gray-500">{group.course} | {activePlayers.length}명</p>
           </div>
         </div>
         {/* 코스 탭 */}
@@ -190,14 +190,14 @@ export default function CollabScoreCard({ tournamentId, groupNumber, nickname, o
             <button
               key={c}
               onClick={() => setActiveTab(c)}
-              className={`flex-1 py-2 text-sm font-medium border-b-2 transition-colors ${
+              className={`flex-1 py-3 text-base font-medium border-b-2 transition-colors ${
                 activeTab === c
                   ? 'text-green-700 border-green-600 bg-green-50'
                   : 'text-gray-400 border-transparent'
               }`}
             >
               {c}코스
-              <span className="text-xs ml-1 opacity-60">
+              <span className="text-sm ml-1 opacity-60">
                 (파{pars[c]?.reduce((a, b) => a + b, 0) || '-'})
               </span>
             </button>
@@ -205,108 +205,100 @@ export default function CollabScoreCard({ tournamentId, groupNumber, nickname, o
         </div>
       </div>
 
-      {/* 파 표시 */}
-      <div className="bg-gray-100 px-4 py-2">
-        <div className="grid grid-cols-9 gap-1 text-center">
-          {Array.from({ length: 9 }, (_, i) => (
-            <div key={i} className="text-xs text-gray-400">
-              <div className="font-medium">{i + 1}H</div>
-              <div className="text-green-600">P{pars[activeTab]?.[i] || 4}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 선수별 점수 입력 */}
-      <div className="flex-1 overflow-y-auto pb-24">
-        {activePlayers.map(player => (
-          <div key={player.slot} className="mx-4 mt-3 bg-white rounded-xl border shadow-sm">
-            {/* 선수 헤더 */}
-            <div className="flex items-center justify-between px-3 py-2 border-b bg-gray-50 rounded-t-xl">
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-sm">{player.name}</span>
-                {player.gender && (
-                  <span className={`text-xs px-1.5 py-0.5 rounded ${
-                    player.gender === '남' ? 'bg-blue-100 text-blue-600' : 'bg-pink-100 text-pink-600'
-                  }`}>
-                    {player.gender}
-                  </span>
-                )}
-                {player.club && <span className="text-xs text-gray-400">{player.club}</span>}
-              </div>
-              <div className="text-sm font-bold text-green-700">
-                {getCourseTotal(player.slot, activeTab) ?? '-'}
-              </div>
-            </div>
-
-            {/* 9홀 입력 - 3열 그리드 */}
-            <div className="grid grid-cols-3 gap-2 p-3">
-              {Array.from({ length: 9 }, (_, i) => {
-                const val = scores[String(player.slot)]?.[activeTab]?.[i];
-                const isEmpty = val === null;
-                const conflict = isConflictHole(player.slot, activeTab, i + 1);
-
-                return (
-                  <div
-                    key={i}
-                    className={`flex items-center gap-1 rounded-lg px-2 py-1.5 ${
-                      conflict
-                        ? 'bg-yellow-50 border-2 border-yellow-400'
-                        : showValidation && isEmpty
-                          ? 'bg-red-50 border border-red-300'
-                          : val !== null
-                            ? 'bg-green-50 border border-green-200'
-                            : 'bg-gray-50 border border-gray-200'
-                    }`}
-                  >
-                    <span className="text-xs text-gray-400 w-5">{i + 1}H</span>
-                    <input
-                      type="number"
-                      inputMode="numeric"
-                      min={1}
-                      max={12}
-                      value={val ?? ''}
-                      onChange={e => handleScoreChange(player.slot, activeTab, i, e.target.value)}
-                      className="w-full text-center text-sm font-medium bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      style={{ minHeight: '28px' }}
-                    />
+      {/* 선수별 점수 테이블 */}
+      <div className="flex-1 overflow-y-auto p-6 max-w-5xl mx-auto w-full">
+        <table className="w-full border-collapse bg-white rounded-xl border shadow-sm overflow-hidden">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="px-4 py-3 text-left text-sm font-bold text-gray-700 border-b w-32">선수</th>
+              {Array.from({ length: 9 }, (_, i) => (
+                <th key={i} className="px-1 py-3 text-center border-b w-14">
+                  <div className="text-sm font-medium text-gray-600">{i + 1}H</div>
+                  <div className="text-xs text-green-600">P{pars[activeTab]?.[i] || 4}</div>
+                </th>
+              ))}
+              <th className="px-3 py-3 text-center text-sm font-bold text-gray-700 border-b w-16">합계</th>
+            </tr>
+          </thead>
+          <tbody>
+            {activePlayers.map(player => (
+              <tr key={player.slot} className="border-b last:border-b-0 hover:bg-gray-50">
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-sm">{player.name}</span>
+                    {player.gender && (
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${
+                        player.gender === '남' ? 'bg-blue-100 text-blue-600' : 'bg-pink-100 text-pink-600'
+                      }`}>
+                        {player.gender}
+                      </span>
+                    )}
                   </div>
-                );
-              })}
-            </div>
+                  {player.club && <div className="text-xs text-gray-400 mt-0.5">{player.club}</div>}
+                </td>
+                {Array.from({ length: 9 }, (_, i) => {
+                  const val = scores[String(player.slot)]?.[activeTab]?.[i];
+                  const isEmpty = val === null;
+                  const conflict = isConflictHole(player.slot, activeTab, i + 1);
 
-            {/* 충돌 힌트 */}
-            {discrepancies.filter(d => d.playerSlot === player.slot && d.course === activeTab).length > 0 && (
-              <div className="px-3 pb-2">
-                <div className="text-xs text-yellow-700 bg-yellow-50 rounded p-2">
-                  노란색 홀에서 이전 두 기록이 불일치했습니다. 다시 확인해주세요.
-                </div>
-              </div>
-            )}
+                  return (
+                    <td key={i} className="px-1 py-2 text-center">
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min={1}
+                        max={12}
+                        value={val ?? ''}
+                        onChange={e => handleScoreChange(player.slot, activeTab, i, e.target.value)}
+                        className={`w-12 h-10 text-center text-sm font-medium rounded-lg outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                          conflict
+                            ? 'bg-yellow-50 border-2 border-yellow-400'
+                            : showValidation && isEmpty
+                              ? 'bg-red-50 border-2 border-red-300'
+                              : val !== null
+                                ? 'bg-green-50 border border-green-300'
+                                : 'bg-gray-50 border border-gray-200'
+                        } focus:ring-2 focus:ring-green-400 focus:border-green-400`}
+                      />
+                    </td>
+                  );
+                })}
+                <td className="px-3 py-2 text-center">
+                  <span className="text-base font-bold text-green-700">
+                    {getCourseTotal(player.slot, activeTab) ?? '-'}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* 충돌 힌트 */}
+        {discrepancies.filter(d => d.course === activeTab).length > 0 && (
+          <div className="mt-4 text-sm text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+            노란색 홀에서 이전 두 기록이 불일치했습니다. 다시 확인해주세요.
           </div>
-        ))}
+        )}
 
         {activePlayers.length === 0 && (
-          <div className="text-center py-12 text-gray-400 text-sm">
+          <div className="text-center py-12 text-gray-400">
             이 조에 등록된 선수가 없습니다
           </div>
         )}
-      </div>
 
-      {/* 하단 고정 - 제출 버튼 */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg px-4 py-3 z-20">
-        <div className="flex items-center justify-between max-w-2xl mx-auto">
-          <div className="text-sm">
+        {/* 제출 영역 */}
+        <div className="mt-6 flex items-center justify-between bg-white rounded-xl border shadow-sm px-6 py-4">
+          <div className="text-base">
             {missingCount > 0 ? (
-              <span className="text-red-500">미입력: {missingCount}홀</span>
+              <span className="text-red-500 font-medium">미입력: {missingCount}홀</span>
             ) : (
-              <span className="text-green-600 font-medium">모든 홀 입력 완료</span>
+              <span className="text-green-600 font-bold">모든 홀 입력 완료</span>
             )}
           </div>
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`px-6 py-2.5 rounded-xl font-medium text-sm ${
+            className={`px-8 py-3 rounded-xl font-medium text-base ${
               missingCount > 0
                 ? 'bg-gray-300 text-gray-500'
                 : 'bg-green-600 text-white hover:bg-green-700'

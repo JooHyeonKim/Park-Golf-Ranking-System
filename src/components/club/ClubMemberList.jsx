@@ -80,8 +80,8 @@ export default function ClubMemberList({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-6">
+      <div className="max-w-6xl mx-auto">
         {/* 헤더 */}
         <div className="flex items-center justify-between mb-6">
           <button
@@ -90,8 +90,8 @@ export default function ClubMemberList({
           >
             &larr; 클럽 목록
           </button>
-          <h1 className="text-2xl font-bold text-gray-800">
-            {clubName} <span className="text-lg text-gray-500">({members.length}명)</span>
+          <h1 className="text-3xl font-bold text-gray-800">
+            {clubName} <span className="text-xl text-gray-500">({members.length}명)</span>
           </h1>
         </div>
 

@@ -75,8 +75,8 @@ export default function ClubManagement({
 
   // 클럽 목록 화면
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-6">
+      <div className="max-w-6xl mx-auto">
         {/* 헤더 */}
         <div className="flex items-center justify-between mb-6">
           <button
@@ -85,7 +85,7 @@ export default function ClubManagement({
           >
             &larr; 대회 목록
           </button>
-          <h1 className="text-2xl font-bold text-gray-800">클럽 관리</h1>
+          <h1 className="text-3xl font-bold text-gray-800">클럽 관리</h1>
         </div>
 
         {/* 새 클럽 추가 */}

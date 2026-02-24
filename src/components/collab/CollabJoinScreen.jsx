@@ -30,9 +30,9 @@ export default function CollabJoinScreen({ onJoinSuccess, onBack }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-green-800 text-center mb-8">대회 참여</h1>
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center p-8">
+      <div className="w-full max-w-lg">
+        <h1 className="text-3xl font-bold text-green-800 text-center mb-8">대회 참여</h1>
 
         {/* 코드 입력 */}
         <div className="space-y-4">
@@ -102,7 +102,7 @@ export default function CollabJoinScreen({ onJoinSuccess, onBack }) {
 
         <button
           onClick={onBack}
-          className="mt-8 text-gray-400 hover:text-gray-600 text-sm block mx-auto"
+          className="mt-10 text-gray-400 hover:text-gray-600 text-base block mx-auto"
         >
           ← 뒤로
         </button>

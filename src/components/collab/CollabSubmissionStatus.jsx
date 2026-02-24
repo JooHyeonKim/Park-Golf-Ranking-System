@@ -89,27 +89,27 @@ export default function CollabSubmissionStatus({ tournamentId, groupNumber, onRe
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* 헤더 */}
-      <div className="sticky top-0 bg-white border-b shadow-sm z-10 px-4 py-3">
+      <div className="sticky top-0 bg-white border-b shadow-sm z-10 px-6 py-4">
         <div className="flex items-center">
-          <button onClick={onBackToGroups} className="text-gray-600 mr-3">← 조 목록</button>
-          <h1 className="text-lg font-bold text-green-800">{groupNumber}조 제출 상태</h1>
+          <button onClick={onBackToGroups} className="text-gray-600 hover:text-gray-800 mr-4 font-medium">← 조 목록</button>
+          <h1 className="text-xl font-bold text-green-800">{groupNumber}조 제출 상태</h1>
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-sm text-center space-y-6">
+      <div className="flex-1 flex items-center justify-center p-8">
+        <div className="w-full max-w-xl text-center space-y-6">
 
           {/* 대기 중 (1/2) */}
           {status === 'pending' && submissionCount < 2 && (
             <>
-              <div className="text-6xl animate-pulse">⏳</div>
-              <h2 className="text-xl font-bold text-gray-700">제출 완료!</h2>
-              <p className="text-gray-500">
+              <div className="text-7xl animate-pulse">⏳</div>
+              <h2 className="text-2xl font-bold text-gray-700">제출 완료!</h2>
+              <p className="text-lg text-gray-500">
                 다른 참여자의 입력을 기다리는 중입니다...
               </p>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-                <div className="text-sm text-yellow-700">
-                  제출 현황: <span className="font-bold">{submissionCount}/2</span>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-5">
+                <div className="text-base text-yellow-700">
+                  제출 현황: <span className="font-bold text-lg">{submissionCount}/2</span>
                 </div>
               </div>
             </>
@@ -118,22 +118,22 @@ export default function CollabSubmissionStatus({ tournamentId, groupNumber, onRe
           {/* 검증 중 */}
           {status === 'pending' && submissionCount >= 2 && (
             <>
-              <div className="text-6xl animate-spin">⚙️</div>
-              <h2 className="text-xl font-bold text-gray-700">검증 중...</h2>
-              <p className="text-gray-500">두 기록을 비교하고 있습니다</p>
+              <div className="text-7xl animate-spin">⚙️</div>
+              <h2 className="text-2xl font-bold text-gray-700">검증 중...</h2>
+              <p className="text-lg text-gray-500">두 기록을 비교하고 있습니다</p>
             </>
           )}
 
           {/* 검증 완료 */}
           {status === 'verified' && (
             <>
-              <div className="text-6xl">✅</div>
-              <h2 className="text-xl font-bold text-green-700">검증 완료!</h2>
-              <p className="text-gray-500">
+              <div className="text-7xl">✅</div>
+              <h2 className="text-2xl font-bold text-green-700">검증 완료!</h2>
+              <p className="text-lg text-gray-500">
                 두 기록이 일치하여 승인되었습니다.
               </p>
-              <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-                <div className="text-sm text-green-700 font-medium">
+              <div className="bg-green-50 border border-green-200 rounded-xl p-5">
+                <div className="text-base text-green-700 font-medium">
                   {groupNumber}조 기록이 대회 결과에 반영되었습니다
                 </div>
               </div>
@@ -143,24 +143,24 @@ export default function CollabSubmissionStatus({ tournamentId, groupNumber, onRe
           {/* 충돌 */}
           {status === 'conflict' && (
             <>
-              <div className="text-6xl">⚠️</div>
-              <h2 className="text-xl font-bold text-red-700">기록 불일치!</h2>
-              <p className="text-gray-500">
+              <div className="text-7xl">⚠️</div>
+              <h2 className="text-2xl font-bold text-red-700">기록 불일치!</h2>
+              <p className="text-lg text-gray-500">
                 두 기록에 차이가 있습니다. 다시 확인해주세요.
               </p>
 
               {/* 불일치 상세 */}
               {group.discrepancies && group.discrepancies.length > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-left">
-                  <h3 className="text-sm font-bold text-red-700 mb-2">
+                <div className="bg-red-50 border border-red-200 rounded-xl p-5 text-left">
+                  <h3 className="text-base font-bold text-red-700 mb-3">
                     불일치 항목 ({group.discrepancies.length}건)
                   </h3>
-                  <div className="max-h-48 overflow-y-auto space-y-1">
+                  <div className="max-h-64 overflow-y-auto space-y-2">
                     {group.discrepancies.map((d, i) => {
                       const player = group.players.find(p => p.slot === d.playerSlot);
                       const values = Object.values(d.values);
                       return (
-                        <div key={i} className="text-xs text-red-600 flex justify-between">
+                        <div key={i} className="text-sm text-red-600 flex justify-between">
                           <span>{player?.name || `선수${d.playerSlot + 1}`} {d.course}{d.hole}홀</span>
                           <span className="font-mono">{values[0] ?? '-'} vs {values[1] ?? '-'}</span>
                         </div>
@@ -173,7 +173,7 @@ export default function CollabSubmissionStatus({ tournamentId, groupNumber, onRe
               <button
                 onClick={handleResubmit}
                 disabled={isResetting}
-                className="w-full py-3 bg-red-600 text-white rounded-xl font-medium disabled:opacity-50"
+                className="w-full py-3 bg-red-600 text-white rounded-xl font-medium text-base disabled:opacity-50"
               >
                 {isResetting ? '초기화 중...' : '다시 입력하기'}
               </button>
@@ -182,7 +182,7 @@ export default function CollabSubmissionStatus({ tournamentId, groupNumber, onRe
 
           <button
             onClick={onBackToGroups}
-            className="text-gray-400 hover:text-gray-600 text-sm"
+            className="text-gray-400 hover:text-gray-600 text-base"
           >
             다른 조 입력하기
           </button>

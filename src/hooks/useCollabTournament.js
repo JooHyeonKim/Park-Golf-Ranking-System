@@ -182,6 +182,78 @@ export function useCollabTournament(tournamentId = null) {
     };
   }, [tournament, groups]);
 
+  /**
+   * 전체 결과를 기존 ScoreTable/SummaryPage 형태로 변환
+   * 검증 여부와 관계없이 모든 조의 데이터를 반환
+   * - verified → verifiedScores 사용
+   * - 제출 있음 → 첫 번째 제출 데이터 사용
+   * - 제출 없음 → null 점수
+   */
+  const getAllResults = useCallback(() => {
+    if (!tournament || groups.length === 0) return null;
+
+    const players = [];
+    let idCounter = 1;
+
+    for (const group of groups) {
+      // 가장 좋은 점수 데이터 선택
+      let groupScores = null;
+      if (group.verificationStatus === 'verified' && group.verifiedScores) {
+        groupScores = group.verifiedScores;
+      } else {
+        const submissions = group.submissions || {};
+        const firstSubmission = Object.values(submissions)[0];
+        if (firstSubmission?.scores) {
+          groupScores = firstSubmission.scores;
+        }
+      }
+
+      for (const player of group.players) {
+        const scores = groupScores?.[String(player.slot)];
+
+        const courseKeys = ['A', 'B', 'C', 'D'];
+        const totals = {};
+        const detailScores = {};
+
+        for (const key of courseKeys) {
+          const holeScores = scores?.[key];
+          if (holeScores) {
+            const allFilled = holeScores.every(v => v !== null && v !== undefined);
+            totals[key] = allFilled ? holeScores.reduce((a, b) => a + b, 0) : null;
+            holeScores.forEach((val, idx) => {
+              detailScores[`${key}${idx + 1}`] = val;
+            });
+          } else {
+            totals[key] = null;
+          }
+        }
+
+        players.push({
+          id: idCounter++,
+          group: group.groupNumber,
+          course: group.course,
+          name: player.name || '',
+          gender: player.gender || '',
+          club: player.club || '',
+          scoreA: totals.A,
+          scoreB: totals.B,
+          scoreC: totals.C,
+          scoreD: totals.D,
+          detailScores: Object.keys(detailScores).length > 0 ? detailScores : null,
+        });
+      }
+    }
+
+    return {
+      id: tournament.id || tournamentId,
+      name: tournament.name,
+      date: tournament.date,
+      holeCount: tournament.holeCount,
+      createdAt: tournament.createdAt,
+      players,
+    };
+  }, [tournament, groups, tournamentId]);
+
   return {
     tournament,
     groups,
@@ -195,5 +267,6 @@ export function useCollabTournament(tournamentId = null) {
     removePlayer,
     activate,
     getVerifiedResults,
+    getAllResults,
   };
 }

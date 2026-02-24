@@ -163,23 +163,23 @@ export default function CollabLeaderSetup({ searchByName, onComplete, onBack }) 
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
       <div className="sticky top-0 bg-white border-b shadow-sm z-10">
-        <div className="flex items-center px-4 py-3">
-          <button onClick={step === 0 ? onBack : () => setStep(step - 1)} className="text-gray-600 mr-3">
+        <div className="flex items-center px-6 py-4">
+          <button onClick={step === 0 ? onBack : () => setStep(step - 1)} className="text-gray-600 hover:text-gray-800 mr-4 font-medium">
             ← 뒤로
           </button>
-          <h1 className="text-lg font-bold text-green-800 flex-1">대회 설정</h1>
+          <h1 className="text-xl font-bold text-green-800 flex-1">대회 설정</h1>
           {tournamentCode && (
-            <button onClick={handleCopyCode} className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-lg">
+            <button onClick={handleCopyCode} className="bg-blue-100 text-blue-700 px-4 py-1.5 rounded-lg font-medium hover:bg-blue-200 transition-colors">
               코드: {tournamentCode}
             </button>
           )}
         </div>
         {/* 스텝 인디케이터 */}
-        <div className="flex px-4 pb-2 gap-1">
+        <div className="flex px-6 pb-3 gap-2">
           {STEPS.map((s, i) => (
             <div key={i} className="flex-1">
-              <div className={`h-1 rounded-full ${i <= step ? 'bg-green-500' : 'bg-gray-200'}`} />
-              <div className={`text-xs mt-1 ${i === step ? 'text-green-700 font-bold' : 'text-gray-400'}`}>
+              <div className={`h-1.5 rounded-full ${i <= step ? 'bg-green-500' : 'bg-gray-200'}`} />
+              <div className={`text-sm mt-1 ${i === step ? 'text-green-700 font-bold' : 'text-gray-400'}`}>
                 {s}
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function CollabLeaderSetup({ searchByName, onComplete, onBack }) 
         </div>
       </div>
 
-      <div className="p-4 max-w-2xl mx-auto">
+      <div className="p-6 max-w-4xl mx-auto">
         {/* ==================== Step 0: 대회 정보 ==================== */}
         {step === 0 && (
           <div className="space-y-4">
@@ -363,7 +363,7 @@ export default function CollabLeaderSetup({ searchByName, onComplete, onBack }) 
                 각 조를 클릭하여 선수를 등록하세요. 이름 입력 후 자동완성이 됩니다.
               </p>
 
-              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 mb-4">
+              <div className="grid grid-cols-6 lg:grid-cols-9 gap-2 mb-4">
                 {groups.map(g => {
                   const hasPlayers = g.players.some(p => p.name);
                   return (

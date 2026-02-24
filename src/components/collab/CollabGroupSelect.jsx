@@ -51,18 +51,18 @@ export default function CollabGroupSelect({ tournamentId, onSelectGroup, onBack 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
-      <div className="sticky top-0 bg-white border-b shadow-sm z-10 px-4 py-3">
+      <div className="sticky top-0 bg-white border-b shadow-sm z-10 px-6 py-4">
         <div className="flex items-center">
-          <button onClick={onBack} className="text-gray-600 mr-3">← 뒤로</button>
+          <button onClick={onBack} className="text-gray-600 hover:text-gray-800 mr-4 font-medium">← 뒤로</button>
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-green-800">{tournament?.name || '대회'}</h1>
-            <p className="text-xs text-gray-400">{tournament?.holeCount}홀 | 점수를 입력할 조를 선택하세요</p>
+            <h1 className="text-xl font-bold text-green-800">{tournament?.name || '대회'}</h1>
+            <p className="text-gray-500">{tournament?.holeCount}홀 | 점수를 입력할 조를 선택하세요</p>
           </div>
         </div>
       </div>
 
       {/* 상태 범례 */}
-      <div className="px-4 py-2 flex gap-3 text-xs text-gray-500 flex-wrap">
+      <div className="px-6 py-3 flex gap-4 text-sm text-gray-500 flex-wrap">
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-200" />대기</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-300" />1/2</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-300" />제출됨</span>
@@ -72,7 +72,7 @@ export default function CollabGroupSelect({ tournamentId, onSelectGroup, onBack 
 
       {/* 조 그리드 */}
       <div className="p-4">
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 lg:grid-cols-6 gap-3">
           {groups.map(group => {
             const status = getGroupStatus(group);
             const playerNames = group.players
