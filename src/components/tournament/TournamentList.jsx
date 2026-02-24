@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs }) {
+export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onBack }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
@@ -26,10 +26,22 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-6">
+      {/* 돌아가기 버튼 - 컨테이너 바깥 좌측 */}
+      <div className="mb-4">
+        <button
+          onClick={onBack}
+          className="text-gray-600 hover:text-gray-800 font-medium"
+        >
+          ← 돌아가기
+        </button>
+      </div>
+
       <div className="max-w-6xl mx-auto">
         {/* 헤더 */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">파크골프 대회 관리</h1>
+          <div className="flex items-center gap-4">
+            <h1 className="text-3xl font-bold text-gray-800">파크골프 대회 관리</h1>
+          </div>
           <div className="flex gap-3">
             <button
               onClick={() => setShowAddForm(!showAddForm)}

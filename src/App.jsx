@@ -340,6 +340,7 @@ export default function App() {
         onAdd={handleAddTournament}
         onViewSummary={handleViewSummary}
         onGoToClubs={handleGoToClubs}
+        onBack={handleBackToModeSelect}
       />
     );
   }
