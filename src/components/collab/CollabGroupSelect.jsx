@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getDeviceId } from '../../utils/deviceId';
-import { listenToTournament, listenToGroups } from '../../utils/firestoreOps';
+import { listenToTournament, listenToGroups } from '../../utils/supabaseOps';
 
 export default function CollabGroupSelect({ tournamentId, onSelectGroup, onBack }) {
   const [tournament, setTournament] = useState(null);

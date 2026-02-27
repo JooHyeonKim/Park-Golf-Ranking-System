@@ -4,7 +4,7 @@ import {
   listenToTournament,
   listenToGroup,
   submitGroupScores,
-} from '../../utils/firestoreOps';
+} from '../../utils/supabaseOps';
 
 export default function CollabScoreCard({ tournamentId, groupNumber, nickname, onSubmitted, onBack }) {
   const [tournament, setTournament] = useState(null);

@@ -6,7 +6,7 @@ import {
   setGroupVerified,
   setGroupConflict,
   resetGroupSubmissions,
-} from '../../utils/firestoreOps';
+} from '../../utils/supabaseOps';
 import { checkAndVerify } from '../../hooks/useCollabVerification';
 
 export default function CollabSubmissionStatus({ tournamentId, groupNumber, onResubmit, onBackToGroups }) {

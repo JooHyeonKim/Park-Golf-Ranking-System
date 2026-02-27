@@ -15,7 +15,7 @@ import {
   listenToGroups,
   setGroupVerified,
   setGroupConflict,
-} from '../utils/firestoreOps';
+} from '../utils/supabaseOps';
 
 /**
  * 팀장용 협동 대회 관리 훅

@@ -7,7 +7,7 @@ import {
   listenToTournament,
   listenToGroups,
   listenToGroup,
-} from '../utils/firestoreOps';
+} from '../utils/supabaseOps';
 
 /**
  * 참여자용 협동 대회 참여 훅

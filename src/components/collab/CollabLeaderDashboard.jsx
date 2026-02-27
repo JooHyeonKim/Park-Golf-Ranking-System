@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useCollabTournament } from '../../hooks/useCollabTournament';
 import { checkAndVerify } from '../../hooks/useCollabVerification';
-import { setGroupVerified, setGroupConflict } from '../../utils/firestoreOps';
+import { setGroupVerified, setGroupConflict } from '../../utils/supabaseOps';
 
 export default function CollabLeaderDashboard({ tournamentId, onViewSummary, onViewScoreTable, onBack }) {
   const {

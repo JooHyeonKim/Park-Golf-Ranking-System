@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { findTournamentByCode } from '../../utils/firestoreOps';
+import { findTournamentByCode } from '../../utils/supabaseOps';
 
 export default function CollabLeaderAction({ onCreateNew, onJoinExisting, onBack }) {
   const [showCodeInput, setShowCodeInput] = useState(false);
