@@ -1,6 +1,18 @@
+import { useAuthContext } from '../../contexts/AuthContext';
+
 export default function CollabRoleSelect({ onSelectLeader, onSelectParticipant, onBack }) {
+  const { isAuthenticated, getDisplayName } = useAuthContext();
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center p-8 relative">
+      {/* 로그인 상태 표시 */}
+      {isAuthenticated && (
+        <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow-sm border text-sm">
+          <span className="w-2 h-2 rounded-full bg-green-500" />
+          <span className="text-gray-700">{getDisplayName()}</span>
+        </div>
+      )}
+
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-green-800 mb-3">협동 입력 모드</h1>
         <p className="text-gray-500">역할을 선택하세요</p>

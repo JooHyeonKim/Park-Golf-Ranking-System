@@ -12,6 +12,7 @@ export function useAuth() {
   const [session, setSession] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [authEvent, setAuthEvent] = useState(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -21,7 +22,8 @@ export function useAuth() {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
+        setAuthEvent(event);
         setSession(session);
         setUser(session?.user ?? null);
       }
@@ -87,6 +89,7 @@ export function useAuth() {
     isLoading,
     error,
     isAuthenticated: !!user,
+    authEvent,
     signUp,
     signIn,
     signInWithOAuth,

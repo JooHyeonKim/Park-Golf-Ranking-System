@@ -44,6 +44,7 @@ export default function AuthLoginScreen({ onLoginSuccess, onBack }) {
 
   const handleOAuth = async (provider) => {
     setLocalError('');
+    localStorage.setItem('parkgolf-auth-redirect-intent', 'collab-role');
     await signInWithOAuth(provider);
   };
 

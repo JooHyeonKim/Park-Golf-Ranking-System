@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTournaments } from './hooks/useTournaments';
 import { useClubs } from './hooks/useClubs';
 import { useMembers } from './hooks/useMembers';
@@ -42,7 +42,7 @@ export default function App() {
     updateMembersClub
   } = useMembers();
 
-  const { user, isAuthenticated, signOut, getDisplayName } = useAuthContext();
+  const { user, isAuthenticated, isLoading, signOut, getDisplayName } = useAuthContext();
 
   // 화면 모드
   // 'mode-select' | 'list' | 'score' | 'summary' | 'clubs'
@@ -57,6 +57,17 @@ export default function App() {
   const [collabTournament, setCollabTournament] = useState(null);
   const [collabGroupNumber, setCollabGroupNumber] = useState(null);
   const [collabNickname, setCollabNickname] = useState('');
+
+  // OAuth 콜백 후 네비게이션 의도 복원
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      const intent = localStorage.getItem('parkgolf-auth-redirect-intent');
+      if (intent) {
+        localStorage.removeItem('parkgolf-auth-redirect-intent');
+        setScreenMode(intent);
+      }
+    }
+  }, [isLoading, isAuthenticated]);
 
   // ==================== 혼자입력 핸들러 (기존 그대로) ====================
   const handleAddTournament = (name, date, holeCount) => {
@@ -120,6 +131,7 @@ export default function App() {
 
   const handleLogout = async () => {
     await signOut();
+    localStorage.removeItem('parkgolf-auth-redirect-intent');
     setScreenMode('mode-select');
   };
 
@@ -128,6 +140,7 @@ export default function App() {
     setCollabTournament(null);
     setCollabGroupNumber(null);
     setCollabNickname('');
+    localStorage.removeItem('parkgolf-auth-redirect-intent');
     setScreenMode('mode-select');
   };
 
@@ -203,6 +216,16 @@ export default function App() {
   };
 
   // ==================== 화면 라우팅 ====================
+
+  // 인증 세션 확인 중 로딩 화면
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full mb-4" />
+        <div className="text-green-700 text-sm">로딩 중...</div>
+      </div>
+    );
+  }
 
   // 모드 선택 화면
   if (screenMode === 'mode-select') {
