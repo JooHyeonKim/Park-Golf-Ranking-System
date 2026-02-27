@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useAuthContext } from '../../contexts/AuthContext';
 import { useCollabParticipant } from '../../hooks/useCollabParticipant';
 
 export default function CollabJoinScreen({ onJoinSuccess, onBack }) {
+  const { user } = useAuthContext();
   const [code, setCode] = useState('');
   const [nickname, setNickname] = useState('');
   const [foundTournament, setFoundTournament] = useState(null);
-  const { joinByCode, isLoading, error } = useCollabParticipant();
+  const { joinByCode, isLoading, error } = useCollabParticipant(user?.id);
 
   const handleSearch = async () => {
     const trimmed = code.trim().toUpperCase();

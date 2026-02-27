@@ -8,6 +8,7 @@ import { generateTournamentCode } from './tournamentCode';
 const toSnakeCase = {
   holeCount: 'hole_count',
   leaderDeviceId: 'leader_device_id',
+  leaderUserId: 'leader_user_id',
   createdAt: 'created_at',
   parA: 'par_a',
   parB: 'par_b',
@@ -37,6 +38,7 @@ function mapTournamentRow(row) {
     holeCount: row.hole_count,
     status: row.status,
     leaderDeviceId: row.leader_device_id,
+    leaderUserId: row.leader_user_id,
     createdAt: row.created_at,
     parA: row.par_a,
     parB: row.par_b,
@@ -66,10 +68,10 @@ function mapGroupRow(row) {
 
 /**
  * 협동 대회 생성
- * @param {Object} config - { name, date, holeCount, leaderDeviceId }
+ * @param {Object} config - { name, date, holeCount, leaderDeviceId, leaderUserId }
  * @returns {Object} - { id, code } 생성된 문서 ID와 대회 코드
  */
-export async function createCollabTournament({ name, date, holeCount, leaderDeviceId }) {
+export async function createCollabTournament({ name, date, holeCount, leaderDeviceId, leaderUserId }) {
   let code;
   let attempts = 0;
   while (attempts < 10) {
@@ -88,6 +90,7 @@ export async function createCollabTournament({ name, date, holeCount, leaderDevi
       hole_count: holeCount,
       status: 'setup',
       leader_device_id: leaderDeviceId,
+      leader_user_id: leaderUserId || null,
       par_a: Array(9).fill(4),
       par_b: Array(9).fill(4),
       par_c: holeCount === 36 ? Array(9).fill(4) : null,

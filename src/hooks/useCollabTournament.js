@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getDeviceId } from '../utils/deviceId';
 import {
   createCollabTournament,
   getTournament,
@@ -20,13 +19,11 @@ import {
 /**
  * 팀장용 협동 대회 관리 훅
  */
-export function useCollabTournament(tournamentId = null) {
+export function useCollabTournament(tournamentId = null, userId = null) {
   const [tournament, setTournament] = useState(null);
   const [groups, setGroups] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const deviceId = getDeviceId();
 
   // 대회 + 조 실시간 감시
   useEffect(() => {
@@ -63,7 +60,8 @@ export function useCollabTournament(tournamentId = null) {
         name,
         date,
         holeCount,
-        leaderDeviceId: deviceId,
+        leaderDeviceId: userId,
+        leaderUserId: userId,
       });
       // 조 초기화
       await initializeGroups(result.id, holeCount);
@@ -74,7 +72,7 @@ export function useCollabTournament(tournamentId = null) {
       setIsLoading(false);
       throw err;
     }
-  }, [deviceId]);
+  }, [userId]);
 
   /**
    * 파 업데이트

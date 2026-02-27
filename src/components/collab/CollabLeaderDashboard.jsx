@@ -1,15 +1,17 @@
 import React, { useEffect, useCallback } from 'react';
+import { useAuthContext } from '../../contexts/AuthContext';
 import { useCollabTournament } from '../../hooks/useCollabTournament';
 import { checkAndVerify } from '../../hooks/useCollabVerification';
 import { setGroupVerified, setGroupConflict } from '../../utils/supabaseOps';
 
 export default function CollabLeaderDashboard({ tournamentId, onViewSummary, onViewScoreTable, onBack }) {
+  const { user } = useAuthContext();
   const {
     tournament,
     groups,
     isLoading,
     getAllResults,
-  } = useCollabTournament(tournamentId);
+  } = useCollabTournament(tournamentId, user?.id);
 
   // 2개 제출이 감지된 조에 대해 자동 검증 실행
   useEffect(() => {

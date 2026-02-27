@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getDeviceId } from '../utils/deviceId';
 import {
   findTournamentByCode,
   submitGroupScores,
@@ -12,15 +11,13 @@ import {
 /**
  * 참여자용 협동 대회 참여 훅
  */
-export function useCollabParticipant() {
+export function useCollabParticipant(userId = null) {
   const [tournamentId, setTournamentId] = useState(null);
   const [tournament, setTournament] = useState(null);
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const deviceId = getDeviceId();
 
   // 대회 실시간 감시
   useEffect(() => {
@@ -105,14 +102,14 @@ export function useCollabParticipant() {
     if (!tournamentId) return;
     setIsLoading(true);
     try {
-      await submitGroupScores(tournamentId, groupNumber, deviceId, nickname, scores);
+      await submitGroupScores(tournamentId, groupNumber, userId, nickname, scores);
       setIsLoading(false);
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
       throw err;
     }
-  }, [tournamentId, deviceId]);
+  }, [tournamentId, userId]);
 
   /**
    * 현재 조에서 본인의 제출 상태
@@ -123,7 +120,7 @@ export function useCollabParticipant() {
 
     const submissions = group.submissions || {};
     const submissionCount = Object.keys(submissions).length;
-    const hasMySubmission = !!submissions[deviceId];
+    const hasMySubmission = !!submissions[userId];
 
     if (group.verificationStatus === 'verified') {
       return { status: 'verified', submissionCount };
@@ -139,7 +136,7 @@ export function useCollabParticipant() {
       return { status: 'submitted', submissionCount };
     }
     return { status: 'none', submissionCount };
-  }, [groups, deviceId]);
+  }, [groups, userId]);
 
   /**
    * 제출 초기화 (재입력용)
@@ -156,7 +153,7 @@ export function useCollabParticipant() {
     selectedGroup,
     isLoading,
     error,
-    deviceId,
+    userId,
     joinByCode,
     selectGroup,
     submitScores,

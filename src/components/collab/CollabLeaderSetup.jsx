@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useAuthContext } from '../../contexts/AuthContext';
 import { useCollabTournament } from '../../hooks/useCollabTournament';
 
 const STEPS = ['대회 정보', '파 설정', '클럽/선수 등록', '완료'];
 
 export default function CollabLeaderSetup({ searchByName, onComplete, onBack }) {
+  const { user } = useAuthContext();
   const [step, setStep] = useState(0);
   const [tournamentId, setTournamentId] = useState(null);
   const [tournamentCode, setTournamentCode] = useState('');
@@ -35,7 +37,7 @@ export default function CollabLeaderSetup({ searchByName, onComplete, onBack }) 
     updateClubs,
     updatePlayers,
     activate,
-  } = useCollabTournament(tournamentId);
+  } = useCollabTournament(tournamentId, user?.id);
 
   const [isCreating, setIsCreating] = useState(false);
 

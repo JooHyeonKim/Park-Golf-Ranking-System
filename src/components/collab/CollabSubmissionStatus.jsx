@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { getDeviceId } from '../../utils/deviceId';
 import {
   listenToTournament,
   listenToGroup,

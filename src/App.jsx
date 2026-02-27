@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTournaments } from './hooks/useTournaments';
 import { useClubs } from './hooks/useClubs';
 import { useMembers } from './hooks/useMembers';
+import { useAuthContext } from './contexts/AuthContext';
 import TournamentList from './components/tournament/TournamentList';
 import ScoreTable from './components/score/ScoreTable';
 import SummaryPage from './components/summary/SummaryPage';
@@ -15,6 +16,8 @@ import CollabJoinScreen from './components/collab/CollabJoinScreen';
 import CollabGroupSelect from './components/collab/CollabGroupSelect';
 import CollabScoreCard from './components/collab/CollabScoreCard';
 import CollabSubmissionStatus from './components/collab/CollabSubmissionStatus';
+import AuthLoginScreen from './components/auth/AuthLoginScreen';
+import AuthProfileScreen from './components/auth/AuthProfileScreen';
 
 export default function App() {
   const {
@@ -39,8 +42,11 @@ export default function App() {
     updateMembersClub
   } = useMembers();
 
+  const { user, isAuthenticated, signOut, getDisplayName } = useAuthContext();
+
   // 화면 모드
   // 'mode-select' | 'list' | 'score' | 'summary' | 'clubs'
+  // | 'auth-login' | 'auth-profile'
   // | 'collab-role' | 'collab-leader-action' | 'collab-leader-setup' | 'collab-leader-dashboard'
   // | 'collab-score-view'
   // | 'collab-join' | 'collab-group-select' | 'collab-scorecard' | 'collab-submission-status'
@@ -97,7 +103,24 @@ export default function App() {
   };
 
   const handleSelectCollab = () => {
+    if (isAuthenticated) {
+      setScreenMode('collab-role');
+    } else {
+      setScreenMode('auth-login');
+    }
+  };
+
+  const handleLoginSuccess = () => {
     setScreenMode('collab-role');
+  };
+
+  const handleGoToProfile = () => {
+    setScreenMode('auth-profile');
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    setScreenMode('mode-select');
   };
 
   const handleBackToModeSelect = () => {
@@ -187,6 +210,29 @@ export default function App() {
       <CollabModeSelect
         onSelectSolo={handleSelectSolo}
         onSelectCollab={handleSelectCollab}
+        isAuthenticated={isAuthenticated}
+        displayName={getDisplayName()}
+        onGoToProfile={handleGoToProfile}
+      />
+    );
+  }
+
+  // 인증 - 로그인/회원가입
+  if (screenMode === 'auth-login') {
+    return (
+      <AuthLoginScreen
+        onLoginSuccess={handleLoginSuccess}
+        onBack={handleBackToModeSelect}
+      />
+    );
+  }
+
+  // 인증 - 프로필
+  if (screenMode === 'auth-profile') {
+    return (
+      <AuthProfileScreen
+        onLogin={() => setScreenMode('auth-login')}
+        onBack={handleBackToModeSelect}
       />
     );
   }

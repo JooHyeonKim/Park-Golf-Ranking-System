@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { getDeviceId } from '../../utils/deviceId';
+import { useAuthContext } from '../../contexts/AuthContext';
 import { listenToTournament, listenToGroups } from '../../utils/supabaseOps';
 
 export default function CollabGroupSelect({ tournamentId, onSelectGroup, onBack }) {
+  const { user } = useAuthContext();
   const [tournament, setTournament] = useState(null);
   const [groups, setGroups] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const deviceId = getDeviceId();
+  const userId = user?.id;
 
   useEffect(() => {
     if (!tournamentId) return;
@@ -31,7 +32,7 @@ export default function CollabGroupSelect({ tournamentId, onSelectGroup, onBack 
   const getGroupStatus = (group) => {
     const submissions = group.submissions || {};
     const count = Object.keys(submissions).length;
-    const hasMySubmission = !!submissions[deviceId];
+    const hasMySubmission = !!submissions[userId];
 
     if (group.verificationStatus === 'verified') return { label: '완료', color: 'bg-green-100 text-green-700 border-green-300', count };
     if (group.verificationStatus === 'conflict') return { label: '충돌', color: 'bg-red-100 text-red-700 border-red-300', count };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { getDeviceId } from '../../utils/deviceId';
+import { useAuthContext } from '../../contexts/AuthContext';
 import {
   listenToTournament,
   listenToGroup,
@@ -7,6 +7,7 @@ import {
 } from '../../utils/supabaseOps';
 
 export default function CollabScoreCard({ tournamentId, groupNumber, nickname, onSubmitted, onBack }) {
+  const { user } = useAuthContext();
   const [tournament, setTournament] = useState(null);
   const [group, setGroup] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -14,7 +15,7 @@ export default function CollabScoreCard({ tournamentId, groupNumber, nickname, o
   const [activeTab, setActiveTab] = useState('A');
   const [showValidation, setShowValidation] = useState(false);
 
-  const deviceId = getDeviceId();
+  const userId = user?.id;
 
   // scores: { [slotIndex]: { A: [null x 9], B: [null x 9], ... } }
   const [scores, setScores] = useState({});
@@ -55,7 +56,7 @@ export default function CollabScoreCard({ tournamentId, groupNumber, nickname, o
     }
 
     // 이전 제출이 있으면 복원 (충돌 후 재입력 시)
-    const mySubmission = group.submissions?.[deviceId];
+    const mySubmission = group.submissions?.[userId];
     if (mySubmission) {
       for (const [slot, courseScores] of Object.entries(mySubmission.scores)) {
         if (initial[slot]) {
@@ -69,7 +70,7 @@ export default function CollabScoreCard({ tournamentId, groupNumber, nickname, o
     }
 
     setScores(initial);
-  }, [group, tournament, deviceId]);
+  }, [group, tournament, userId]);
 
   const courses = useMemo(() => {
     if (!tournament) return ['A', 'B', 'C', 'D'];
@@ -156,7 +157,7 @@ export default function CollabScoreCard({ tournamentId, groupNumber, nickname, o
       for (const player of activePlayers) {
         submitData[String(player.slot)] = scores[String(player.slot)];
       }
-      await submitGroupScores(tournamentId, groupNumber, deviceId, nickname, submitData);
+      await submitGroupScores(tournamentId, groupNumber, userId, nickname, submitData);
       onSubmitted();
     } catch (err) {
       alert('제출 실패: ' + err.message);

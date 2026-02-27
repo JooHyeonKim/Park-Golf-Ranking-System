@@ -1,6 +1,24 @@
-export default function CollabModeSelect({ onSelectSolo, onSelectCollab }) {
+export default function CollabModeSelect({ onSelectSolo, onSelectCollab, isAuthenticated, displayName, onGoToProfile }) {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center p-8 relative">
+      {/* 프로필 아이콘 */}
+      <button
+        onClick={onGoToProfile}
+        className="absolute top-4 right-4 flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow-sm border text-sm hover:shadow-md transition-shadow"
+      >
+        {isAuthenticated ? (
+          <>
+            <span className="w-2 h-2 rounded-full bg-green-500" />
+            <span className="text-gray-700">{displayName}</span>
+          </>
+        ) : (
+          <>
+            <span className="w-2 h-2 rounded-full bg-gray-300" />
+            <span className="text-gray-400">로그인</span>
+          </>
+        )}
+      </button>
+
       <div className="text-center mb-10">
         <h1 className="text-4xl font-bold text-green-800 mb-3">파크골프 대회 관리</h1>
         <p className="text-gray-500">입력 모드를 선택하세요</p>
