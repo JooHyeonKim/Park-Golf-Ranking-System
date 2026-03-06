@@ -57,3 +57,36 @@ input[type="number"] {
     display: none;
   }
 }
+
+/* 브라우저 프린트 (Cmd+P) 세로 방향 설정 */
+@page {
+  size: A4 portrait;
+  margin: 10mm;
+}
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    width: 190mm;
+    margin: 0 auto;
+  }
+
+  /* 테이블을 A4 세로 폭에 맞게 축소 */
+  table {
+    width: 100% !important;
+    table-layout: fixed;
+    font-size: 9px;
+  }
+
+  th, td {
+    padding: 2px 3px !important;
+    word-break: break-all;
+  }
+
+  /* 넓은 컨테이너 제한 */
+  [data-capture-id] {
+    max-width: 190mm;
+    overflow: hidden;
+  }
+}

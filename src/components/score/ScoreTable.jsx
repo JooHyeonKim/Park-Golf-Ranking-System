@@ -442,7 +442,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       if (extraCount < 4) {
                         rows.push(
                           <tr key={`add-${baseCourse}`} className="bg-gray-100">
-                            <td colSpan={is36Hole ? 14 : 11} className="py-1 text-center">
+                            <td colSpan={is36Hole ? 12 : 10} className="py-1 text-center">
                               <button
                                 onClick={() => onAddPlayerToCourse(tournament.id, baseCourse, player.group)}
                                 className="px-3 py-1 text-xs text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition-colors"
