@@ -144,15 +144,11 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
               {!isRankingCalculated && onUpdateGroupCount && (
                 <div className="flex items-center gap-1">
                   <label className="text-sm text-gray-500">조 수</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max={is36Hole ? 36 : 18}
+                  <select
                     value={tournament.groupCount || (is36Hole ? 36 : 18)}
                     onChange={(e) => {
                       const newVal = parseInt(e.target.value, 10);
                       const maxVal = is36Hole ? 36 : 18;
-                      if (isNaN(newVal) || newVal < 1 || newVal > maxVal) return;
                       const oldVal = tournament.groupCount || maxVal;
                       if (newVal < oldVal) {
                         const hasData = tournament.players.some(p => p.group > newVal && p.name && p.name.trim());
@@ -160,8 +156,12 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       }
                       onUpdateGroupCount(tournament.id, newVal);
                     }}
-                    className="w-14 px-2 py-1 border border-gray-300 rounded text-sm text-center focus:outline-none focus:ring-1 focus:ring-green-500"
-                  />
+                    className="w-16 px-1 py-1 border border-gray-300 rounded text-sm text-center focus:outline-none focus:ring-1 focus:ring-green-500"
+                  >
+                    {Array.from({ length: is36Hole ? 36 : 18 }, (_, i) => i + 1).map(n => (
+                      <option key={n} value={n}>{n}조</option>
+                    ))}
+                  </select>
                 </div>
               )}
               <div>

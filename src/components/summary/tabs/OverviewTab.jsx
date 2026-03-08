@@ -13,7 +13,7 @@ export default function OverviewTab({ tournament }) {
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
   const sortMenuRef = useRef(null);
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '전체현황');
-  const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '전체현황');
+  const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '전체현황', 24);
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, true);
   // 18홀일 때 C/D 코스 선수 행 숨김
   const sortedPlayers = is36Hole

@@ -122,17 +122,15 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
               </div>
               <div className="w-24">
                 <label className="block text-sm font-medium text-gray-700 mb-2">조 수</label>
-                <input
-                  type="number"
-                  min="1"
-                  max={maxGroups}
+                <select
                   value={newGroupCount}
-                  onChange={(e) => {
-                    const val = parseInt(e.target.value, 10);
-                    if (!isNaN(val) && val >= 1 && val <= maxGroups) setNewGroupCount(val);
-                  }}
+                  onChange={(e) => setNewGroupCount(parseInt(e.target.value, 10))}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
+                >
+                  {Array.from({ length: maxGroups }, (_, i) => i + 1).map(n => (
+                    <option key={n} value={n}>{n}조</option>
+                  ))}
+                </select>
                 <p className="text-xs text-gray-500 mt-1">
                   총 {newGroupCount * 4}명
                 </p>
