@@ -16,6 +16,7 @@ export default function App() {
     updatePlayer,
     addPlayerToCourse,
     removePlayerFromCourse,
+    updateGroupCount,
     setCurrentTournament
   } = useTournaments();
 
@@ -32,8 +33,8 @@ export default function App() {
 
   const [screenMode, setScreenMode] = useState('list'); // 'list' | 'score' | 'summary' | 'clubs'
 
-  const handleAddTournament = (name, date, holeCount) => {
-    addTournament(name, date, holeCount);
+  const handleAddTournament = (name, date, holeCount, groupCount) => {
+    addTournament(name, date, holeCount, groupCount);
     setScreenMode('score');
   };
 
@@ -119,6 +120,7 @@ export default function App() {
       onUpdatePlayer={updatePlayer}
       onAddPlayerToCourse={addPlayerToCourse}
       onRemovePlayerFromCourse={removePlayerFromCourse}
+      onUpdateGroupCount={updateGroupCount}
       onViewSummary={handleViewSummary}
       searchByName={searchByName}
     />

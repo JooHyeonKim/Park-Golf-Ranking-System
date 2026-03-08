@@ -11,6 +11,7 @@ import {
   updatePlayer as updatePlayerUtil,
   addPlayerToCourse as addPlayerToCourseUtil,
   removePlayerFromCourse as removePlayerFromCourseUtil,
+  adjustGroupCount as adjustGroupCountUtil,
   countParticipants
 } from '../utils/data';
 
@@ -44,8 +45,8 @@ export function useTournaments() {
   // 새로고침 시 항상 대회 목록 화면으로 돌아가도록 함
 
   // 새 대회 추가
-  const addTournament = useCallback((name, date, holeCount = 36) => {
-    const newTournament = createTournament(name, date, holeCount);
+  const addTournament = useCallback((name, date, holeCount = 36, groupCount = null) => {
+    const newTournament = createTournament(name, date, holeCount, groupCount);
     setTournaments(prev => [newTournament, ...prev]);
     setCurrentTournamentId(newTournament.id);
     return newTournament.id;
@@ -106,6 +107,20 @@ export function useTournaments() {
     }));
   }, []);
 
+  // 총 조 수 변경
+  const updateGroupCount = useCallback((tournamentId, newGroupCount) => {
+    setTournaments(prev => prev.map(tournament => {
+      if (tournament.id === tournamentId) {
+        return {
+          ...tournament,
+          groupCount: newGroupCount,
+          players: adjustGroupCountUtil(tournament.players, tournament.holeCount || 36, newGroupCount)
+        };
+      }
+      return tournament;
+    }));
+  }, []);
+
   // 현재 대회 가져오기
   const getCurrentTournament = useCallback(() => {
     if (currentTournamentId === null) return null;
@@ -138,6 +153,7 @@ export function useTournaments() {
     updatePlayer,
     addPlayerToCourse,
     removePlayerFromCourse,
+    updateGroupCount,
     setCurrentTournament,
     getTournamentStats
   };

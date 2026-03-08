@@ -1,21 +1,46 @@
 import React, { useState } from 'react';
 
+// 총 조 수의 기본값 계산
+function getDefaultGroupCount(holeCount) {
+  return holeCount === 18 ? 18 : 36;
+}
+
+// 총 조 수의 최대값 계산
+function getMaxGroupCount(holeCount) {
+  return holeCount === 18 ? 18 : 36;
+}
+
+// 하위 호환: 기존 groupsPerCourse → groupCount 변환
+function getTournamentGroupCount(tournament) {
+  if (tournament.groupCount) return tournament.groupCount;
+  const numCourses = (tournament.holeCount || 36) === 18 ? 2 : 4;
+  return (tournament.groupsPerCourse || 9) * numCourses;
+}
+
 export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
   const [newHoleCount, setNewHoleCount] = useState(36);
+  const [newGroupCount, setNewGroupCount] = useState(getDefaultGroupCount(36));
 
   const handleAdd = () => {
     if (!newName.trim()) {
       alert('대회명을 입력해주세요.');
       return;
     }
-    onAdd(newName.trim(), newDate, newHoleCount);
+    onAdd(newName.trim(), newDate, newHoleCount, newGroupCount);
     setNewName('');
     setNewDate(new Date().toISOString().split('T')[0]);
     setNewHoleCount(36);
+    setNewGroupCount(getDefaultGroupCount(36));
     setShowAddForm(false);
+  };
+
+  // 홀 수 변경 시 조 수도 기본값으로 리셋
+  const handleHoleCountChange = (holeCount) => {
+    setNewHoleCount(holeCount);
+    setNewGroupCount(getDefaultGroupCount(holeCount));
   };
 
   const handleDelete = (id, name) => {
@@ -23,6 +48,8 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
       onDelete(id);
     }
   };
+
+  const maxGroups = getMaxGroupCount(newHoleCount);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-4">
@@ -65,31 +92,50 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                 className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
-            <div className="mb-3">
-              <label className="block text-sm font-medium text-gray-700 mb-2">홀 수 선택</label>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setNewHoleCount(18)}
-                  className={`flex-1 py-2 rounded-lg font-medium transition-colors ${
-                    newHoleCount === 18
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  18홀
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setNewHoleCount(36)}
-                  className={`flex-1 py-2 rounded-lg font-medium transition-colors ${
-                    newHoleCount === 36
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  36홀
-                </button>
+            <div className="flex gap-3 mb-3">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">홀 수 선택</label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleHoleCountChange(18)}
+                    className={`flex-1 py-2 rounded-lg font-medium transition-colors ${
+                      newHoleCount === 18
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    18홀
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleHoleCountChange(36)}
+                    className={`flex-1 py-2 rounded-lg font-medium transition-colors ${
+                      newHoleCount === 36
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    36홀
+                  </button>
+                </div>
+              </div>
+              <div className="w-24">
+                <label className="block text-sm font-medium text-gray-700 mb-2">조 수</label>
+                <input
+                  type="number"
+                  min="1"
+                  max={maxGroups}
+                  value={newGroupCount}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value, 10);
+                    if (!isNaN(val) && val >= 1 && val <= maxGroups) setNewGroupCount(val);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  총 {newGroupCount * 4}명
+                </p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -120,6 +166,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
           <div className="space-y-3">
             {tournaments.map(tournament => {
               const playerCount = tournament.players.filter(p => p.name && p.name.trim()).length;
+              const groupCount = getTournamentGroupCount(tournament);
 
               return (
                 <div
@@ -131,7 +178,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                       <h3 className="font-bold text-lg text-gray-800">📋 {tournament.name}</h3>
                       <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
                         <span>{tournament.date}</span>
-                        <span>{tournament.holeCount || 36}홀</span>
+                        <span>{tournament.holeCount || 36}홀 / {groupCount}조</span>
                         <span>참가: {playerCount}명</span>
                       </div>
                     </div>

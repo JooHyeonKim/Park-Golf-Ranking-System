@@ -9,7 +9,7 @@ function getBaseCourse(course) {
   return `${parts[0]}-${parts[1]}`;
 }
 
-export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onAddPlayerToCourse, onRemovePlayerFromCourse, onViewSummary, searchByName }) {
+export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onAddPlayerToCourse, onRemovePlayerFromCourse, onUpdateGroupCount, onViewSummary, searchByName }) {
   const is36Hole = (tournament.holeCount || 36) === 36;
   const [sortBy, setSortBy] = useState('group'); // 'rank' | 'group'
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
@@ -140,9 +140,34 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
             >
               ← 대회 목록
             </button>
-            <div>
-              <h2 className="text-xl font-bold text-gray-800 text-right">{tournament.name}</h2>
-              <p className="text-sm text-gray-500 text-right">{tournament.date}</p>
+            <div className="flex items-center gap-3">
+              {!isRankingCalculated && onUpdateGroupCount && (
+                <div className="flex items-center gap-1">
+                  <label className="text-sm text-gray-500">조 수</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max={is36Hole ? 36 : 18}
+                    value={tournament.groupCount || (is36Hole ? 36 : 18)}
+                    onChange={(e) => {
+                      const newVal = parseInt(e.target.value, 10);
+                      const maxVal = is36Hole ? 36 : 18;
+                      if (isNaN(newVal) || newVal < 1 || newVal > maxVal) return;
+                      const oldVal = tournament.groupCount || maxVal;
+                      if (newVal < oldVal) {
+                        const hasData = tournament.players.some(p => p.group > newVal && p.name && p.name.trim());
+                        if (hasData && !confirm('줄어드는 조에 입력된 데이터가 있습니다. 삭제됩니다. 계속하시겠습니까?')) return;
+                      }
+                      onUpdateGroupCount(tournament.id, newVal);
+                    }}
+                    className="w-14 px-2 py-1 border border-gray-300 rounded text-sm text-center focus:outline-none focus:ring-1 focus:ring-green-500"
+                  />
+                </div>
+              )}
+              <div>
+                <h2 className="text-xl font-bold text-gray-800 text-right">{tournament.name}</h2>
+                <p className="text-sm text-gray-500 text-right">{tournament.date}</p>
+              </div>
             </div>
           </div>
           <div className="flex gap-2 justify-end">
