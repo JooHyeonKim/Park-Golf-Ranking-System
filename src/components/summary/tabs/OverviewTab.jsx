@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRanking } from '../../../hooks/useRanking';
 import { useImageCapture } from '../../../hooks/useImageCapture';
 import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
@@ -9,6 +9,7 @@ import DetailScoreModal from '../../score/DetailScoreModal';
 export default function OverviewTab({ tournament }) {
   const is36Hole = (tournament.holeCount || 36) === 36;
   const [sortBy, setSortBy] = useState('rank');
+  const [genderFilter, setGenderFilter] = useState('all');
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
   const sortMenuRef = useRef(null);
@@ -19,6 +20,28 @@ export default function OverviewTab({ tournament }) {
   const sortedPlayers = is36Hole
     ? allSortedPlayers
     : allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B'));
+
+  // 성별 필터 적용
+  const displayPlayers = genderFilter === 'all'
+    ? sortedPlayers
+    : sortedPlayers.filter(p => p.gender === genderFilter);
+
+  // PDF/이미지 다운로드 시 전체 모드로 캡처
+  const handlePdfDownloadAll = useCallback(async () => {
+    const prev = genderFilter;
+    setGenderFilter('all');
+    await new Promise(r => setTimeout(r, 100));
+    await handlePdfDownload();
+    setGenderFilter(prev);
+  }, [genderFilter, handlePdfDownload]);
+
+  const handleCaptureImageAll = useCallback(async () => {
+    const prev = genderFilter;
+    setGenderFilter('all');
+    await new Promise(r => setTimeout(r, 100));
+    await handleCaptureImage();
+    setGenderFilter(prev);
+  }, [genderFilter, handleCaptureImage]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -40,8 +63,8 @@ export default function OverviewTab({ tournament }) {
     <div>
       {/* 정렬 버튼 */}
       <div className="flex justify-end mb-3 gap-2">
-        <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
-        <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
+        <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownloadAll} />
+        <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImageAll} />
         <div className="relative" ref={sortMenuRef}>
           <button
             onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
@@ -81,7 +104,24 @@ export default function OverviewTab({ tournament }) {
 
       {/* 테이블 */}
       <div ref={tableRef} data-capture-id="전체현황" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <h3 className="text-center font-bold text-2xl py-5 bg-green-50">🏆 {tournament.name} - 전체 현황</h3>
+        <div className="relative flex items-center justify-end px-4 py-5 bg-green-50">
+          <h3 className="absolute left-0 right-0 text-center font-bold text-2xl pointer-events-none">🏆 {tournament.name} - 전체 현황</h3>
+          <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
+            {[{ value: 'all', label: '전체' }, { value: '남', label: '남' }, { value: '여', label: '여' }].map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => setGenderFilter(opt.value)}
+                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                  genderFilter === opt.value
+                    ? 'bg-green-600 text-white'
+                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="border-b-2">
@@ -104,7 +144,7 @@ export default function OverviewTab({ tournament }) {
             </tr>
           </thead>
           <tbody>
-            {sortedPlayers.map((player, index) => (
+            {displayPlayers.map((player, index) => (
               <tr
                 key={player.id}
                 className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
