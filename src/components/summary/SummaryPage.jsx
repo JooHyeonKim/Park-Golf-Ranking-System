@@ -37,7 +37,7 @@ export default function SummaryPage({ tournament, onBack }) {
                   : 'bg-red-600 text-white hover:bg-red-700'
               }`}
             >
-              {isGenerating ? '⏳ PDF 생성 중...' : '📄 PDF 다운로드'}
+              {isGenerating ? '⏳ PDF 생성 중...' : '📄 PDF 전체 다운로드'}
             </button>
           </div>
           <div>

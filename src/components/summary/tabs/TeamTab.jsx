@@ -79,31 +79,34 @@ export default function TeamTab({ tournament }) {
       <div className="flex justify-end mb-2 gap-2">
         <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
-        <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
-          <button
-            onClick={() => setExcludeTop(false)}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              !excludeTop
-                ? 'bg-green-600 text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            전체 포함
-          </button>
-          <button
-            onClick={() => setExcludeTop(true)}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              excludeTop
-                ? 'bg-green-600 text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            수상자 제외
-          </button>
-        </div>
       </div>
       <div ref={tableRef} data-capture-id="단체전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <h3 className="text-center font-bold text-2xl py-5 bg-green-50">👥 {tournament.name} - 단체전</h3>
+        <div className="flex items-center justify-between px-4 py-5 bg-green-50">
+          <div></div>
+          <h3 className="font-bold text-2xl">👥 {tournament.name} - 단체전</h3>
+          <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
+            <button
+              onClick={() => setExcludeTop(false)}
+              className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                !excludeTop
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              전체 포함
+            </button>
+            <button
+              onClick={() => setExcludeTop(true)}
+              className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                excludeTop
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              수상자 제외
+            </button>
+          </div>
+        </div>
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="border-b">

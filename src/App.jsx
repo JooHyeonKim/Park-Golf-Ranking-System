@@ -72,43 +72,67 @@ export default function App() {
     return success;
   };
 
+  const showFooter = screenMode !== 'score';
+
+  const footer = showFooter && (
+    <div className="fixed bottom-0 left-0 right-0 bg-gray-200 flex justify-center items-center gap-4 py-4 text-sm text-gray-500 z-50">
+      <span>
+        프로그램 제작문의:{' '}
+        <a href="mailto:subinkim0128@gmail.com" className="text-gray-500 underline">
+          subinkim0128@gmail.com
+        </a>
+      </span>
+      <span>|</span>
+      <span>개발자 품위유지비 지원: 신한 110500604303</span>
+    </div>
+  );
+
   // 화면 라우팅
   if (screenMode === 'clubs') {
     return (
-      <ClubManagement
-        clubs={clubs}
-        onAddClub={addClub}
-        onEditClub={handleEditClub}
-        onDeleteClub={deleteClub}
-        onBack={handleBackToList}
-        members={members}
-        onAddMember={addMember}
-        onEditMember={editMember}
-        onDeleteMember={deleteMember}
-        getMembersByClub={getMembersByClub}
-      />
+      <div className="pb-16">
+        <ClubManagement
+          clubs={clubs}
+          onAddClub={addClub}
+          onEditClub={handleEditClub}
+          onDeleteClub={deleteClub}
+          onBack={handleBackToList}
+          members={members}
+          onAddMember={addMember}
+          onEditMember={editMember}
+          onDeleteMember={deleteMember}
+          getMembersByClub={getMembersByClub}
+        />
+        {footer}
+      </div>
     );
   }
 
   if (screenMode === 'list' || !currentTournament) {
     return (
-      <TournamentList
-        tournaments={tournaments}
-        onSelect={handleSelectTournament}
-        onDelete={deleteTournament}
-        onAdd={handleAddTournament}
-        onViewSummary={handleViewSummary}
-        onGoToClubs={handleGoToClubs}
-      />
+      <div className="pb-16">
+        <TournamentList
+          tournaments={tournaments}
+          onSelect={handleSelectTournament}
+          onDelete={deleteTournament}
+          onAdd={handleAddTournament}
+          onViewSummary={handleViewSummary}
+          onGoToClubs={handleGoToClubs}
+        />
+        {footer}
+      </div>
     );
   }
 
   if (screenMode === 'summary') {
     return (
-      <SummaryPage
-        tournament={currentTournament}
-        onBack={handleBackToScore}
-      />
+      <div className="pb-16">
+        <SummaryPage
+          tournament={currentTournament}
+          onBack={handleBackToScore}
+        />
+        {footer}
+      </div>
     );
   }
 
