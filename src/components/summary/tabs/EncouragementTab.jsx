@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { calculateRankings, calculateTotal } from '../../../utils/ranking';
 import { useImageCapture } from '../../../hooks/useImageCapture';
 import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
@@ -10,95 +10,74 @@ const RANK_OPTIONS = [9, 10, 11, 12, 13, 14, 15];
 const INDIVIDUAL_TOP = 5; // 개인전 탭에서 이미 표시한 상위 인원 수
 
 export default function EncouragementTab({ tournament }) {
-  const [maxRank, setMaxRank] = useState(DEFAULT_MAX_RANK);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const [maleMaxRank, setMaleMaxRank] = useState(DEFAULT_MAX_RANK);
+  const [femaleMaxRank, setFemaleMaxRank] = useState(DEFAULT_MAX_RANK);
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '장려상');
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '장려상');
 
-  // 외부 클릭 시 드롭다운 닫기
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    if (isDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isDropdownOpen]);
-
-  const { males, females, rankLabels } = useMemo(() => {
+  const { males, females, maxDisplayCount } = useMemo(() => {
     const ranked = calculateRankings(tournament.players);
     const withScores = ranked.filter(p => p.name && calculateTotal(p) !== null);
 
-    const displayCount = maxRank - INDIVIDUAL_TOP;
+    const maleDisplayCount = maleMaxRank - INDIVIDUAL_TOP;
+    const femaleDisplayCount = femaleMaxRank - INDIVIDUAL_TOP;
 
     const males = withScores
       .filter(p => p.gender === '남')
-      .slice(INDIVIDUAL_TOP, INDIVIDUAL_TOP + displayCount);
+      .slice(INDIVIDUAL_TOP, INDIVIDUAL_TOP + maleDisplayCount);
 
     const females = withScores
       .filter(p => p.gender === '여')
-      .slice(INDIVIDUAL_TOP, INDIVIDUAL_TOP + displayCount);
+      .slice(INDIVIDUAL_TOP, INDIVIDUAL_TOP + femaleDisplayCount);
 
-    const rankLabels = Array.from(
-      { length: displayCount },
-      (_, i) => `${INDIVIDUAL_TOP + 1 + i}위`
-    );
+    const maxDisplayCount = Math.max(maleDisplayCount, femaleDisplayCount);
 
-    return { males, females, rankLabels };
-  }, [tournament.players, maxRank]);
+    return { males, females, maxDisplayCount };
+  }, [tournament.players, maleMaxRank, femaleMaxRank]);
+
+  const maleDisplayCount = maleMaxRank - INDIVIDUAL_TOP;
+  const femaleDisplayCount = femaleMaxRank - INDIVIDUAL_TOP;
 
   return (
     <div>
-      {/* 순위 범위 선택 드롭다운 */}
-      <div className="flex justify-end mb-3 gap-2">
+      {/* 다운로드 버튼 */}
+      <div className="flex justify-end mb-2 gap-2">
         <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="px-4 py-2 rounded-lg font-bold text-base transition-colors bg-green-600 text-white hover:bg-green-700 flex items-center gap-1 shadow"
-          >
-            {maxRank}위까지
-            <span className="text-xs">▼</span>
-          </button>
-          {isDropdownOpen && (
-            <div className="absolute right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[120px]">
-              {RANK_OPTIONS.map((option, idx) => (
-                <button
-                  key={option}
-                  onClick={() => {
-                    setMaxRank(option);
-                    setIsDropdownOpen(false);
-                  }}
-                  className={`w-full px-4 py-2 text-left hover:bg-gray-100 ${
-                    idx === 0 ? 'rounded-t-lg' : ''
-                  } ${
-                    idx === RANK_OPTIONS.length - 1 ? 'rounded-b-lg' : ''
-                  } ${
-                    maxRank === option
-                      ? 'bg-green-50 font-semibold text-green-700'
-                      : 'text-gray-700'
-                  }`}
-                >
-                  {option}위까지
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
 
       {/* 장려상 테이블 */}
       <div ref={tableRef} data-capture-id="장려상" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <h3 className="text-center font-bold text-2xl py-5 bg-white">🎖️ {tournament.name} - 장려상</h3>
+        <div className="flex items-center justify-between px-4 py-5 bg-white">
+          <div></div>
+          <h3 className="font-bold text-2xl">🎖️ {tournament.name} - 장려상</h3>
+          <div className="flex gap-3">
+            <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-200 rounded-lg px-2.5 py-1.5">
+              <span className="text-sm font-bold text-blue-700">남</span>
+              <select
+                value={maleMaxRank}
+                onChange={(e) => setMaleMaxRank(parseInt(e.target.value, 10))}
+                className="px-1.5 py-1 border border-blue-300 rounded text-sm font-medium bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                {RANK_OPTIONS.map(option => (
+                  <option key={option} value={option}>{option}위</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center gap-1.5 bg-pink-50 border border-pink-200 rounded-lg px-2.5 py-1.5">
+              <span className="text-sm font-bold text-pink-700">여</span>
+              <select
+                value={femaleMaxRank}
+                onChange={(e) => setFemaleMaxRank(parseInt(e.target.value, 10))}
+                className="px-1.5 py-1 border border-pink-300 rounded text-sm font-medium bg-white focus:outline-none focus:ring-1 focus:ring-pink-500"
+              >
+                {RANK_OPTIONS.map(option => (
+                  <option key={option} value={option}>{option}위</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
         <table className="w-full text-sm border-collapse">
           <thead>
             {/* 첫번째 줄: 남자 / 순위 / 여자 */}
@@ -113,7 +92,7 @@ export default function EncouragementTab({ tournament }) {
                 여자
               </th>
             </tr>
-            {/* 두번째 줄: 성명, 타수 / (빈칸) / 성명, 타수 */}
+            {/* 두번째 줄 */}
             <tr className="border-b-2">
               <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
               <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
@@ -125,34 +104,37 @@ export default function EncouragementTab({ tournament }) {
             </tr>
           </thead>
           <tbody>
-            {rankLabels.map((rankLabel, index) => {
-              const male = males[index];
-              const female = females[index];
+            {Array.from({ length: maxDisplayCount }, (_, index) => {
+              const rankNumber = INDIVIDUAL_TOP + 1 + index;
+              const male = index < maleDisplayCount ? males[index] : null;
+              const female = index < femaleDisplayCount ? females[index] : null;
+              const showMale = index < maleDisplayCount;
+              const showFemale = index < femaleDisplayCount;
               return (
                 <tr
-                  key={rankLabel}
+                  key={rankNumber}
                   className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                 >
                   <td className="py-3 px-3 text-center border-r">
-                    {male?.club || ''}
+                    {showMale ? (male?.club || '') : ''}
                   </td>
                   <td className="py-3 px-3 text-center border-r font-medium">
-                    {male?.name || ''}
+                    {showMale ? (male?.name || '') : ''}
                   </td>
                   <td className="py-3 px-3 text-center border-r font-semibold">
-                    {male ? calculateTotal(male) : ''}
+                    {showMale && male ? calculateTotal(male) : ''}
                   </td>
                   <td className="py-3 px-3 text-center border-r font-bold text-gray-700 bg-gray-100">
-                    {rankLabel}
+                    {rankNumber}위
                   </td>
                   <td className="py-3 px-3 text-center border-r">
-                    {female?.club || ''}
+                    {showFemale ? (female?.club || '') : ''}
                   </td>
                   <td className="py-3 px-3 text-center border-r font-medium">
-                    {female?.name || ''}
+                    {showFemale ? (female?.name || '') : ''}
                   </td>
                   <td className="py-3 px-3 text-center font-semibold">
-                    {female ? calculateTotal(female) : ''}
+                    {showFemale && female ? calculateTotal(female) : ''}
                   </td>
                 </tr>
               );
