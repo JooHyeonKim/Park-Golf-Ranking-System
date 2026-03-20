@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRanking } from '../../../hooks/useRanking';
 import { useImageCapture } from '../../../hooks/useImageCapture';
 import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
@@ -9,16 +9,39 @@ import DetailScoreModal from '../../score/DetailScoreModal';
 export default function OverviewTab({ tournament }) {
   const is36Hole = (tournament.holeCount || 36) === 36;
   const [sortBy, setSortBy] = useState('rank');
+  const [genderFilter, setGenderFilter] = useState('all');
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
   const sortMenuRef = useRef(null);
-  const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '전체현황');
+  const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '전체현황', 24);
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '전체현황', 24);
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, true);
   // 18홀일 때 C/D 코스 선수 행 숨김
   const sortedPlayers = is36Hole
     ? allSortedPlayers
     : allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B'));
+
+  // 성별 필터 적용
+  const displayPlayers = genderFilter === 'all'
+    ? sortedPlayers
+    : sortedPlayers.filter(p => p.gender === genderFilter);
+
+  // PDF/이미지 다운로드 시 전체 모드로 캡처
+  const handlePdfDownloadAll = useCallback(async () => {
+    const prev = genderFilter;
+    setGenderFilter('all');
+    await new Promise(r => setTimeout(r, 100));
+    await handlePdfDownload();
+    setGenderFilter(prev);
+  }, [genderFilter, handlePdfDownload]);
+
+  const handleCaptureImageAll = useCallback(async () => {
+    const prev = genderFilter;
+    setGenderFilter('all');
+    await new Promise(r => setTimeout(r, 100));
+    await handleCaptureImage();
+    setGenderFilter(prev);
+  }, [genderFilter, handleCaptureImage]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -40,8 +63,8 @@ export default function OverviewTab({ tournament }) {
     <div>
       {/* 정렬 버튼 */}
       <div className="flex justify-end mb-3 gap-2">
-        <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
-        <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
+        <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownloadAll} />
+        <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImageAll} />
         <div className="relative" ref={sortMenuRef}>
           <button
             onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
@@ -81,45 +104,81 @@ export default function OverviewTab({ tournament }) {
 
       {/* 테이블 */}
       <div ref={tableRef} data-capture-id="전체현황" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <h3 className="text-center font-bold text-2xl py-5 bg-green-50">🏆 {tournament.name} - 전체 현황</h3>
+        <div className="relative flex items-center justify-end px-4 py-5 bg-green-50">
+          <h3 className="absolute left-0 right-0 text-center font-bold text-2xl pointer-events-none">🏆 {tournament.name} - 전체 현황</h3>
+          <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
+            {[{ value: 'all', label: '전체' }, { value: '남', label: '남' }, { value: '여', label: '여' }].map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => setGenderFilter(opt.value)}
+                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                  genderFilter === opt.value
+                    ? 'bg-green-600 text-white'
+                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="border-b-2">
+              <th className="bg-gray-300 py-3 px-2 text-center border-r min-w-[60px]">순위</th>
               <th className="bg-gray-300 py-3 px-2 text-center border-r">조</th>
               <th className="bg-gray-300 py-3 px-2 text-center border-r">코스</th>
+              <th className="bg-gray-300 py-3 px-3 text-center border-r min-w-[80px]">클럽</th>
               <th className="bg-gray-300 py-3 px-3 text-center border-r min-w-[50px]">성명</th>
               <th className="bg-gray-300 py-3 px-2 text-center border-r min-w-[50px]">성별</th>
-              <th className="bg-gray-300 py-3 px-3 text-center border-r min-w-[80px]">클럽</th>
+              <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
               <th className="bg-sky-200 py-3 px-2 text-center border-r">A코스</th>
               <th className="bg-sky-200 py-3 px-2 text-center border-r">B코스</th>
+              <th className="bg-sky-300 py-3 px-2 text-center border-r font-bold">총계</th>
               {is36Hole && (
                 <>
                   <th className="bg-lime-200 py-3 px-2 text-center border-r">C코스</th>
                   <th className="bg-lime-200 py-3 px-2 text-center border-r">D코스</th>
+                  <th className="bg-lime-300 py-3 px-2 text-center border-r font-bold">총계</th>
                 </>
               )}
               <th className="bg-orange-200 py-3 px-2 text-center border-r w-16">홀인원</th>
-              <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
-              <th className="bg-gray-300 py-3 px-2 text-center min-w-[60px]">순위</th>
             </tr>
           </thead>
           <tbody>
-            {sortedPlayers.map((player, index) => (
+            {displayPlayers.map((player, index) => (
               <tr
                 key={player.id}
                 className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
               >
+                <td className="py-2 px-2 text-center border-r font-bold text-red-600 text-lg">
+                  <div className="flex items-center justify-center gap-1">
+                    <span>{player.rank ?? '-'}</span>
+                    {player.detailScores && Object.keys(player.detailScores).length > 0 && (
+                      <button
+                        onClick={() => setDetailModalPlayer(player)}
+                        className="ml-1 px-1.5 py-0.5 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                        title="상세 점수 보기"
+                      >
+                        상세
+                      </button>
+                    )}
+                  </div>
+                </td>
                 <td className="py-2 px-2 text-center border-r font-medium">{player.course.split('-').length >= 3 ? `${player.group}-1` : player.group}</td>
                 <td className="py-2 px-2 text-center border-r">{player.course}</td>
+                <td className="py-2 px-3 border-r">{player.club || '-'}</td>
                 <td className="py-2 px-3 border-r font-medium">{player.name || '-'}</td>
                 <td className="py-2 px-2 text-center border-r">{player.gender || '-'}</td>
-                <td className="py-2 px-3 border-r">{player.club || '-'}</td>
+                <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">{player.total ?? '-'}</td>
                 <td className="py-2 px-2 text-center border-r">{player.scoreA ?? '-'}</td>
                 <td className="py-2 px-2 text-center border-r">{player.scoreB ?? '-'}</td>
+                <td className="py-2 px-2 text-center border-r font-bold bg-sky-50">{(player.scoreA != null && player.scoreB != null) ? player.scoreA + player.scoreB : '-'}</td>
                 {is36Hole && (
                   <>
                     <td className="py-2 px-2 text-center border-r">{player.scoreC ?? '-'}</td>
                     <td className="py-2 px-2 text-center border-r">{player.scoreD ?? '-'}</td>
+                    <td className="py-2 px-2 text-center border-r font-bold bg-lime-50">{(player.scoreC != null && player.scoreD != null) ? player.scoreC + player.scoreD : '-'}</td>
                   </>
                 )}
                 <td className="py-2 px-2 text-center border-r w-16">
@@ -133,21 +192,6 @@ export default function OverviewTab({ tournament }) {
                       )}
                     </span>
                   ) : ''}
-                </td>
-                <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">{player.total ?? '-'}</td>
-                <td className="py-2 px-2 text-center font-bold text-red-600 text-lg">
-                  <div className="flex items-center justify-center gap-1">
-                    <span>{player.rank ?? '-'}</span>
-                    {player.detailScores && Object.keys(player.detailScores).length > 0 && (
-                      <button
-                        onClick={() => setDetailModalPlayer(player)}
-                        className="ml-1 px-1.5 py-0.5 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                        title="상세 점수 보기"
-                      >
-                        상세
-                      </button>
-                    )}
-                  </div>
                 </td>
               </tr>
             ))}

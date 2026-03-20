@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { calculateRankings, calculateTotal } from '../../../utils/ranking';
 import { useImageCapture } from '../../../hooks/useImageCapture';
 import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
@@ -7,25 +7,36 @@ import PdfDownloadButton from '../../common/PdfDownloadButton';
 
 const RANKS = ['우승', '준우승', '3위', '4위', '5위'];
 
-export default function IndividualTab({ tournament }) {
+const INDIVIDUAL_TOP = 5;
+
+export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxRank = 10 }) {
+  const [allowDuplicate, setAllowDuplicate] = useState(false);
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '개인전');
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '개인전');
 
-  const { males, females, holeInOnePlayers } = useMemo(() => {
+  const { males, females, holeInOnePlayers, duplicateIds } = useMemo(() => {
     // 전체 순위 계산 (타수 오름차순, 동점 처리 포함)
     const ranked = calculateRankings(tournament.players);
 
     // 이름이 있고 점수가 있는 선수만 필터 후 성별 분리
     const withScores = ranked.filter(p => p.name && calculateTotal(p) !== null);
 
-    const males = withScores.filter(p => p.gender === '남').slice(0, 5);
-    const females = withScores.filter(p => p.gender === '여').slice(0, 5);
+    const males = withScores.filter(p => p.gender === '남').slice(0, INDIVIDUAL_TOP);
+    const females = withScores.filter(p => p.gender === '여').slice(0, INDIVIDUAL_TOP);
+
+    // 개인전 + 장려상 수상자 ID Set
+    const allMaleWinners = withScores.filter(p => p.gender === '남').slice(0, maleMaxRank);
+    const allFemaleWinners = withScores.filter(p => p.gender === '여').slice(0, femaleMaxRank);
+    const duplicateIds = new Set([
+      ...allMaleWinners.map(p => p.id),
+      ...allFemaleWinners.map(p => p.id),
+    ]);
 
     // 홀인원 수상자
     const holeInOnePlayers = tournament.players.filter(p => p.holeInOne && p.name && p.name.trim());
 
-    return { males, females, holeInOnePlayers };
-  }, [tournament.players]);
+    return { males, females, holeInOnePlayers, duplicateIds };
+  }, [tournament.players, maleMaxRank, femaleMaxRank]);
 
   return (
     <div>
@@ -99,7 +110,31 @@ export default function IndividualTab({ tournament }) {
         {/* 홀인원 수상자 */}
         {holeInOnePlayers.length > 0 && (
         <div className="mt-4">
-          <h3 className="text-center font-bold text-2xl py-5 bg-green-50">🎯 홀인원 수상자</h3>
+          <div className="relative flex items-center justify-end px-4 py-5 bg-green-50">
+            <h3 className="absolute left-0 right-0 text-center font-bold text-2xl pointer-events-none">🎯 홀인원 수상자</h3>
+            <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
+              <button
+                onClick={() => setAllowDuplicate(false)}
+                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                  !allowDuplicate
+                    ? 'bg-green-600 text-white'
+                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                중복수상 제외
+              </button>
+              <button
+                onClick={() => setAllowDuplicate(true)}
+                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                  allowDuplicate
+                    ? 'bg-green-600 text-white'
+                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                중복수상 허용
+              </button>
+            </div>
+          </div>
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b-2">
@@ -117,7 +152,12 @@ export default function IndividualTab({ tournament }) {
                   <td className="py-3 px-3 text-center border-r">{player.club}</td>
                   <td className="py-3 px-3 text-center border-r font-medium">{player.name}</td>
                   <td className="py-3 px-3 text-center border-r">{player.gender}</td>
-                  <td className="py-3 px-3 text-center">{player.holeInOne === true ? '-' : player.holeInOne}</td>
+                  <td className="py-3 px-3 text-center">
+                    {!allowDuplicate && duplicateIds.has(player.id)
+                      ? <span className="text-red-600 font-medium text-xs">중복수상 불가</span>
+                      : (player.holeInOne === true ? '-' : player.holeInOne)
+                    }
+                  </td>
                 </tr>
               ))}
             </tbody>
