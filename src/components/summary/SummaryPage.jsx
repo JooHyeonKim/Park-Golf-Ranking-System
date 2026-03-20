@@ -7,6 +7,8 @@ import TeamTab from './tabs/TeamTab';
 
 export default function SummaryPage({ tournament, onBack }) {
   const [activeTab, setActiveTab] = useState('overview');
+  const [maleMaxRank, setMaleMaxRank] = useState(10);
+  const [femaleMaxRank, setFemaleMaxRank] = useState(10);
   const { isGenerating, handlePdfDownload } = usePdfDownload(tournament.name);
 
   const tabs = [
@@ -70,10 +72,10 @@ export default function SummaryPage({ tournament, onBack }) {
           <OverviewTab tournament={tournament} />
         </div>
         <div style={{ display: activeTab === 'individual' ? 'block' : 'none' }}>
-          <IndividualTab tournament={tournament} />
+          <IndividualTab tournament={tournament} maleMaxRank={maleMaxRank} femaleMaxRank={femaleMaxRank} />
         </div>
         <div style={{ display: activeTab === 'encouragement' ? 'block' : 'none' }}>
-          <EncouragementTab tournament={tournament} />
+          <EncouragementTab tournament={tournament} maleMaxRank={maleMaxRank} femaleMaxRank={femaleMaxRank} onMaleMaxRankChange={setMaleMaxRank} onFemaleMaxRankChange={setFemaleMaxRank} />
         </div>
         <div style={{ display: activeTab === 'team' ? 'block' : 'none' }}>
           <TeamTab tournament={tournament} />

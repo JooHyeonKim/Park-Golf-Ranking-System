@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { calculateRankings, calculateTotal } from '../../../utils/ranking';
 import { useImageCapture } from '../../../hooks/useImageCapture';
 import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
@@ -9,9 +9,7 @@ const DEFAULT_MAX_RANK = 10;
 const RANK_OPTIONS = [9, 10, 11, 12, 13, 14, 15];
 const INDIVIDUAL_TOP = 5; // 개인전 탭에서 이미 표시한 상위 인원 수
 
-export default function EncouragementTab({ tournament }) {
-  const [maleMaxRank, setMaleMaxRank] = useState(DEFAULT_MAX_RANK);
-  const [femaleMaxRank, setFemaleMaxRank] = useState(DEFAULT_MAX_RANK);
+export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRank, onMaleMaxRankChange, onFemaleMaxRankChange }) {
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '장려상');
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '장려상');
 
@@ -55,7 +53,7 @@ export default function EncouragementTab({ tournament }) {
               <span className="text-sm font-bold text-blue-700">남</span>
               <select
                 value={maleMaxRank}
-                onChange={(e) => setMaleMaxRank(parseInt(e.target.value, 10))}
+                onChange={(e) => onMaleMaxRankChange(parseInt(e.target.value, 10))}
                 className="px-1.5 py-1 border border-blue-300 rounded text-sm font-medium bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 {RANK_OPTIONS.map(option => (
@@ -67,7 +65,7 @@ export default function EncouragementTab({ tournament }) {
               <span className="text-sm font-bold text-pink-700">여</span>
               <select
                 value={femaleMaxRank}
-                onChange={(e) => setFemaleMaxRank(parseInt(e.target.value, 10))}
+                onChange={(e) => onFemaleMaxRankChange(parseInt(e.target.value, 10))}
                 className="px-1.5 py-1 border border-pink-300 rounded text-sm font-medium bg-white focus:outline-none focus:ring-1 focus:ring-pink-500"
               >
                 {RANK_OPTIONS.map(option => (
