@@ -52,7 +52,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
   const maxGroups = getMaxGroupCount(newHoleCount);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-4">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-4 pb-20">
       {/* 헤더 */}
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
@@ -206,6 +206,14 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
             })}
           </div>
         )}
+      </div>
+
+      {/* 하단 제작문의 바 */}
+      <div className="fixed bottom-0 left-0 right-0 bg-gray-200 text-center py-4 text-sm text-gray-500">
+        프로그램 제작문의:{' '}
+        <a href="mailto:subinkim0128@gmail.com" className="text-gray-500 underline">
+          subinkim0128@gmail.com
+        </a>
       </div>
     </div>
   );
