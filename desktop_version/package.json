@@ -31,7 +31,7 @@
   },
   "build": {
     "appId": "com.parkgolf.desktop",
-    "productName": "파크골프 점수판",
+    "productName": "파크골프 스코어 집계 프로그램",
     "directories": {
       "output": "release",
       "buildResources": "resources"

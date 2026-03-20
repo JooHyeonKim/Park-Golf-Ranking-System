@@ -9,7 +9,7 @@ function createWindow() {
     height: 800,
     minWidth: 800,
     minHeight: 600,
-    title: '파크골프 점수판',
+    title: '파크골프 스코어 집계 프로그램',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
