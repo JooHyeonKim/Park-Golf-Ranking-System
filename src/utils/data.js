@@ -52,7 +52,7 @@ export function createInitialPlayers(holeCount = 36, groupCount = null) {
         scoreC: null,
         scoreD: null,
         detailScores: null,
-        holeInOne: false
+        holeInOne: null
       });
     }
     groupNumber++;
@@ -236,7 +236,7 @@ export function addPlayerToCourse(players, baseCourse, group) {
     scoreC: null,
     scoreD: null,
     detailScores: null,
-    holeInOne: false
+    holeInOne: null
   };
 
   // 해당 코스 그룹의 마지막 위치 뒤에 삽입
@@ -301,7 +301,7 @@ export function adjustGroupCount(existingPlayers, holeCount, newGroupCount) {
           course: courseName,
           name: '', gender: '', club: '',
           scoreA: null, scoreB: null, scoreC: null, scoreD: null,
-          detailScores: null, holeInOne: false
+          detailScores: null, holeInOne: null
         });
       }
     }

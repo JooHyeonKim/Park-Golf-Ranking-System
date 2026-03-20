@@ -106,7 +106,8 @@ export default function IndividualTab({ tournament }) {
                 <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[50px]">번호</th>
                 <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
                 <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
-                <th className="bg-orange-200 py-2 px-3 text-center min-w-[50px]">성별</th>
+                <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[50px]">성별</th>
+                <th className="bg-orange-200 py-2 px-3 text-center min-w-[60px]">홀 번호</th>
               </tr>
             </thead>
             <tbody>
@@ -115,7 +116,8 @@ export default function IndividualTab({ tournament }) {
                   <td className="py-3 px-3 text-center border-r">{index + 1}</td>
                   <td className="py-3 px-3 text-center border-r">{player.club}</td>
                   <td className="py-3 px-3 text-center border-r font-medium">{player.name}</td>
-                  <td className="py-3 px-3 text-center">{player.gender}</td>
+                  <td className="py-3 px-3 text-center border-r">{player.gender}</td>
+                  <td className="py-3 px-3 text-center">{typeof player.holeInOne === 'number' ? `${player.holeInOne}번홀` : '-'}</td>
                 </tr>
               ))}
             </tbody>

@@ -83,7 +83,7 @@ export default function App() {
         </a>
       </span>
       <span>|</span>
-      <span>개발자 품위유지비 지원: 신한 110500604303</span>
+      <span>개발자 후원: 신한 110500604303</span>
     </div>
   );
 
