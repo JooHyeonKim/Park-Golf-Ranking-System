@@ -125,22 +125,24 @@ export default function OverviewTab({ tournament }) {
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="border-b-2">
+              <th className="bg-gray-300 py-3 px-2 text-center border-r min-w-[60px]">순위</th>
               <th className="bg-gray-300 py-3 px-2 text-center border-r">조</th>
               <th className="bg-gray-300 py-3 px-2 text-center border-r">코스</th>
+              <th className="bg-gray-300 py-3 px-3 text-center border-r min-w-[80px]">클럽</th>
               <th className="bg-gray-300 py-3 px-3 text-center border-r min-w-[50px]">성명</th>
               <th className="bg-gray-300 py-3 px-2 text-center border-r min-w-[50px]">성별</th>
-              <th className="bg-gray-300 py-3 px-3 text-center border-r min-w-[80px]">클럽</th>
+              <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
               <th className="bg-sky-200 py-3 px-2 text-center border-r">A코스</th>
               <th className="bg-sky-200 py-3 px-2 text-center border-r">B코스</th>
+              <th className="bg-sky-300 py-3 px-2 text-center border-r font-bold">총계</th>
               {is36Hole && (
                 <>
                   <th className="bg-lime-200 py-3 px-2 text-center border-r">C코스</th>
                   <th className="bg-lime-200 py-3 px-2 text-center border-r">D코스</th>
+                  <th className="bg-lime-300 py-3 px-2 text-center border-r font-bold">총계</th>
                 </>
               )}
               <th className="bg-orange-200 py-3 px-2 text-center border-r w-16">홀인원</th>
-              <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
-              <th className="bg-gray-300 py-3 px-2 text-center min-w-[60px]">순위</th>
             </tr>
           </thead>
           <tbody>
@@ -149,17 +151,34 @@ export default function OverviewTab({ tournament }) {
                 key={player.id}
                 className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
               >
+                <td className="py-2 px-2 text-center border-r font-bold text-red-600 text-lg">
+                  <div className="flex items-center justify-center gap-1">
+                    <span>{player.rank ?? '-'}</span>
+                    {player.detailScores && Object.keys(player.detailScores).length > 0 && (
+                      <button
+                        onClick={() => setDetailModalPlayer(player)}
+                        className="ml-1 px-1.5 py-0.5 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                        title="상세 점수 보기"
+                      >
+                        상세
+                      </button>
+                    )}
+                  </div>
+                </td>
                 <td className="py-2 px-2 text-center border-r font-medium">{player.course.split('-').length >= 3 ? `${player.group}-1` : player.group}</td>
                 <td className="py-2 px-2 text-center border-r">{player.course}</td>
+                <td className="py-2 px-3 border-r">{player.club || '-'}</td>
                 <td className="py-2 px-3 border-r font-medium">{player.name || '-'}</td>
                 <td className="py-2 px-2 text-center border-r">{player.gender || '-'}</td>
-                <td className="py-2 px-3 border-r">{player.club || '-'}</td>
+                <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">{player.total ?? '-'}</td>
                 <td className="py-2 px-2 text-center border-r">{player.scoreA ?? '-'}</td>
                 <td className="py-2 px-2 text-center border-r">{player.scoreB ?? '-'}</td>
+                <td className="py-2 px-2 text-center border-r font-bold bg-sky-50">{(player.scoreA != null && player.scoreB != null) ? player.scoreA + player.scoreB : '-'}</td>
                 {is36Hole && (
                   <>
                     <td className="py-2 px-2 text-center border-r">{player.scoreC ?? '-'}</td>
                     <td className="py-2 px-2 text-center border-r">{player.scoreD ?? '-'}</td>
+                    <td className="py-2 px-2 text-center border-r font-bold bg-lime-50">{(player.scoreC != null && player.scoreD != null) ? player.scoreC + player.scoreD : '-'}</td>
                   </>
                 )}
                 <td className="py-2 px-2 text-center border-r w-16">
@@ -173,21 +192,6 @@ export default function OverviewTab({ tournament }) {
                       )}
                     </span>
                   ) : ''}
-                </td>
-                <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">{player.total ?? '-'}</td>
-                <td className="py-2 px-2 text-center font-bold text-red-600 text-lg">
-                  <div className="flex items-center justify-center gap-1">
-                    <span>{player.rank ?? '-'}</span>
-                    {player.detailScores && Object.keys(player.detailScores).length > 0 && (
-                      <button
-                        onClick={() => setDetailModalPlayer(player)}
-                        className="ml-1 px-1.5 py-0.5 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                        title="상세 점수 보기"
-                      >
-                        상세
-                      </button>
-                    )}
-                  </div>
                 </td>
               </tr>
             ))}
