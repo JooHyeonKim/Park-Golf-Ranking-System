@@ -123,7 +123,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
       const scoreA = Math.floor(Math.random() * 15) + 20; // 20~34
       const scoreB = Math.floor(Math.random() * 15) + 20;
 
-      const updates = { name, gender, club, scoreA, scoreB, holeInOne: holeInOneIndices.has(index) ? Math.floor(Math.random() * 9) + 1 : null };
+      const holeInOneOptions = ['A', 'B', ...(is36Hole ? ['C', 'D'] : [])].flatMap(c => Array.from({ length: 9 }, (_, i) => `${c}${i + 1}`));
+      const updates = { name, gender, club, scoreA, scoreB, holeInOne: holeInOneIndices.has(index) ? holeInOneOptions[Math.floor(Math.random() * holeInOneOptions.length)] : null };
       if (is36Hole) {
         updates.scoreC = Math.floor(Math.random() * 15) + 20;
         updates.scoreD = Math.floor(Math.random() * 15) + 20;
@@ -437,13 +438,15 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       <td className="py-2 px-2 text-center border-r">
                         <select
                           value={player.holeInOne || ''}
-                          onChange={(e) => handleInputChange(player.id, 'holeInOne', e.target.value ? parseInt(e.target.value, 10) : null)}
+                          onChange={(e) => handleInputChange(player.id, 'holeInOne', e.target.value || null)}
                           disabled={isRankingCalculated}
                           className={`w-16 px-1 py-1 border rounded text-center text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                         >
                           <option value="">-</option>
-                          {Array.from({ length: 9 }, (_, i) => i + 1).map(n => (
-                            <option key={n} value={n}>{n}번홀</option>
+                          {['A', 'B', ...(is36Hole ? ['C', 'D'] : [])].flatMap(course =>
+                            Array.from({ length: 9 }, (_, i) => `${course}${i + 1}`)
+                          ).map(hole => (
+                            <option key={hole} value={hole}>{hole}</option>
                           ))}
                         </select>
                       </td>

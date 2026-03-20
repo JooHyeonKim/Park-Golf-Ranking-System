@@ -117,7 +117,7 @@ export default function IndividualTab({ tournament }) {
                   <td className="py-3 px-3 text-center border-r">{player.club}</td>
                   <td className="py-3 px-3 text-center border-r font-medium">{player.name}</td>
                   <td className="py-3 px-3 text-center border-r">{player.gender}</td>
-                  <td className="py-3 px-3 text-center">{typeof player.holeInOne === 'number' ? `${player.holeInOne}번홀` : '-'}</td>
+                  <td className="py-3 px-3 text-center">{player.holeInOne === true ? '-' : player.holeInOne}</td>
                 </tr>
               ))}
             </tbody>
