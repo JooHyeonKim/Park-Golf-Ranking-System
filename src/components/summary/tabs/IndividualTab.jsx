@@ -11,7 +11,7 @@ export default function IndividualTab({ tournament }) {
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '개인전');
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '개인전');
 
-  const { males, females } = useMemo(() => {
+  const { males, females, holeInOnePlayers } = useMemo(() => {
     // 전체 순위 계산 (타수 오름차순, 동점 처리 포함)
     const ranked = calculateRankings(tournament.players);
 
@@ -21,7 +21,10 @@ export default function IndividualTab({ tournament }) {
     const males = withScores.filter(p => p.gender === '남').slice(0, 5);
     const females = withScores.filter(p => p.gender === '여').slice(0, 5);
 
-    return { males, females };
+    // 홀인원 수상자
+    const holeInOnePlayers = tournament.players.filter(p => p.holeInOne && p.name && p.name.trim());
+
+    return { males, females, holeInOnePlayers };
   }, [tournament.players]);
 
   return (
@@ -85,6 +88,33 @@ export default function IndividualTab({ tournament }) {
           </tbody>
         </table>
       </div>
+
+      {/* 홀인원 수상자 */}
+      {holeInOnePlayers.length > 0 && (
+        <div className="bg-white rounded-lg shadow-sm overflow-x-auto mt-4">
+          <h3 className="text-center font-bold text-2xl py-5 bg-white">🎯 홀인원 수상자</h3>
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="border-b-2">
+                <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[50px]">번호</th>
+                <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
+                <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[50px]">성별</th>
+                <th className="bg-orange-200 py-2 px-3 text-center min-w-[80px]">클럽</th>
+              </tr>
+            </thead>
+            <tbody>
+              {holeInOnePlayers.map((player, index) => (
+                <tr key={player.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                  <td className="py-3 px-3 text-center border-r">{index + 1}</td>
+                  <td className="py-3 px-3 text-center border-r font-medium">{player.name}</td>
+                  <td className="py-3 px-3 text-center border-r">{player.gender}</td>
+                  <td className="py-3 px-3 text-center">{player.club}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

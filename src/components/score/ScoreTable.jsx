@@ -107,7 +107,14 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
     const firstNames = ['민수', '영희', '철수', '지영', '현우', '수진', '동현', '미영', '성민', '혜진'];
     const clubList = clubs;
 
-    tournament.players.forEach((player) => {
+    // 홀인원 대상 2~3명 랜덤 선택
+    const holeInOneIndices = new Set();
+    const holeInOneCount = Math.floor(Math.random() * 2) + 2; // 2~3명
+    while (holeInOneIndices.size < holeInOneCount && holeInOneIndices.size < tournament.players.length) {
+      holeInOneIndices.add(Math.floor(Math.random() * tournament.players.length));
+    }
+
+    tournament.players.forEach((player, index) => {
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
       const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
       const name = lastName + firstName;
@@ -116,7 +123,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
       const scoreA = Math.floor(Math.random() * 15) + 20; // 20~34
       const scoreB = Math.floor(Math.random() * 15) + 20;
 
-      const updates = { name, gender, club, scoreA, scoreB };
+      const updates = { name, gender, club, scoreA, scoreB, holeInOne: holeInOneIndices.has(index) };
       if (is36Hole) {
         updates.scoreC = Math.floor(Math.random() * 15) + 20;
         updates.scoreD = Math.floor(Math.random() * 15) + 20;
@@ -281,6 +288,9 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                   </>
                 )}
 
+                {/* 홀인원 */}
+                <th className="bg-orange-200 py-3 px-2 text-center border-r">홀인원</th>
+
                 {/* 노란색 (합계) */}
                 <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
 
@@ -423,6 +433,17 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                         </td>
                       )}
 
+                      {/* 홀인원 */}
+                      <td className="py-2 px-2 text-center border-r">
+                        <input
+                          type="checkbox"
+                          checked={player.holeInOne || false}
+                          onChange={(e) => handleInputChange(player.id, 'holeInOne', e.target.checked)}
+                          disabled={isRankingCalculated}
+                          className="w-5 h-5 accent-orange-500"
+                        />
+                      </td>
+
                       {/* 36홀 합계 */}
                       <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">
                         <div className="flex items-center justify-center gap-1">
@@ -467,7 +488,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       if (extraCount < 4) {
                         rows.push(
                           <tr key={`add-${baseCourse}`} className="bg-gray-100">
-                            <td colSpan={is36Hole ? 12 : 10} className="py-1 text-center">
+                            <td colSpan={is36Hole ? 13 : 11} className="py-1 text-center">
                               <button
                                 onClick={() => onAddPlayerToCourse(tournament.id, baseCourse, player.group)}
                                 className="px-3 py-1 text-xs text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition-colors"
