@@ -51,6 +51,16 @@ input[type="number"] {
   background: #a1a1a1;
 }
 
+/* 메인화면 풋터 부드러운 바운스 애니메이션 */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-6px); }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 3s ease-in-out infinite;
+}
+
 /* PWA 설치 배너 숨김 */
 @media all and (display-mode: standalone) {
   .install-prompt {

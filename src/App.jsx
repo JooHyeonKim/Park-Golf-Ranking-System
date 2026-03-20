@@ -73,18 +73,36 @@ export default function App() {
   };
 
   const showFooter = screenMode !== 'score';
+  const isMainScreen = screenMode === 'list' || !currentTournament;
 
   const footer = showFooter && (
-    <div className="fixed bottom-0 left-0 right-0 bg-gray-200 flex justify-center items-center gap-4 py-4 text-sm text-gray-500 z-50">
-      <span>
-        프로그램 제작문의:{' '}
-        <a href="mailto:subinkim0128@gmail.com" className="text-gray-500 underline">
-          subinkim0128@gmail.com
-        </a>
-      </span>
-      <span>|</span>
-      <span>개발자 후원 계좌: 신한 110500604303</span>
-    </div>
+    <>
+      {isMainScreen ? (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-2xl animate-bounce-slow">
+          <div className="bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300 rounded-2xl shadow-lg px-8 py-7 flex justify-center">
+            <div className="inline-block text-left">
+              <div className="text-xl font-bold text-amber-800 mb-2">
+                ✉️ 프로그램 제작문의: <a href="mailto:subinkim0128@gmail.com" className="underline text-amber-600 hover:text-amber-500">subinkim0128@gmail.com</a>
+              </div>
+              <div className="text-xl font-bold text-amber-800">
+                ☕ 개발자 후원 계좌: 신한 110-500-604303
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-200 flex justify-center items-center gap-4 py-4 text-sm text-gray-500">
+          <span>
+            프로그램 제작문의:{' '}
+            <a href="mailto:subinkim0128@gmail.com" className="text-gray-500 underline">
+              subinkim0128@gmail.com
+            </a>
+          </span>
+          <span>|</span>
+          <span>개발자 후원 계좌: 신한 110500604303</span>
+        </div>
+      )}
+    </>
   );
 
   // 화면 라우팅
