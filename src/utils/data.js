@@ -2,23 +2,39 @@
 // 클럽/회원 데이터는 IndexedDB로 이동 (src/utils/db.js 참고)
 
 /**
- * 초기 선수 데이터 생성 (18홀: 72명, 36홀: 144명)
- * @param {number} holeCount - 홀 수 (18 또는 36)
- * @returns {Array} - 선수 목록
+ * 총 조 수를 코스별로 균등 분배하여 코스명 목록 생성
+ * 예: 7조, 4코스 → A:2, B:2, C:2, D:1
  */
-export function createInitialPlayers(holeCount = 36) {
-  const players = [];
-  const courses = holeCount === 18 ? ['A', 'B'] : ['A', 'B', 'C', 'D'];
+function distributeCourseNames(courses, groupCount) {
+  const numCourses = courses.length;
+  const base = Math.floor(groupCount / numCourses);
+  const remainder = groupCount % numCourses;
   const courseNames = [];
 
-  // 36개 코스명 생성 (A-1 ~ D-9)
-  for (const course of courses) {
-    for (let i = 1; i <= 9; i++) {
-      courseNames.push(`${course}-${i}`);
+  for (let c = 0; c < courses.length; c++) {
+    const count = base + (c < remainder ? 1 : 0);
+    for (let i = 1; i <= count; i++) {
+      courseNames.push(`${courses[c]}-${i}`);
     }
   }
 
-  // 각 코스마다 4명씩 생성 (총 144명)
+  return courseNames;
+}
+
+/**
+ * 초기 선수 데이터 생성
+ * @param {number} holeCount - 홀 수 (18 또는 36)
+ * @param {number} groupCount - 총 조 수 (기본: 18홀=18, 36홀=36)
+ * @returns {Array} - 선수 목록
+ */
+export function createInitialPlayers(holeCount = 36, groupCount = null) {
+  const players = [];
+  const courses = holeCount === 18 ? ['A', 'B'] : ['A', 'B', 'C', 'D'];
+
+  if (groupCount === null) groupCount = courses.length * 9;
+
+  const courseNames = distributeCourseNames(courses, groupCount);
+
   let idCounter = 1;
   let groupNumber = 1;
 
@@ -26,16 +42,17 @@ export function createInitialPlayers(holeCount = 36) {
     for (let i = 0; i < 4; i++) {
       players.push({
         id: idCounter++,
-        group: groupNumber,        // 조 번호 (1 ~ 36)
-        course: courseName,        // 코스명 (A-1 ~ D-9)
+        group: groupNumber,
+        course: courseName,
         name: '',
-        gender: '',                // 성별 (남/여)
+        gender: '',
         club: '',
         scoreA: null,
         scoreB: null,
         scoreC: null,
         scoreD: null,
-        detailScores: null
+        detailScores: null,
+        holeInOne: null
       });
     }
     groupNumber++;
@@ -49,16 +66,21 @@ export function createInitialPlayers(holeCount = 36) {
  * @param {string} name - 대회명
  * @param {string} date - 날짜 (YYYY-MM-DD)
  * @param {number} holeCount - 홀 수 (18 또는 36)
+ * @param {number} groupCount - 총 조 수 (기본: 18홀=18, 36홀=36)
  * @returns {Object} - 대회 객체
  */
-export function createTournament(name, date, holeCount = 36) {
+export function createTournament(name, date, holeCount = 36, groupCount = null) {
+  const courses = holeCount === 18 ? ['A', 'B'] : ['A', 'B', 'C', 'D'];
+  if (groupCount === null) groupCount = courses.length * 9;
+
   return {
     id: Date.now(),
     name,
     date,
     holeCount,
+    groupCount,
     createdAt: Date.now(),
-    players: createInitialPlayers(holeCount)
+    players: createInitialPlayers(holeCount, groupCount)
   };
 }
 
@@ -213,7 +235,8 @@ export function addPlayerToCourse(players, baseCourse, group) {
     scoreB: null,
     scoreC: null,
     scoreD: null,
-    detailScores: null
+    detailScores: null,
+    holeInOne: null
   };
 
   // 해당 코스 그룹의 마지막 위치 뒤에 삽입
@@ -226,6 +249,72 @@ export function addPlayerToCourse(players, baseCourse, group) {
 
   const result = [...players];
   result.splice(insertIndex + 1, 0, newPlayer);
+  return result;
+}
+
+/**
+ * 총 조 수 변경 시 players 배열 재조정
+ * - 줄이면: 범위 밖 그룹의 선수 제거
+ * - 늘리면: 새 빈 선수 슬롯 추가
+ * - 기존 데이터와 추가 선수 보존
+ * @param {Array} existingPlayers - 기존 선수 목록
+ * @param {number} holeCount - 홀 수 (18 또는 36)
+ * @param {number} newGroupCount - 새 총 조 수
+ * @returns {Array} - 재조정된 선수 목록
+ */
+export function adjustGroupCount(existingPlayers, holeCount, newGroupCount) {
+  const courses = holeCount === 18 ? ['A', 'B'] : ['A', 'B', 'C', 'D'];
+
+  // 기존 선수를 코스별로 분류 (기본 선수 / 추가 선수)
+  const baseMap = {};  // "A-1" -> [player, ...]
+  const extraMap = {}; // "A-1" -> [extra player, ...]
+
+  for (const p of existingPlayers) {
+    const parts = p.course.split('-');
+    const baseCourse = `${parts[0]}-${parts[1]}`;
+    const isExtra = parts.length >= 3;
+
+    if (isExtra) {
+      if (!extraMap[baseCourse]) extraMap[baseCourse] = [];
+      extraMap[baseCourse].push(p);
+    } else {
+      if (!baseMap[baseCourse]) baseMap[baseCourse] = [];
+      baseMap[baseCourse].push(p);
+    }
+  }
+
+  const courseNames = distributeCourseNames(courses, newGroupCount);
+  let maxId = Math.max(0, ...existingPlayers.map(p => p.id));
+  const result = [];
+  let groupNumber = 1;
+
+  for (const courseName of courseNames) {
+    const existingBase = baseMap[courseName] || [];
+
+    for (let slot = 0; slot < 4; slot++) {
+      if (existingBase[slot]) {
+        result.push({ ...existingBase[slot], group: groupNumber });
+      } else {
+        result.push({
+          id: ++maxId,
+          group: groupNumber,
+          course: courseName,
+          name: '', gender: '', club: '',
+          scoreA: null, scoreB: null, scoreC: null, scoreD: null,
+          detailScores: null, holeInOne: null
+        });
+      }
+    }
+
+    // 해당 조의 추가 선수 보존
+    const extras = extraMap[courseName] || [];
+    for (const extra of extras) {
+      result.push({ ...extra, group: groupNumber });
+    }
+
+    groupNumber++;
+  }
+
   return result;
 }
 

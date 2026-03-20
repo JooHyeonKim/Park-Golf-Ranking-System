@@ -13,7 +13,7 @@ export default function OverviewTab({ tournament }) {
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
   const sortMenuRef = useRef(null);
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '전체현황');
-  const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '전체현황');
+  const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '전체현황', 24);
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, true);
   // 18홀일 때 C/D 코스 선수 행 숨김
   const sortedPlayers = is36Hole
@@ -81,7 +81,7 @@ export default function OverviewTab({ tournament }) {
 
       {/* 테이블 */}
       <div ref={tableRef} data-capture-id="전체현황" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <h3 className="text-center font-bold text-2xl py-5 bg-white">🏆 {tournament.name} - 전체 현황</h3>
+        <h3 className="text-center font-bold text-2xl py-5 bg-green-50">🏆 {tournament.name} - 전체 현황</h3>
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="border-b-2">
@@ -98,6 +98,7 @@ export default function OverviewTab({ tournament }) {
                   <th className="bg-lime-200 py-3 px-2 text-center border-r">D코스</th>
                 </>
               )}
+              <th className="bg-orange-200 py-3 px-2 text-center border-r w-16">홀인원</th>
               <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
               <th className="bg-gray-300 py-3 px-2 text-center min-w-[60px]">순위</th>
             </tr>
@@ -121,6 +122,18 @@ export default function OverviewTab({ tournament }) {
                     <td className="py-2 px-2 text-center border-r">{player.scoreD ?? '-'}</td>
                   </>
                 )}
+                <td className="py-2 px-2 text-center border-r w-16">
+                  {player.holeInOne ? (
+                    <span className="relative group cursor-pointer">
+                      ⛳
+                      {player.holeInOne !== true && (
+                        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                          {player.holeInOne}
+                        </span>
+                      )}
+                    </span>
+                  ) : ''}
+                </td>
                 <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">{player.total ?? '-'}</td>
                 <td className="py-2 px-2 text-center font-bold text-red-600 text-lg">
                   <div className="flex items-center justify-center gap-1">

@@ -12,7 +12,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: '파크골프 점수판',
+        name: '파크골프 스코어 집계 프로그램',
         short_name: '파크골프',
         description: '파크골프 점수 관리 및 랭킹 시스템',
         theme_color: '#15803d',

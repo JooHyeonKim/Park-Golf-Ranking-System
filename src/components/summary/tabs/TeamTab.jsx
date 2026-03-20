@@ -34,7 +34,7 @@ export default function TeamTab({ tournament }) {
     const clubMap = new Map();
     eligible.forEach(player => {
       const clubName = player.club?.trim();
-      if (!clubName) return;
+      if (!clubName || clubName === '본부') return;
       if (!clubMap.has(clubName)) {
         clubMap.set(clubName, []);
       }
@@ -79,31 +79,33 @@ export default function TeamTab({ tournament }) {
       <div className="flex justify-end mb-2 gap-2">
         <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
-        <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
-          <button
-            onClick={() => setExcludeTop(false)}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              !excludeTop
-                ? 'bg-green-600 text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            전체 포함
-          </button>
-          <button
-            onClick={() => setExcludeTop(true)}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              excludeTop
-                ? 'bg-green-600 text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            수상자 제외
-          </button>
-        </div>
       </div>
       <div ref={tableRef} data-capture-id="단체전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <h3 className="text-center font-bold text-2xl py-5 bg-white">👥 {tournament.name} - 단체전</h3>
+        <div className="relative flex items-center justify-end px-4 py-5 bg-green-50">
+          <h3 className="absolute left-0 right-0 text-center font-bold text-2xl pointer-events-none">👥 {tournament.name} - 단체전</h3>
+          <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
+            <button
+              onClick={() => setExcludeTop(false)}
+              className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                !excludeTop
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              전체 포함
+            </button>
+            <button
+              onClick={() => setExcludeTop(true)}
+              className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                excludeTop
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              수상자 제외
+            </button>
+          </div>
+        </div>
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="border-b">

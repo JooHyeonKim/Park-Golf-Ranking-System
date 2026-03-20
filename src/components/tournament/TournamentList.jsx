@@ -1,21 +1,46 @@
 import { useState } from 'react';
 
+// 총 조 수의 기본값 계산
+function getDefaultGroupCount(holeCount) {
+  return holeCount === 18 ? 18 : 36;
+}
+
+// 총 조 수의 최대값 계산
+function getMaxGroupCount(holeCount) {
+  return holeCount === 18 ? 18 : 36;
+}
+
+// 하위 호환: 기존 groupsPerCourse → groupCount 변환
+function getTournamentGroupCount(tournament) {
+  if (tournament.groupCount) return tournament.groupCount;
+  const numCourses = (tournament.holeCount || 36) === 18 ? 2 : 4;
+  return (tournament.groupsPerCourse || 9) * numCourses;
+}
+
 export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onBack }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
   const [newHoleCount, setNewHoleCount] = useState(36);
+  const [newGroupCount, setNewGroupCount] = useState(getDefaultGroupCount(36));
 
   const handleAdd = () => {
     if (!newName.trim()) {
       alert('대회명을 입력해주세요.');
       return;
     }
-    onAdd(newName.trim(), newDate, newHoleCount);
+    onAdd(newName.trim(), newDate, newHoleCount, newGroupCount);
     setNewName('');
     setNewDate(new Date().toISOString().split('T')[0]);
     setNewHoleCount(36);
+    setNewGroupCount(getDefaultGroupCount(36));
     setShowAddForm(false);
+  };
+
+  // 홀 수 변경 시 조 수도 기본값으로 리셋
+  const handleHoleCountChange = (holeCount) => {
+    setNewHoleCount(holeCount);
+    setNewGroupCount(getDefaultGroupCount(holeCount));
   };
 
   const handleDelete = (id, name) => {
@@ -23,6 +48,8 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
       onDelete(id);
     }
   };
+
+  const maxGroups = getMaxGroupCount(newHoleCount);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-6">
@@ -88,7 +115,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                 <div className="flex gap-1">
                   <button
                     type="button"
-                    onClick={() => setNewHoleCount(18)}
+                    onClick={() => handleHoleCountChange(18)}
                     className={`flex-1 py-2.5 rounded-lg font-medium transition-colors ${
                       newHoleCount === 18
                         ? 'bg-green-600 text-white'
@@ -99,7 +126,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                   </button>
                   <button
                     type="button"
-                    onClick={() => setNewHoleCount(36)}
+                    onClick={() => handleHoleCountChange(36)}
                     className={`flex-1 py-2.5 rounded-lg font-medium transition-colors ${
                       newHoleCount === 36
                         ? 'bg-green-600 text-white'
@@ -109,6 +136,21 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                     36홀
                   </button>
                 </div>
+              </div>
+              <div className="w-28">
+                <label className="block text-sm font-medium text-gray-700 mb-1">조 수</label>
+                <select
+                  value={newGroupCount}
+                  onChange={(e) => setNewGroupCount(parseInt(e.target.value, 10))}
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  {Array.from({ length: maxGroups }, (_, i) => i + 1).map(n => (
+                    <option key={n} value={n}>{n}조</option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  총 {newGroupCount * 4}명
+                </p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -142,6 +184,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                   <th className="text-left px-6 py-3 font-semibold text-gray-700">대회명</th>
                   <th className="text-center px-4 py-3 font-semibold text-gray-700 w-32">날짜</th>
                   <th className="text-center px-4 py-3 font-semibold text-gray-700 w-20">홀 수</th>
+                  <th className="text-center px-4 py-3 font-semibold text-gray-700 w-20">조 수</th>
                   <th className="text-center px-4 py-3 font-semibold text-gray-700 w-24">참가자</th>
                   <th className="text-center px-4 py-3 font-semibold text-gray-700 w-60">작업</th>
                 </tr>
@@ -149,6 +192,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
               <tbody>
                 {tournaments.map(tournament => {
                   const playerCount = tournament.players.filter(p => p.name && p.name.trim()).length;
+                  const groupCount = getTournamentGroupCount(tournament);
 
                   return (
                     <tr
@@ -160,6 +204,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                       </td>
                       <td className="text-center px-4 py-4 text-gray-600">{tournament.date}</td>
                       <td className="text-center px-4 py-4 text-gray-600">{tournament.holeCount || 36}홀</td>
+                      <td className="text-center px-4 py-4 text-gray-600">{groupCount}조</td>
                       <td className="text-center px-4 py-4 text-gray-600">{playerCount}명</td>
                       <td className="text-center px-4 py-4">
                         <div className="flex gap-2 justify-center items-center">

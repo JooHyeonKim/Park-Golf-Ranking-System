@@ -1,4 +1,4 @@
-export default function PdfDownloadButton({ isGenerating, onClick }) {
+export default function PdfDownloadButton({ isGenerating, onClick, label = 'PDF 다운로드' }) {
   return (
     <button
       onClick={onClick}
@@ -9,7 +9,7 @@ export default function PdfDownloadButton({ isGenerating, onClick }) {
           : 'bg-red-600 text-white hover:bg-red-700'
       }`}
     >
-      {isGenerating ? '⏳ PDF 생성 중...' : '📄 PDF 다운로드'}
+      {isGenerating ? '⏳ PDF 생성 중...' : `📄 ${label}`}
     </button>
   );
 }

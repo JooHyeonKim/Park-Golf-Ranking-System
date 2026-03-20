@@ -28,6 +28,7 @@ export default function App() {
     updatePlayer,
     addPlayerToCourse,
     removePlayerFromCourse,
+    updateGroupCount,
     setCurrentTournament
   } = useTournaments();
 
@@ -69,9 +70,25 @@ export default function App() {
     }
   }, [isLoading, isAuthenticated]);
 
+  // Footer (from main) - shown on most screens except score input
+  const showFooter = screenMode !== 'score' && screenMode !== 'collab-scorecard';
+
+  const footer = showFooter && (
+    <div className="fixed bottom-0 left-0 right-0 bg-gray-200 flex justify-center items-center gap-4 py-4 text-sm text-gray-500 z-50">
+      <span>
+        프로그램 제작문의:{' '}
+        <a href="mailto:subinkim0128@gmail.com" className="text-gray-500 underline">
+          subinkim0128@gmail.com
+        </a>
+      </span>
+      <span>|</span>
+      <span>개발자 후원 계좌: 신한 110500604303</span>
+    </div>
+  );
+
   // ==================== 혼자입력 핸들러 (기존 그대로) ====================
-  const handleAddTournament = (name, date, holeCount) => {
-    addTournament(name, date, holeCount);
+  const handleAddTournament = (name, date, holeCount, groupCount) => {
+    addTournament(name, date, holeCount, groupCount);
     setScreenMode('score');
   };
 
@@ -372,18 +389,21 @@ export default function App() {
   // 클럽 관리 (기존)
   if (screenMode === 'clubs') {
     return (
-      <ClubManagement
-        clubs={clubs}
-        onAddClub={addClub}
-        onEditClub={handleEditClub}
-        onDeleteClub={deleteClub}
-        onBack={handleBackToList}
-        members={members}
-        onAddMember={addMember}
-        onEditMember={editMember}
-        onDeleteMember={deleteMember}
-        getMembersByClub={getMembersByClub}
-      />
+      <div className="pb-16">
+        <ClubManagement
+          clubs={clubs}
+          onAddClub={addClub}
+          onEditClub={handleEditClub}
+          onDeleteClub={deleteClub}
+          onBack={handleBackToList}
+          members={members}
+          onAddMember={addMember}
+          onEditMember={editMember}
+          onDeleteMember={deleteMember}
+          getMembersByClub={getMembersByClub}
+        />
+        {footer}
+      </div>
     );
   }
 
@@ -392,25 +412,31 @@ export default function App() {
     const tournamentData = collabTournament || currentTournament;
     const backHandler = collabTournament ? handleBackFromCollabSummary : handleBackToScore;
     return (
-      <SummaryPage
-        tournament={tournamentData}
-        onBack={backHandler}
-      />
+      <div className="pb-16">
+        <SummaryPage
+          tournament={tournamentData}
+          onBack={backHandler}
+        />
+        {footer}
+      </div>
     );
   }
 
   // 대회 목록 (기존)
   if (screenMode === 'list' || !currentTournament) {
     return (
-      <TournamentList
-        tournaments={tournaments}
-        onSelect={handleSelectTournament}
-        onDelete={deleteTournament}
-        onAdd={handleAddTournament}
-        onViewSummary={handleViewSummary}
-        onGoToClubs={handleGoToClubs}
-        onBack={handleBackToModeSelect}
-      />
+      <div className="pb-16">
+        <TournamentList
+          tournaments={tournaments}
+          onSelect={handleSelectTournament}
+          onDelete={deleteTournament}
+          onAdd={handleAddTournament}
+          onViewSummary={handleViewSummary}
+          onGoToClubs={handleGoToClubs}
+          onBack={handleBackToModeSelect}
+        />
+        {footer}
+      </div>
     );
   }
 
@@ -423,6 +449,7 @@ export default function App() {
       onUpdatePlayer={updatePlayer}
       onAddPlayerToCourse={addPlayerToCourse}
       onRemovePlayerFromCourse={removePlayerFromCourse}
+      onUpdateGroupCount={updateGroupCount}
       onViewSummary={handleViewSummary}
       searchByName={searchByName}
     />

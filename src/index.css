@@ -89,4 +89,9 @@ input[type="number"] {
     max-width: 190mm;
     overflow: hidden;
   }
+
+  /* 인쇄 시 표 제목 배경 흰색 */
+  .bg-green-50 {
+    background-color: #ffffff !important;
+  }
 }
