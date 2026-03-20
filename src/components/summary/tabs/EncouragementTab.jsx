@@ -48,7 +48,7 @@ export default function EncouragementTab({ tournament }) {
 
       {/* 장려상 테이블 */}
       <div ref={tableRef} data-capture-id="장려상" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <div className="flex items-center justify-between px-4 py-5 bg-white">
+        <div className="flex items-center justify-between px-4 py-5 bg-green-50">
           <div></div>
           <h3 className="font-bold text-2xl">🎖️ {tournament.name} - 장려상</h3>
           <div className="flex gap-3">

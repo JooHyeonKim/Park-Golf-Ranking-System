@@ -34,7 +34,7 @@ export default function IndividualTab({ tournament }) {
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
       </div>
       <div ref={tableRef} data-capture-id="개인전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <h3 className="text-center font-bold text-2xl py-5 bg-white">🏅 {tournament.name} - 개인전</h3>
+        <h3 className="text-center font-bold text-2xl py-5 bg-green-50">🏅 {tournament.name} - 개인전</h3>
         <table className="w-full text-sm border-collapse">
           <thead>
             {/* 첫번째 줄: 남자 / 순위 / 여자 */}
@@ -99,7 +99,7 @@ export default function IndividualTab({ tournament }) {
         {/* 홀인원 수상자 */}
         {holeInOnePlayers.length > 0 && (
         <div className="mt-4">
-          <h3 className="text-center font-bold text-2xl py-5 bg-white">🎯 홀인원 수상자</h3>
+          <h3 className="text-center font-bold text-2xl py-5 bg-green-50">🎯 홀인원 수상자</h3>
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b-2">

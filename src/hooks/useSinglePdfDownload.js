@@ -67,6 +67,9 @@ export function useSinglePdfDownload(tableRef, tournamentName, label, rowsPerPag
       el.style.overflow = 'visible';
       el.style.width = 'auto';
       el.style.maxHeight = 'none';
+      // bg-green-50 요소를 캡처 시 흰색으로 임시 변경
+      const greenBgEls = el.querySelectorAll('.bg-green-50');
+      greenBgEls.forEach(e => { e.dataset.origBg = e.style.backgroundColor; e.style.backgroundColor = '#ffffff'; });
 
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
@@ -116,6 +119,9 @@ export function useSinglePdfDownload(tableRef, tournamentName, label, rowsPerPag
       console.error('PDF 생성 실패:', error);
       alert('PDF 생성에 실패했습니다. 다시 시도해주세요.');
     } finally {
+      // bg-green-50 복원
+      const greenBgEls = el.querySelectorAll('.bg-green-50');
+      greenBgEls.forEach(e => { e.style.backgroundColor = e.dataset.origBg || ''; delete e.dataset.origBg; });
       el.style.overflow = origOverflow;
       el.style.width = origWidth;
       el.style.maxHeight = origMaxHeight;
