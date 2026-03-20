@@ -81,9 +81,8 @@ export default function TeamTab({ tournament }) {
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
       </div>
       <div ref={tableRef} data-capture-id="단체전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <div className="flex items-center justify-between px-4 py-5 bg-green-50">
-          <div></div>
-          <h3 className="font-bold text-2xl">👥 {tournament.name} - 단체전</h3>
+        <div className="relative flex items-center justify-end px-4 py-5 bg-green-50">
+          <h3 className="absolute left-0 right-0 text-center font-bold text-2xl pointer-events-none">👥 {tournament.name} - 단체전</h3>
           <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
             <button
               onClick={() => setExcludeTop(false)}
