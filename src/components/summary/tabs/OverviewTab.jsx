@@ -122,7 +122,18 @@ export default function OverviewTab({ tournament }) {
                     <td className="py-2 px-2 text-center border-r">{player.scoreD ?? '-'}</td>
                   </>
                 )}
-                <td className="py-2 px-2 text-center border-r w-16">{player.holeInOne ? (player.holeInOne === true ? '✔' : player.holeInOne) : ''}</td>
+                <td className="py-2 px-2 text-center border-r w-16">
+                  {player.holeInOne ? (
+                    <span className="relative group cursor-pointer">
+                      ⛳
+                      {player.holeInOne !== true && (
+                        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                          {player.holeInOne}
+                        </span>
+                      )}
+                    </span>
+                  ) : ''}
+                </td>
                 <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">{player.total ?? '-'}</td>
                 <td className="py-2 px-2 text-center font-bold text-red-600 text-lg">
                   <div className="flex items-center justify-center gap-1">
