@@ -51,12 +51,12 @@ export default function IndividualTab({ tournament }) {
             </tr>
             {/* 두번째 줄: 성명, 타수 / (빈칸) / 성명, 타수 */}
             <tr className="border-b-2">
-              <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
               <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
+              <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
               <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[60px]">타수</th>
               <th className="bg-gray-200 py-2 px-3 text-center border-r min-w-[70px]"></th>
-              <th className="bg-pink-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
               <th className="bg-pink-100 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
+              <th className="bg-pink-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
               <th className="bg-pink-100 py-2 px-3 text-center min-w-[60px]">타수</th>
             </tr>
           </thead>
@@ -69,11 +69,11 @@ export default function IndividualTab({ tournament }) {
                   key={rankLabel}
                   className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                 >
-                  <td className="py-3 px-3 text-center border-r font-medium">
-                    {male?.name || ''}
-                  </td>
                   <td className="py-3 px-3 text-center border-r">
                     {male?.club || ''}
+                  </td>
+                  <td className="py-3 px-3 text-center border-r font-medium">
+                    {male?.name || ''}
                   </td>
                   <td className="py-3 px-3 text-center border-r font-semibold">
                     {male ? calculateTotal(male) : ''}
@@ -81,11 +81,11 @@ export default function IndividualTab({ tournament }) {
                   <td className="py-3 px-3 text-center border-r font-bold text-gray-700 bg-gray-100">
                     {rankLabel}
                   </td>
-                  <td className="py-3 px-3 text-center border-r font-medium">
-                    {female?.name || ''}
-                  </td>
                   <td className="py-3 px-3 text-center border-r">
                     {female?.club || ''}
+                  </td>
+                  <td className="py-3 px-3 text-center border-r font-medium">
+                    {female?.name || ''}
                   </td>
                   <td className="py-3 px-3 text-center font-semibold">
                     {female ? calculateTotal(female) : ''}
@@ -104,18 +104,18 @@ export default function IndividualTab({ tournament }) {
             <thead>
               <tr className="border-b-2">
                 <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[50px]">번호</th>
+                <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
                 <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
-                <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[50px]">성별</th>
-                <th className="bg-orange-200 py-2 px-3 text-center min-w-[80px]">클럽</th>
+                <th className="bg-orange-200 py-2 px-3 text-center min-w-[50px]">성별</th>
               </tr>
             </thead>
             <tbody>
               {holeInOnePlayers.map((player, index) => (
                 <tr key={player.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                   <td className="py-3 px-3 text-center border-r">{index + 1}</td>
+                  <td className="py-3 px-3 text-center border-r">{player.club}</td>
                   <td className="py-3 px-3 text-center border-r font-medium">{player.name}</td>
-                  <td className="py-3 px-3 text-center border-r">{player.gender}</td>
-                  <td className="py-3 px-3 text-center">{player.club}</td>
+                  <td className="py-3 px-3 text-center">{player.gender}</td>
                 </tr>
               ))}
             </tbody>

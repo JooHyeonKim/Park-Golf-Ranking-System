@@ -6,7 +6,7 @@ import ImageDownloadButton from '../../common/ImageDownloadButton';
 import PdfDownloadButton from '../../common/PdfDownloadButton';
 
 const DEFAULT_MAX_RANK = 10;
-const RANK_OPTIONS = [10, 11, 12, 13, 14, 15];
+const RANK_OPTIONS = [9, 10, 11, 12, 13, 14, 15];
 const INDIVIDUAL_TOP = 5; // 개인전 탭에서 이미 표시한 상위 인원 수
 
 export default function EncouragementTab({ tournament }) {
@@ -115,12 +115,12 @@ export default function EncouragementTab({ tournament }) {
             </tr>
             {/* 두번째 줄: 성명, 타수 / (빈칸) / 성명, 타수 */}
             <tr className="border-b-2">
-              <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
               <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
+              <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
               <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[60px]">타수</th>
               <th className="bg-gray-200 py-2 px-3 text-center border-r min-w-[70px]"></th>
-              <th className="bg-pink-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
               <th className="bg-pink-100 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
+              <th className="bg-pink-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
               <th className="bg-pink-100 py-2 px-3 text-center min-w-[60px]">타수</th>
             </tr>
           </thead>
@@ -133,11 +133,11 @@ export default function EncouragementTab({ tournament }) {
                   key={rankLabel}
                   className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                 >
-                  <td className="py-3 px-3 text-center border-r font-medium">
-                    {male?.name || ''}
-                  </td>
                   <td className="py-3 px-3 text-center border-r">
                     {male?.club || ''}
+                  </td>
+                  <td className="py-3 px-3 text-center border-r font-medium">
+                    {male?.name || ''}
                   </td>
                   <td className="py-3 px-3 text-center border-r font-semibold">
                     {male ? calculateTotal(male) : ''}
@@ -145,11 +145,11 @@ export default function EncouragementTab({ tournament }) {
                   <td className="py-3 px-3 text-center border-r font-bold text-gray-700 bg-gray-100">
                     {rankLabel}
                   </td>
-                  <td className="py-3 px-3 text-center border-r font-medium">
-                    {female?.name || ''}
-                  </td>
                   <td className="py-3 px-3 text-center border-r">
                     {female?.club || ''}
+                  </td>
+                  <td className="py-3 px-3 text-center border-r font-medium">
+                    {female?.name || ''}
                   </td>
                   <td className="py-3 px-3 text-center font-semibold">
                     {female ? calculateTotal(female) : ''}
