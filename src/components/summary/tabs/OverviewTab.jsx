@@ -98,6 +98,7 @@ export default function OverviewTab({ tournament }) {
                   <th className="bg-lime-200 py-3 px-2 text-center border-r">D코스</th>
                 </>
               )}
+              <th className="bg-orange-200 py-3 px-2 text-center border-r w-16">홀인원</th>
               <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
               <th className="bg-gray-300 py-3 px-2 text-center min-w-[60px]">순위</th>
             </tr>
@@ -121,6 +122,7 @@ export default function OverviewTab({ tournament }) {
                     <td className="py-2 px-2 text-center border-r">{player.scoreD ?? '-'}</td>
                   </>
                 )}
+                <td className="py-2 px-2 text-center border-r w-16">{player.holeInOne ? '✔' : ''}</td>
                 <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">{player.total ?? '-'}</td>
                 <td className="py-2 px-2 text-center font-bold text-red-600 text-lg">
                   <div className="flex items-center justify-center gap-1">

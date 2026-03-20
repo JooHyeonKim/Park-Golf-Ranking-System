@@ -34,7 +34,7 @@ export default function TeamTab({ tournament }) {
     const clubMap = new Map();
     eligible.forEach(player => {
       const clubName = player.club?.trim();
-      if (!clubName) return;
+      if (!clubName || clubName === '본부') return;
       if (!clubMap.has(clubName)) {
         clubMap.set(clubName, []);
       }
