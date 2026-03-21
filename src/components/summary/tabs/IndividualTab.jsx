@@ -10,6 +10,7 @@ const RANKS = ['우승', '준우승', '3위', '4위', '5위'];
 const INDIVIDUAL_TOP = 5;
 
 export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxRank = 10 }) {
+  const clubLabel = tournament.clubType === 'affiliation' ? '소속' : '클럽';
   const [allowDuplicate, setAllowDuplicate] = useState(false);
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '개인전');
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '개인전');
@@ -60,11 +61,11 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
               </th>
             </tr>
             <tr className="border-b-2">
-              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">{clubLabel}</th>
               <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
               <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[35px] sm:min-w-[60px]">타수</th>
               <th className="bg-gray-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[70px]"></th>
-              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">{clubLabel}</th>
               <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
               <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center min-w-[35px] sm:min-w-[60px]">타수</th>
             </tr>
@@ -137,7 +138,7 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
             <thead className="text-base sm:text-xl">
               <tr className="border-b-2">
                 <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[30px] sm:min-w-[50px]">번호</th>
-                <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+                <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">{clubLabel}</th>
                 <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
                 <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[30px] sm:min-w-[50px]">성별</th>
                 <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center min-w-[40px] sm:min-w-[60px]">홀 번호</th>

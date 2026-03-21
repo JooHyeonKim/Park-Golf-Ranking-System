@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTournaments } from './hooks/useTournaments';
 import { useClubs } from './hooks/useClubs';
+import { useAffiliations } from './hooks/useAffiliations';
 import { useMembers } from './hooks/useMembers';
 import TournamentList from './components/tournament/TournamentList';
 import ScoreTable from './components/score/ScoreTable';
@@ -21,6 +22,7 @@ export default function App() {
   } = useTournaments();
 
   const { clubs, addClub, editClub, deleteClub } = useClubs();
+  const { affiliations, addAffiliation, editAffiliation, deleteAffiliation } = useAffiliations();
   const {
     members,
     addMember,
@@ -31,10 +33,10 @@ export default function App() {
     updateMembersClub
   } = useMembers();
 
-  const [screenMode, setScreenMode] = useState('list'); // 'list' | 'score' | 'summary' | 'clubs'
+  const [screenMode, setScreenMode] = useState('list'); // 'list' | 'score' | 'summary' | 'clubs' | 'affiliations'
 
-  const handleAddTournament = (name, date, holeCount, groupCount) => {
-    addTournament(name, date, holeCount, groupCount);
+  const handleAddTournament = (name, date, holeCount, groupCount, clubType) => {
+    addTournament(name, date, holeCount, groupCount, clubType);
     setScreenMode('score');
   };
 
@@ -61,6 +63,15 @@ export default function App() {
 
   const handleGoToClubs = () => {
     setScreenMode('clubs');
+  };
+
+  const handleGoToAffiliations = () => {
+    setScreenMode('affiliations');
+  };
+
+  const handleEditAffiliation = async (oldName, newName) => {
+    const success = await editAffiliation(oldName, newName);
+    return success;
   };
 
   // 클럽명 변경 시 회원의 club 필드도 함께 업데이트
@@ -126,6 +137,27 @@ export default function App() {
     );
   }
 
+  if (screenMode === 'affiliations') {
+    return (
+      <div className="pb-16 bg-green-100 min-h-screen">
+        <ClubManagement
+          clubs={affiliations}
+          onAddClub={addAffiliation}
+          onEditClub={handleEditAffiliation}
+          onDeleteClub={deleteAffiliation}
+          onBack={handleBackToList}
+          members={members}
+          onAddMember={addMember}
+          onEditMember={editMember}
+          onDeleteMember={deleteMember}
+          getMembersByClub={getMembersByClub}
+          label="소속"
+        />
+        {footer}
+      </div>
+    );
+  }
+
   if (screenMode === 'list' || !currentTournament) {
     return (
       <div className="pb-16 bg-green-100 min-h-screen">
@@ -136,6 +168,7 @@ export default function App() {
           onAdd={handleAddTournament}
           onViewSummary={handleViewSummary}
           onGoToClubs={handleGoToClubs}
+          onGoToAffiliations={handleGoToAffiliations}
         />
         {footer}
       </div>
@@ -157,7 +190,7 @@ export default function App() {
   return (
     <ScoreTable
       tournament={currentTournament}
-      clubs={clubs}
+      clubs={currentTournament.clubType === 'affiliation' ? affiliations : clubs}
       onBack={handleBackToList}
       onUpdatePlayer={updatePlayer}
       onAddPlayerToCourse={addPlayerToCourse}

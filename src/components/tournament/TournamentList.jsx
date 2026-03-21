@@ -17,23 +17,25 @@ function getTournamentGroupCount(tournament) {
   return (tournament.groupsPerCourse || 9) * numCourses;
 }
 
-export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs }) {
+export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onGoToAffiliations }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
   const [newHoleCount, setNewHoleCount] = useState(36);
   const [newGroupCount, setNewGroupCount] = useState(getDefaultGroupCount(36));
+  const [newClubType, setNewClubType] = useState('club');
 
   const handleAdd = () => {
     if (!newName.trim()) {
       alert('대회명을 입력해주세요.');
       return;
     }
-    onAdd(newName.trim(), newDate, newHoleCount, newGroupCount);
+    onAdd(newName.trim(), newDate, newHoleCount, newGroupCount, newClubType);
     setNewName('');
     setNewDate(new Date().toISOString().split('T')[0]);
     setNewHoleCount(36);
     setNewGroupCount(getDefaultGroupCount(36));
+    setNewClubType('club');
     setShowAddForm(false);
   };
 
@@ -70,39 +72,50 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
             >
               클럽 관리
             </button>
+            <button
+              onClick={onGoToAffiliations}
+              className="px-3 py-2 sm:px-4 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors text-sm sm:text-base"
+            >
+              소속 관리
+            </button>
           </div>
         </div>
 
         {/* 새 대회 추가 폼 */}
         {showAddForm && (
-          <div className="bg-white rounded-xl p-3 sm:p-4 mb-4 shadow-sm">
-            <h3 className="font-bold text-gray-800 mb-3">새 대회 추가</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+          <div className="bg-white rounded-xl p-4 sm:p-5 mb-4 shadow-sm">
+            <h3 className="font-bold text-gray-800 mb-4 text-lg">새 대회 추가</h3>
+
+            {/* 대회명 + 날짜 */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               <input
                 type="text"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 placeholder="대회명"
-                className="px-3 py-2 sm:px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
               />
               <input
                 type="date"
                 value={newDate}
                 onChange={(e) => setNewDate(e.target.value)}
-                className="px-3 py-2 sm:px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-3 mb-3">
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">홀 수 선택</label>
-                <div className="flex gap-2">
+
+            {/* 옵션 선택 영역 */}
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              {/* 홀 수 */}
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-500 mb-1.5">홀 수</label>
+                <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 w-full">
                   <button
                     type="button"
                     onClick={() => handleHoleCountChange(18)}
-                    className={`flex-1 py-2 rounded-lg font-medium transition-colors ${
+                    className={`flex-1 py-2 text-sm font-medium transition-colors ${
                       newHoleCount === 18
                         ? 'bg-green-600 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        : 'bg-white text-gray-600 hover:bg-gray-100'
                     }`}
                   >
                     18홀
@@ -110,42 +123,72 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                   <button
                     type="button"
                     onClick={() => handleHoleCountChange(36)}
-                    className={`flex-1 py-2 rounded-lg font-medium transition-colors ${
+                    className={`flex-1 py-2 text-sm font-medium transition-colors ${
                       newHoleCount === 36
                         ? 'bg-green-600 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        : 'bg-white text-gray-600 hover:bg-gray-100'
                     }`}
                   >
                     36홀
                   </button>
                 </div>
               </div>
-              <div className="w-full sm:w-24">
-                <label className="block text-sm font-medium text-gray-700 mb-2">조 수</label>
+
+              {/* 구분 */}
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-500 mb-1.5">구분</label>
+                <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 w-full">
+                  <button
+                    type="button"
+                    onClick={() => setNewClubType('club')}
+                    className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                      newClubType === 'club'
+                        ? 'bg-green-600 text-white'
+                        : 'bg-white text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    클럽
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNewClubType('affiliation')}
+                    className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                      newClubType === 'affiliation'
+                        ? 'bg-green-600 text-white'
+                        : 'bg-white text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    소속
+                  </button>
+                </div>
+              </div>
+
+              {/* 조 수 */}
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-500 mb-1.5">조 수</label>
                 <select
                   value={newGroupCount}
                   onChange={(e) => setNewGroupCount(parseInt(e.target.value, 10))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg text-center text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   {Array.from({ length: maxGroups }, (_, i) => i + 1).map(n => (
                     <option key={n} value={n}>{n}조</option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-500 mt-1">
-                  총 {newGroupCount * 4}명
-                </p>
               </div>
             </div>
+
+            {/* 버튼 */}
             <div className="flex gap-2">
               <button
                 onClick={handleAdd}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
+                className="flex-1 py-2.5 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-colors"
               >
-                추가
+                대회 추가
               </button>
               <button
                 onClick={() => setShowAddForm(false)}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300"
+                className="px-6 py-2.5 bg-gray-200 text-gray-600 rounded-lg font-medium hover:bg-gray-300 transition-colors"
               >
                 취소
               </button>
@@ -176,7 +219,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                       <h3 className="font-bold text-base sm:text-lg text-gray-800">📋 {tournament.name}</h3>
                       <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-1 text-xs sm:text-sm text-gray-500">
                         <span>{tournament.date}</span>
-                        <span>{tournament.holeCount || 36}홀 / {groupCount}조</span>
+                        <span>{tournament.holeCount || 36}홀 / {groupCount}조 / {tournament.clubType === 'affiliation' ? '소속' : '클럽'}</span>
                         <span>참가: {playerCount}명</span>
                       </div>
                     </div>

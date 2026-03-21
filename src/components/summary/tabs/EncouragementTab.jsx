@@ -10,6 +10,7 @@ const RANK_OPTIONS = [9, 10, 11, 12, 13, 14, 15];
 const INDIVIDUAL_TOP = 5; // 개인전 탭에서 이미 표시한 상위 인원 수
 
 export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRank, onMaleMaxRankChange, onFemaleMaxRankChange }) {
+  const clubLabel = tournament.clubType === 'affiliation' ? '소속' : '클럽';
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '장려상');
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '장려상');
 
@@ -89,11 +90,11 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
               </th>
             </tr>
             <tr className="border-b-2">
-              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">{clubLabel}</th>
               <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
               <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[35px] sm:min-w-[60px]">타수</th>
               <th className="bg-gray-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[70px]"></th>
-              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">{clubLabel}</th>
               <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
               <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center min-w-[35px] sm:min-w-[60px]">타수</th>
             </tr>

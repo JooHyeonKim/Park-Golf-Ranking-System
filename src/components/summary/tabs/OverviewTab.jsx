@@ -9,6 +9,7 @@ import DetailScoreModal from '../../score/DetailScoreModal';
 
 export default function OverviewTab({ tournament }) {
   const is36Hole = (tournament.holeCount || 36) === 36;
+  const clubLabel = tournament.clubType === 'affiliation' ? '소속' : '클럽';
   const [sortBy, setSortBy] = useState('rank');
   const [genderFilter, setGenderFilter] = useState('all');
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
@@ -136,7 +137,7 @@ export default function OverviewTab({ tournament }) {
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[40px] sm:min-w-[60px]">순위</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">조</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">코스</th>
-              <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[50px] sm:min-w-[80px]">클럽</th>
+              <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[50px] sm:min-w-[80px]">{clubLabel}</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[50px]">성명</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[30px] sm:min-w-[50px]">성별</th>
               <th className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r whitespace-nowrap">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>

@@ -11,6 +11,7 @@ function getBaseCourse(course) {
 
 export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onAddPlayerToCourse, onRemovePlayerFromCourse, onUpdateGroupCount, onViewSummary, searchByName }) {
   const is36Hole = (tournament.holeCount || 36) === 36;
+  const clubLabel = tournament.clubType === 'affiliation' ? '소속' : '클럽';
   const [sortBy, setSortBy] = useState('group'); // 'rank' | 'group'
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
@@ -275,7 +276,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                 <th className="bg-gray-300 py-3 px-2 text-center border-r">코스</th>
                 <th className="bg-gray-300 py-3 px-3 text-center border-r min-w-[50px]">성명</th>
                 <th className="bg-gray-300 py-3 px-2 text-center border-r min-w-[50px]">성별</th>
-                <th className="bg-gray-300 py-3 px-3 text-center border-r min-w-[80px]">클럽</th>
+                <th className="bg-gray-300 py-3 px-3 text-center border-r min-w-[80px]">{clubLabel}</th>
 
                 {/* 하늘색 그룹 */}
                 <th className="bg-sky-200 py-3 px-2 text-center border-r">A코스</th>

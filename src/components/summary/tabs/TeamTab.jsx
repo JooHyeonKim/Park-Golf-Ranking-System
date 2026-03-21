@@ -8,6 +8,7 @@ import PdfDownloadButton from '../../common/PdfDownloadButton';
 const INDIVIDUAL_TOP = 5;
 
 export default function TeamTab({ tournament }) {
+  const clubLabel = tournament.clubType === 'affiliation' ? '소속' : '클럽';
   const [excludeTop, setExcludeTop] = useState(true);
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '단체전');
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '단체전');
@@ -69,7 +70,7 @@ export default function TeamTab({ tournament }) {
     return (
       <div className="bg-white rounded-lg p-12 text-center shadow-sm">
         <p className="text-xl text-gray-600">단체전 집계</p>
-        <p className="text-sm text-gray-400 mt-2">클럽이 등록된 선수가 없습니다</p>
+        <p className="text-sm text-gray-400 mt-2">{clubLabel}이(가) 등록된 선수가 없습니다</p>
       </div>
     );
   }
@@ -113,7 +114,7 @@ export default function TeamTab({ tournament }) {
                 순위
               </th>
               <th rowSpan={2} className="bg-gray-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[50px] sm:min-w-[80px]">
-                클럽명
+                {clubLabel}명
               </th>
               <th rowSpan={2} className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[40px] sm:min-w-[60px]">
                 합계
