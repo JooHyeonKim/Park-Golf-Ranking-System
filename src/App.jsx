@@ -112,6 +112,8 @@ export default function App() {
   };
 
   // ==================== 모드 선택 핸들러 ====================
+  const collabEnabled = import.meta.env.VITE_ENABLE_COLLAB === 'true';
+
   const handleSelectSolo = () => {
     setScreenMode('list');
   };
@@ -452,7 +454,7 @@ export default function App() {
           onAdd={handleAddTournament}
           onViewSummary={handleViewSummary}
           onGoToClubs={handleGoToClubs}
-          onCollab={handleSelectCollab}
+          onCollab={collabEnabled ? handleSelectCollab : undefined}
         />
         {footer}
       </div>
