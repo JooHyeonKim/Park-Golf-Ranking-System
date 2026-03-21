@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useRanking } from '../../../hooks/useRanking';
+import { calculateRankings } from '../../../utils/ranking';
 import { useImageCapture } from '../../../hooks/useImageCapture';
 import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
 import ImageDownloadButton from '../../common/ImageDownloadButton';
@@ -21,10 +22,16 @@ export default function OverviewTab({ tournament }) {
     ? allSortedPlayers
     : allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B'));
 
-  // 성별 필터 적용
-  const displayPlayers = genderFilter === 'all'
-    ? sortedPlayers
-    : sortedPlayers.filter(p => p.gender === genderFilter);
+  // 성별 필터 적용 + 순위 재계산 (A/B/C/D + 상세점수 동점 처리 포함)
+  const displayPlayers = useMemo(() => {
+    if (genderFilter === 'all') return sortedPlayers;
+    const filteredPlayers = sortedPlayers.filter(p => p.gender === genderFilter);
+    // calculateRankings으로 순위 재계산 (comparePlayers 로직 동일 적용)
+    const reranked = calculateRankings(filteredPlayers);
+    // 기존 정렬(조별 등) 유지하면서 순위만 매핑
+    const rankMap = new Map(reranked.map(p => [p.id, p.rank]));
+    return filteredPlayers.map(p => ({ ...p, rank: rankMap.get(p.id) ?? null }));
+  }, [sortedPlayers, genderFilter]);
 
   // PDF/이미지 다운로드 시 전체 모드로 캡처
   const handlePdfDownloadAll = useCallback(async () => {
@@ -122,8 +129,8 @@ export default function OverviewTab({ tournament }) {
             ))}
           </div>
         </div>
-        <table className="w-full text-xs sm:text-sm border-collapse">
-          <thead>
+        <table className="w-full text-sm sm:text-lg font-bold border-collapse">
+          <thead className="text-base sm:text-xl">
             <tr className="border-b-2">
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[40px] sm:min-w-[60px]">순위</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">조</th>
@@ -134,12 +141,12 @@ export default function OverviewTab({ tournament }) {
               <th className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r whitespace-nowrap">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
               <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">A코스</th>
               <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">B코스</th>
-              <th className="bg-sky-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-bold">총계</th>
+              <th className="bg-sky-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
               {is36Hole && (
                 <>
                   <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">C코스</th>
                   <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">D코스</th>
-                  <th className="bg-lime-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-bold">총계</th>
+                  <th className="bg-lime-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
                 </>
               )}
               <th className="bg-orange-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r w-10 sm:w-16">홀인원</th>
@@ -165,10 +172,10 @@ export default function OverviewTab({ tournament }) {
                     )}
                   </div>
                 </td>
-                <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-medium">{player.course.split('-').length >= 3 ? `${player.group}-1` : player.group}</td>
+                <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course.split('-').length >= 3 ? `${player.group}-1` : player.group}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-3 border-r">{player.club || '-'}</td>
-                <td className="py-1 px-1 sm:py-2 sm:px-3 border-r font-medium">{player.name || '-'}</td>
+                <td className="py-1 px-1 sm:py-2 sm:px-3 border-r">{player.name || '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.gender || '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-yellow-50 text-sm sm:text-lg">{player.total ?? '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreA ?? '-'}</td>

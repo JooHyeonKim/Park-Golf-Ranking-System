@@ -75,16 +75,16 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
             </div>
           </div>
         </div>
-        <table className="w-full text-xs sm:text-sm border-collapse">
-          <thead>
+        <table className="w-full text-sm sm:text-lg font-bold border-collapse">
+          <thead className="text-base sm:text-xl">
             <tr className="border-b">
-              <th colSpan={3} className="bg-blue-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r text-sm sm:text-base font-bold">
+              <th colSpan={3} className="bg-blue-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">
                 남자
               </th>
-              <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r text-sm sm:text-base font-bold">
+              <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">
                 순위
               </th>
-              <th colSpan={3} className="bg-pink-200 py-2 px-1 sm:py-3 sm:px-2 text-center text-sm sm:text-base font-bold">
+              <th colSpan={3} className="bg-pink-200 py-2 px-1 sm:py-3 sm:px-2 text-center">
                 여자
               </th>
             </tr>
@@ -113,10 +113,10 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showMale ? (male?.club || '') : ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-medium">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showMale ? (male?.name || '') : ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-semibold">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showMale && male ? calculateTotal(male) : ''}
                   </td>
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-bold text-gray-700 bg-gray-100">
@@ -125,10 +125,10 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showFemale ? (female?.club || '') : ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-medium">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showFemale ? (female?.name || '') : ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center font-semibold">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center">
                     {showFemale && female ? calculateTotal(female) : ''}
                   </td>
                 </tr>

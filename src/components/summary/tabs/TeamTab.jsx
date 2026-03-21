@@ -106,8 +106,8 @@ export default function TeamTab({ tournament }) {
             </button>
           </div>
         </div>
-        <table className="w-full text-xs sm:text-sm border-collapse">
-          <thead>
+        <table className="w-full text-sm sm:text-lg font-bold border-collapse">
+          <thead className="text-base sm:text-xl">
             <tr className="border-b">
               <th rowSpan={2} className="bg-gray-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[35px] sm:min-w-[50px]">
                 순위
@@ -115,7 +115,7 @@ export default function TeamTab({ tournament }) {
               <th rowSpan={2} className="bg-gray-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[50px] sm:min-w-[80px]">
                 클럽명
               </th>
-              <th rowSpan={2} className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[40px] sm:min-w-[60px] font-bold">
+              <th rowSpan={2} className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[40px] sm:min-w-[60px]">
                 합계
               </th>
               {[1, 2, 3, 4].map(n => (
@@ -139,7 +139,7 @@ export default function TeamTab({ tournament }) {
                 <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-bold text-gray-700">
                   {club.rank}
                 </td>
-                <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-medium">
+                <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r">
                   {club.clubName}
                 </td>
                 <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-bold text-yellow-700 bg-yellow-50">
@@ -150,7 +150,7 @@ export default function TeamTab({ tournament }) {
                     <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r">
                       {club.players[i]?.name || ''}
                     </td>
-                    <td className={`py-2 px-1 sm:py-3 sm:px-2 text-center font-semibold ${i < 3 ? 'border-r' : ''}`}>
+                    <td className={`py-2 px-1 sm:py-3 sm:px-2 text-center ${i < 3 ? 'border-r' : ''}`}>
                       {club.players[i] ? calculateTotal(club.players[i]) : ''}
                     </td>
                   </Fragment>
