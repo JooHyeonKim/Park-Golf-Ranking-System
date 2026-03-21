@@ -111,6 +111,7 @@ export default function OverviewTab({ tournament }) {
 
       {/* 테이블 */}
       <div ref={tableRef} data-capture-id="전체현황" className="bg-white rounded-lg shadow-sm overflow-x-auto">
+       <div className="inline-block min-w-full">
         <div className="relative flex items-center justify-end px-2 py-3 sm:px-4 sm:py-5 bg-green-50">
           <h3 className="absolute left-0 right-0 text-center font-bold text-base sm:text-2xl pointer-events-none">🏆 {tournament.name} - 전체 현황</h3>
           <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
@@ -129,7 +130,7 @@ export default function OverviewTab({ tournament }) {
             ))}
           </div>
         </div>
-        <table className="w-full text-sm sm:text-lg font-bold border-collapse">
+        <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
           <thead className="text-base sm:text-xl">
             <tr className="border-b-2">
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[40px] sm:min-w-[60px]">순위</th>
@@ -204,6 +205,7 @@ export default function OverviewTab({ tournament }) {
             ))}
           </tbody>
         </table>
+       </div>
       </div>
 
       {/* 상세 점수 보기 모달 */}
