@@ -355,7 +355,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           value={player.gender || ''}
                           onChange={(e) => handleInputChange(player.id, 'gender', e.target.value)}
                           disabled={isRankingCalculated}
-                          className={`w-full px-1 sm:px-2 py-1.5 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                          className={`min-w-[50px] w-full px-1 sm:px-2 py-1.5 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                         >
                           <option value="">-</option>
                           <option value="남">남</option>
