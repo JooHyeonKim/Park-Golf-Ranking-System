@@ -51,7 +51,7 @@ export default function App() {
   // | 'collab-role' | 'collab-leader-action' | 'collab-leader-setup' | 'collab-leader-dashboard'
   // | 'collab-score-view'
   // | 'collab-join' | 'collab-group-select' | 'collab-scorecard' | 'collab-submission-status'
-  const [screenMode, setScreenMode] = useState('mode-select');
+  const [screenMode, setScreenMode] = useState('list');
 
   // 협동입력 관련 state
   const [collabTournamentId, setCollabTournamentId] = useState(null);
@@ -125,7 +125,7 @@ export default function App() {
   };
 
   const showFooter = screenMode !== 'score' && screenMode !== 'collab-scorecard';
-  const isMainScreen = screenMode === 'list' || screenMode === 'mode-select';
+  const isMainScreen = screenMode === 'list';
 
   const footer = showFooter && (
     <>
@@ -168,7 +168,7 @@ export default function App() {
   const handleLogout = async () => {
     await signOut();
     localStorage.removeItem('parkgolf-auth-redirect-intent');
-    setScreenMode('mode-select');
+    setScreenMode('list');
   };
 
   const handleBackToModeSelect = () => {
@@ -177,7 +177,7 @@ export default function App() {
     setCollabGroupNumber(null);
     setCollabNickname('');
     localStorage.removeItem('parkgolf-auth-redirect-intent');
-    setScreenMode('mode-select');
+    setScreenMode('list');
   };
 
   // ==================== 협동입력 핸들러 ====================
@@ -452,7 +452,7 @@ export default function App() {
           onAdd={handleAddTournament}
           onViewSummary={handleViewSummary}
           onGoToClubs={handleGoToClubs}
-          onBack={handleBackToModeSelect}
+          onCollab={handleSelectCollab}
         />
         {footer}
       </div>

@@ -17,7 +17,7 @@ function getTournamentGroupCount(tournament) {
   return (tournament.groupsPerCourse || 9) * numCourses;
 }
 
-export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onBack }) {
+export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onCollab, onBack }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
@@ -53,23 +53,13 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-3 sm:p-4 md:p-6">
-      {/* 돌아가기 버튼 - 컨테이너 바깥 좌측 */}
-      <div className="mb-4">
-        <button
-          onClick={onBack}
-          className="text-gray-600 hover:text-gray-800 font-medium"
-        >
-          ← 돌아가기
-        </button>
-      </div>
-
       <div className="max-w-6xl mx-auto">
         {/* 헤더 */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-4">
           <div className="flex items-center gap-4">
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">파크골프 대회 관리</h1>
           </div>
-          <div className="flex gap-2 sm:gap-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             <button
               onClick={() => setShowAddForm(!showAddForm)}
               className="px-3 py-2 sm:px-5 sm:py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors text-sm sm:text-base"
@@ -82,6 +72,14 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
             >
               클럽 관리
             </button>
+            {onCollab && (
+              <button
+                onClick={onCollab}
+                className="px-3 py-2 sm:px-5 sm:py-2.5 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors text-sm sm:text-base"
+              >
+                협동 입력
+              </button>
+            )}
           </div>
         </div>
 
