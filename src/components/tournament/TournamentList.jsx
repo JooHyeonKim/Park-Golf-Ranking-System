@@ -59,9 +59,9 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
           <div className="flex justify-end mb-2">
             <button
               onClick={onCollab}
-              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white text-amber-700 rounded-lg font-bold hover:bg-amber-50 transition-colors text-xs sm:text-sm border-2 border-amber-400 animate-gold-glow"
+              className="px-4 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-900 rounded-full font-bold hover:from-amber-500 hover:to-yellow-400 transition-all text-xs sm:text-sm animate-gold-glow"
             >
-              🤝 협동 입력
+              🤝 협동 입력 모드
             </button>
           </div>
         )}
