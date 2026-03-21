@@ -59,7 +59,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
           <div className="flex items-center gap-4">
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">파크골프 대회 관리</h1>
           </div>
-          <div className="flex flex-wrap gap-2 sm:gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <button
               onClick={() => setShowAddForm(!showAddForm)}
               className="px-3 py-2 sm:px-5 sm:py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors text-sm sm:text-base"
@@ -72,16 +72,21 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
             >
               클럽 관리
             </button>
-            {onCollab && (
-              <button
-                onClick={onCollab}
-                className="px-3 py-2 sm:px-5 sm:py-2.5 bg-white text-amber-700 rounded-lg font-bold hover:bg-amber-50 transition-colors text-sm sm:text-base border-2 border-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.4)] animate-gold-glow"
-              >
-                🤝 협동 입력
-              </button>
-            )}
           </div>
         </div>
+
+        {/* 협동 입력 */}
+        {onCollab && (
+          <div className="mb-4 sm:mb-6">
+            <button
+              onClick={onCollab}
+              className="w-full py-3 sm:py-4 bg-white text-amber-700 rounded-xl font-bold hover:bg-amber-50 transition-colors text-sm sm:text-base border-2 border-amber-400 animate-gold-glow flex items-center justify-center gap-2"
+            >
+              🤝 협동 입력 모드
+              <span className="text-xs sm:text-sm font-normal text-amber-500">여러 명이 함께 점수 입력</span>
+            </button>
+          </div>
+        )}
 
         {/* 새 대회 추가 폼 */}
         {showAddForm && (
