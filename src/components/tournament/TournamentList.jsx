@@ -52,21 +52,21 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
   const maxGroups = getMaxGroupCount(newHoleCount);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-4">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-3 sm:p-4">
       {/* 헤더 */}
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">파크골프 대회 관리</h1>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">파크골프 대회 관리</h1>
           <div className="flex gap-2">
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+              className="px-3 py-2 sm:px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors text-sm sm:text-base"
             >
               + 새 대회
             </button>
             <button
               onClick={onGoToClubs}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="px-3 py-2 sm:px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm sm:text-base"
             >
               클럽 관리
             </button>
@@ -75,24 +75,24 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
 
         {/* 새 대회 추가 폼 */}
         {showAddForm && (
-          <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
+          <div className="bg-white rounded-xl p-3 sm:p-4 mb-4 shadow-sm">
             <h3 className="font-bold text-gray-800 mb-3">새 대회 추가</h3>
-            <div className="grid grid-cols-2 gap-3 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
               <input
                 type="text"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 placeholder="대회명"
-                className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="px-3 py-2 sm:px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               <input
                 type="date"
                 value={newDate}
                 onChange={(e) => setNewDate(e.target.value)}
-                className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="px-3 py-2 sm:px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
-            <div className="flex gap-3 mb-3">
+            <div className="flex flex-col sm:flex-row gap-3 mb-3">
               <div className="flex-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">홀 수 선택</label>
                 <div className="flex gap-2">
@@ -120,7 +120,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                   </button>
                 </div>
               </div>
-              <div className="w-24">
+              <div className="w-full sm:w-24">
                 <label className="block text-sm font-medium text-gray-700 mb-2">조 수</label>
                 <select
                   value={newGroupCount}
@@ -169,12 +169,12 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
               return (
                 <div
                   key={tournament.id}
-                  className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow"
+                  className="bg-white rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg text-gray-800">📋 {tournament.name}</h3>
-                      <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
+                      <h3 className="font-bold text-base sm:text-lg text-gray-800">📋 {tournament.name}</h3>
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-1 text-xs sm:text-sm text-gray-500">
                         <span>{tournament.date}</span>
                         <span>{tournament.holeCount || 36}홀 / {groupCount}조</span>
                         <span>참가: {playerCount}명</span>
@@ -183,19 +183,19 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                     <div className="flex gap-2">
                       <button
                         onClick={() => onSelect(tournament.id)}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 text-sm"
                       >
                         보기
                       </button>
                       <button
                         onClick={() => onViewSummary(tournament.id)}
-                        className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 text-sm"
                       >
                         집계
                       </button>
                       <button
                         onClick={() => handleDelete(tournament.id, tournament.name)}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 text-sm"
                       >
                         삭제
                       </button>

@@ -73,25 +73,25 @@ export default function App() {
   };
 
   const showFooter = screenMode !== 'score';
-  const isMainScreen = screenMode === 'list' || !currentTournament;
+  const isMainScreen = screenMode === 'list';
 
   const footer = showFooter && (
     <>
       {isMainScreen ? (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-2xl animate-bounce-slow">
-          <div className="bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300 rounded-2xl shadow-lg px-8 py-7 flex justify-center">
+          <div className="bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300 rounded-2xl shadow-lg px-4 py-4 sm:px-8 sm:py-7 flex justify-center">
             <div className="inline-block text-left">
-              <div className="text-xl font-bold text-amber-800 mb-2">
+              <div className="text-sm sm:text-xl font-bold text-amber-800 mb-1 sm:mb-2">
                 ✉️ 프로그램 제작문의: <a href="mailto:subinkim0128@gmail.com" className="underline text-amber-600 hover:text-amber-500">subinkim0128@gmail.com</a>
               </div>
-              <div className="text-xl font-bold text-amber-800">
+              <div className="text-sm sm:text-xl font-bold text-amber-800">
                 ☕ 개발자 후원 계좌: 신한 110-500-604303
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-200 flex justify-center items-center gap-4 py-4 text-sm text-gray-500">
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-200 flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-4 py-2 sm:py-4 text-xs sm:text-sm text-gray-500">
           <span>
             프로그램 제작문의:{' '}
             <a href="mailto:subinkim0128@gmail.com" className="text-gray-500 underline">
@@ -108,7 +108,7 @@ export default function App() {
   // 화면 라우팅
   if (screenMode === 'clubs') {
     return (
-      <div className="pb-16">
+      <div className="pb-16 bg-green-100 min-h-screen">
         <ClubManagement
           clubs={clubs}
           onAddClub={addClub}
@@ -128,7 +128,7 @@ export default function App() {
 
   if (screenMode === 'list' || !currentTournament) {
     return (
-      <div className="pb-16">
+      <div className="pb-16 bg-green-100 min-h-screen">
         <TournamentList
           tournaments={tournaments}
           onSelect={handleSelectTournament}
@@ -144,7 +144,7 @@ export default function App() {
 
   if (screenMode === 'summary') {
     return (
-      <div className="pb-16">
+      <div className="pb-16 bg-green-100 min-h-screen">
         <SummaryPage
           tournament={currentTournament}
           onBack={handleBackToScore}

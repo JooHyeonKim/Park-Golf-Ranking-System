@@ -46,27 +46,27 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
 
       {/* 장려상 테이블 */}
       <div ref={tableRef} data-capture-id="장려상" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <div className="relative flex items-center justify-end px-4 py-5 bg-green-50">
-          <h3 className="absolute left-0 right-0 text-center font-bold text-2xl pointer-events-none">🎖️ {tournament.name} - 장려상</h3>
-          <div className="flex gap-3">
-            <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-200 rounded-lg px-2.5 py-1.5">
-              <span className="text-sm font-bold text-blue-700">남</span>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
+          <h3 className="text-center sm:text-left font-bold text-sm sm:text-2xl">🎖️ {tournament.name} - 장려상</h3>
+          <div className="flex gap-2 sm:gap-3 justify-center sm:justify-end">
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-blue-50 border border-blue-200 rounded-lg px-1.5 py-1 sm:px-2.5 sm:py-1.5">
+              <span className="text-xs sm:text-sm font-bold text-blue-700">남</span>
               <select
                 value={maleMaxRank}
                 onChange={(e) => onMaleMaxRankChange(parseInt(e.target.value, 10))}
-                className="px-1.5 py-1 border border-blue-300 rounded text-sm font-medium bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="px-1 py-0.5 sm:px-1.5 sm:py-1 border border-blue-300 rounded text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 {RANK_OPTIONS.map(option => (
                   <option key={option} value={option}>{option}위</option>
                 ))}
               </select>
             </div>
-            <div className="flex items-center gap-1.5 bg-pink-50 border border-pink-200 rounded-lg px-2.5 py-1.5">
-              <span className="text-sm font-bold text-pink-700">여</span>
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-pink-50 border border-pink-200 rounded-lg px-1.5 py-1 sm:px-2.5 sm:py-1.5">
+              <span className="text-xs sm:text-sm font-bold text-pink-700">여</span>
               <select
                 value={femaleMaxRank}
                 onChange={(e) => onFemaleMaxRankChange(parseInt(e.target.value, 10))}
-                className="px-1.5 py-1 border border-pink-300 rounded text-sm font-medium bg-white focus:outline-none focus:ring-1 focus:ring-pink-500"
+                className="px-1 py-0.5 sm:px-1.5 sm:py-1 border border-pink-300 rounded text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-1 focus:ring-pink-500"
               >
                 {RANK_OPTIONS.map(option => (
                   <option key={option} value={option}>{option}위</option>
@@ -75,29 +75,27 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
             </div>
           </div>
         </div>
-        <table className="w-full text-sm border-collapse">
+        <table className="w-full text-xs sm:text-sm border-collapse">
           <thead>
-            {/* 첫번째 줄: 남자 / 순위 / 여자 */}
             <tr className="border-b">
-              <th colSpan={3} className="bg-blue-200 py-3 px-2 text-center border-r text-base font-bold">
+              <th colSpan={3} className="bg-blue-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r text-sm sm:text-base font-bold">
                 남자
               </th>
-              <th className="bg-gray-300 py-3 px-2 text-center border-r text-base font-bold">
+              <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r text-sm sm:text-base font-bold">
                 순위
               </th>
-              <th colSpan={3} className="bg-pink-200 py-3 px-2 text-center text-base font-bold">
+              <th colSpan={3} className="bg-pink-200 py-2 px-1 sm:py-3 sm:px-2 text-center text-sm sm:text-base font-bold">
                 여자
               </th>
             </tr>
-            {/* 두번째 줄 */}
             <tr className="border-b-2">
-              <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
-              <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
-              <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[60px]">타수</th>
-              <th className="bg-gray-200 py-2 px-3 text-center border-r min-w-[70px]"></th>
-              <th className="bg-pink-100 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
-              <th className="bg-pink-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
-              <th className="bg-pink-100 py-2 px-3 text-center min-w-[60px]">타수</th>
+              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
+              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[35px] sm:min-w-[60px]">타수</th>
+              <th className="bg-gray-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[70px]"></th>
+              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
+              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center min-w-[35px] sm:min-w-[60px]">타수</th>
             </tr>
           </thead>
           <tbody>
@@ -112,25 +110,25 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
                   key={rankNumber}
                   className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                 >
-                  <td className="py-3 px-3 text-center border-r">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showMale ? (male?.club || '') : ''}
                   </td>
-                  <td className="py-3 px-3 text-center border-r font-medium">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-medium">
                     {showMale ? (male?.name || '') : ''}
                   </td>
-                  <td className="py-3 px-3 text-center border-r font-semibold">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-semibold">
                     {showMale && male ? calculateTotal(male) : ''}
                   </td>
-                  <td className="py-3 px-3 text-center border-r font-bold text-gray-700 bg-gray-100">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-bold text-gray-700 bg-gray-100">
                     {rankNumber}위
                   </td>
-                  <td className="py-3 px-3 text-center border-r">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showFemale ? (female?.club || '') : ''}
                   </td>
-                  <td className="py-3 px-3 text-center border-r font-medium">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-medium">
                     {showFemale ? (female?.name || '') : ''}
                   </td>
-                  <td className="py-3 px-3 text-center font-semibold">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center font-semibold">
                     {showFemale && female ? calculateTotal(female) : ''}
                   </td>
                 </tr>

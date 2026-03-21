@@ -82,7 +82,7 @@ export default function TeamTab({ tournament }) {
       </div>
       <div ref={tableRef} data-capture-id="단체전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
         <div className="relative flex items-center justify-end px-4 py-5 bg-green-50">
-          <h3 className="absolute left-0 right-0 text-center font-bold text-2xl pointer-events-none">👥 {tournament.name} - 단체전</h3>
+          <h3 className="absolute left-0 right-0 text-center font-bold text-base sm:text-2xl pointer-events-none">👥 {tournament.name} - 단체전</h3>
           <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
             <button
               onClick={() => setExcludeTop(false)}
@@ -106,20 +106,20 @@ export default function TeamTab({ tournament }) {
             </button>
           </div>
         </div>
-        <table className="w-full text-sm border-collapse">
+        <table className="w-full text-xs sm:text-sm border-collapse">
           <thead>
             <tr className="border-b">
-              <th rowSpan={2} className="bg-gray-200 py-3 px-2 text-center border-r min-w-[50px]">
+              <th rowSpan={2} className="bg-gray-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[35px] sm:min-w-[50px]">
                 순위
               </th>
-              <th rowSpan={2} className="bg-gray-200 py-3 px-2 text-center border-r min-w-[80px]">
+              <th rowSpan={2} className="bg-gray-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[50px] sm:min-w-[80px]">
                 클럽명
               </th>
-              <th rowSpan={2} className="bg-yellow-200 py-3 px-2 text-center border-r min-w-[60px] font-bold">
+              <th rowSpan={2} className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[40px] sm:min-w-[60px] font-bold">
                 합계
               </th>
               {[1, 2, 3, 4].map(n => (
-                <th key={n} colSpan={2} className="bg-green-200 py-3 px-2 text-center border-r last:border-r-0 min-w-[120px]">
+                <th key={n} colSpan={2} className="bg-green-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r last:border-r-0 min-w-[70px] sm:min-w-[120px]">
                   {n}
                 </th>
               ))}
@@ -127,8 +127,8 @@ export default function TeamTab({ tournament }) {
             <tr className="border-b-2">
               {[1, 2, 3, 4].map(n => (
                 <Fragment key={n}>
-                  <th className="bg-green-100 py-2 px-2 text-center border-r min-w-[60px]">성명</th>
-                  <th className={`bg-green-100 py-2 px-2 text-center min-w-[50px] ${n < 4 ? 'border-r' : ''}`}>타수</th>
+                  <th className="bg-green-100 py-1.5 px-1 sm:py-2 sm:px-2 text-center border-r min-w-[35px] sm:min-w-[60px]">성명</th>
+                  <th className={`bg-green-100 py-1.5 px-1 sm:py-2 sm:px-2 text-center min-w-[30px] sm:min-w-[50px] ${n < 4 ? 'border-r' : ''}`}>타수</th>
                 </Fragment>
               ))}
             </tr>
@@ -136,21 +136,21 @@ export default function TeamTab({ tournament }) {
           <tbody>
             {teamRankings.map((club, index) => (
               <tr key={club.clubName} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                <td className="py-3 px-2 text-center border-r font-bold text-gray-700">
+                <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-bold text-gray-700">
                   {club.rank}
                 </td>
-                <td className="py-3 px-2 text-center border-r font-medium">
+                <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-medium">
                   {club.clubName}
                 </td>
-                <td className="py-3 px-2 text-center border-r font-bold text-yellow-700 bg-yellow-50">
+                <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-bold text-yellow-700 bg-yellow-50">
                   {club.total}
                 </td>
                 {[0, 1, 2, 3].map(i => (
                   <Fragment key={i}>
-                    <td className="py-3 px-2 text-center border-r">
+                    <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r">
                       {club.players[i]?.name || ''}
                     </td>
-                    <td className={`py-3 px-2 text-center font-semibold ${i < 3 ? 'border-r' : ''}`}>
+                    <td className={`py-2 px-1 sm:py-3 sm:px-2 text-center font-semibold ${i < 3 ? 'border-r' : ''}`}>
                       {club.players[i] ? calculateTotal(club.players[i]) : ''}
                     </td>
                   </Fragment>
