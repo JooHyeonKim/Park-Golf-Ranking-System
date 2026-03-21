@@ -75,9 +75,9 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
             {onCollab && (
               <button
                 onClick={onCollab}
-                className="px-3 py-2 sm:px-5 sm:py-2.5 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors text-sm sm:text-base"
+                className="px-3 py-1.5 sm:px-5 sm:py-2 border-2 border-dashed border-purple-400 text-purple-600 rounded-full font-medium hover:bg-purple-50 hover:border-purple-500 transition-colors text-sm sm:text-base"
               >
-                협동 입력
+                🤝 협동 입력
               </button>
             )}
           </div>
