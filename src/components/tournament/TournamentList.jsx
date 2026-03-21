@@ -54,17 +54,21 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-3 sm:p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
-        {/* 상단: 제목 + 협동입력 */}
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">파크골프 대회 관리</h1>
-          {onCollab && (
+        {/* 상단: 협동입력 (우측) */}
+        {onCollab && (
+          <div className="flex justify-end mb-2">
             <button
               onClick={onCollab}
               className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white text-amber-700 rounded-lg font-bold hover:bg-amber-50 transition-colors text-xs sm:text-sm border-2 border-amber-400 animate-gold-glow"
             >
               🤝 협동 입력
             </button>
-          )}
+          </div>
+        )}
+
+        {/* 메인 제목 */}
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800">⛳ 파크골프 스코어 집계 프로그램</h1>
         </div>
 
         {/* 대회 관리 버튼 */}
