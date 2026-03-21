@@ -52,7 +52,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
   const maxGroups = getMaxGroupCount(newHoleCount);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-6">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-3 sm:p-4 md:p-6">
       {/* 돌아가기 버튼 - 컨테이너 바깥 좌측 */}
       <div className="mb-4">
         <button
@@ -65,20 +65,20 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
 
       <div className="max-w-6xl mx-auto">
         {/* 헤더 */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-4">
           <div className="flex items-center gap-4">
-            <h1 className="text-3xl font-bold text-gray-800">파크골프 대회 관리</h1>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">파크골프 대회 관리</h1>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="px-5 py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+              className="px-3 py-2 sm:px-5 sm:py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors text-sm sm:text-base"
             >
               + 새 대회
             </button>
             <button
               onClick={onGoToClubs}
-              className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="px-3 py-2 sm:px-5 sm:py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm sm:text-base"
             >
               클럽 관리
             </button>
@@ -87,10 +87,10 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
 
         {/* 새 대회 추가 폼 */}
         {showAddForm && (
-          <div className="bg-white rounded-xl p-6 mb-6 shadow-sm border">
-            <h3 className="font-bold text-lg text-gray-800 mb-4">새 대회 추가</h3>
-            <div className="flex items-end gap-4">
-              <div className="flex-1">
+          <div className="bg-white rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 shadow-sm border">
+            <h3 className="font-bold text-lg text-gray-800 mb-3 sm:mb-4">새 대회 추가</h3>
+            <div className="flex flex-col md:flex-row md:items-end gap-2 md:gap-4">
+              <div className="w-full md:flex-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">대회명</label>
                 <input
                   type="text"
@@ -101,22 +101,22 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                   onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
                 />
               </div>
-              <div className="w-48">
+              <div className="w-full md:w-48">
                 <label className="block text-sm font-medium text-gray-700 mb-1">날짜</label>
                 <input
                   type="date"
                   value={newDate}
                   onChange={(e) => setNewDate(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full px-3 py-2 sm:px-4 sm:py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
-              <div className="w-40">
+              <div className="w-full md:w-40">
                 <label className="block text-sm font-medium text-gray-700 mb-1">홀 수</label>
                 <div className="flex gap-1">
                   <button
                     type="button"
                     onClick={() => handleHoleCountChange(18)}
-                    className={`flex-1 py-2.5 rounded-lg font-medium transition-colors ${
+                    className={`flex-1 py-2 sm:py-2.5 rounded-lg font-medium transition-colors ${
                       newHoleCount === 18
                         ? 'bg-green-600 text-white'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -127,7 +127,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                   <button
                     type="button"
                     onClick={() => handleHoleCountChange(36)}
-                    className={`flex-1 py-2.5 rounded-lg font-medium transition-colors ${
+                    className={`flex-1 py-2 sm:py-2.5 rounded-lg font-medium transition-colors ${
                       newHoleCount === 36
                         ? 'bg-green-600 text-white'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -137,12 +137,12 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                   </button>
                 </div>
               </div>
-              <div className="w-28">
+              <div className="w-full md:w-28">
                 <label className="block text-sm font-medium text-gray-700 mb-1">조 수</label>
                 <select
                   value={newGroupCount}
                   onChange={(e) => setNewGroupCount(parseInt(e.target.value, 10))}
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full px-3 py-2 sm:py-2.5 border border-gray-200 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   {Array.from({ length: maxGroups }, (_, i) => i + 1).map(n => (
                     <option key={n} value={n}>{n}조</option>
@@ -155,13 +155,13 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
               <div className="flex gap-2">
                 <button
                   onClick={handleAdd}
-                  className="px-6 py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
+                  className="px-4 py-2 sm:px-6 sm:py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
                 >
                   추가
                 </button>
                 <button
                   onClick={() => setShowAddForm(false)}
-                  className="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300"
+                  className="px-4 py-2 sm:px-6 sm:py-2.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300"
                 >
                   취소
                 </button>
@@ -177,8 +177,8 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
             <p className="text-gray-400 mt-2">새 대회를 추가하여 시작하세요</p>
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-            <table className="w-full">
+          <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
+            <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="bg-gray-50 border-b">
                   <th className="text-left px-6 py-3 font-semibold text-gray-700">대회명</th>

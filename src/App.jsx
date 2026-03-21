@@ -70,21 +70,7 @@ export default function App() {
     }
   }, [isLoading, isAuthenticated]);
 
-  // Footer (from main) - shown on most screens except score input
-  const showFooter = screenMode !== 'score' && screenMode !== 'collab-scorecard';
-
-  const footer = showFooter && (
-    <div className="fixed bottom-0 left-0 right-0 bg-gray-200 flex justify-center items-center gap-4 py-4 text-sm text-gray-500 z-50">
-      <span>
-        프로그램 제작문의:{' '}
-        <a href="mailto:subinkim0128@gmail.com" className="text-gray-500 underline">
-          subinkim0128@gmail.com
-        </a>
-      </span>
-      <span>|</span>
-      <span>개발자 후원 계좌: 신한 110500604303</span>
-    </div>
-  );
+  // ==================== 풋터 ====================
 
   // ==================== 혼자입력 핸들러 (기존 그대로) ====================
   const handleAddTournament = (name, date, holeCount, groupCount) => {
@@ -445,7 +431,7 @@ export default function App() {
     const tournamentData = collabTournament || currentTournament;
     const backHandler = collabTournament ? handleBackFromCollabSummary : handleBackToScore;
     return (
-      <div className="pb-16">
+      <div className="pb-16 bg-green-100 min-h-screen">
         <SummaryPage
           tournament={tournamentData}
           onBack={backHandler}

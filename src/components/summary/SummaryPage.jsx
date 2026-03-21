@@ -22,29 +22,29 @@ export default function SummaryPage({ tournament, onBack }) {
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 pb-6">
       {/* 헤더 */}
       <div className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-full mx-auto px-6 py-4">
-          <div className="flex items-center justify-between mb-3">
+        <div className="max-w-full mx-auto px-2 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4">
+          <div className="flex items-center justify-between mb-2 sm:mb-3 gap-2">
             <button
               onClick={onBack}
               className="text-gray-700 hover:text-gray-900 font-bold text-sm sm:text-lg whitespace-nowrap"
             >
               ← 점수 입력
             </button>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <div className="text-right">
-                <h2 className="text-2xl font-bold text-gray-800">{tournament.name} - 집계</h2>
-                <p className="text-gray-500">{tournament.date}</p>
+                <h2 className="text-sm sm:text-xl md:text-2xl font-bold text-gray-800">{tournament.name} - 집계</h2>
+                <p className="text-xs sm:text-base text-gray-500">{tournament.date}</p>
               </div>
               <button
                 onClick={handlePdfDownload}
                 disabled={isGenerating}
-                className={`px-5 py-2.5 rounded-lg font-bold transition-colors flex items-center gap-2 shadow ${
+                className={`px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg font-bold transition-colors flex items-center gap-1 sm:gap-2 shadow text-xs sm:text-base whitespace-nowrap ${
                   isGenerating
                     ? 'bg-red-400 text-white cursor-not-allowed'
                     : 'bg-red-600 text-white hover:bg-red-700'
                 }`}
               >
-                {isGenerating ? 'PDF 생성 중...' : 'PDF 전체 다운로드'}
+                {isGenerating ? 'PDF 생성 중...' : 'PDF 다운로드'}
               </button>
             </div>
           </div>
@@ -56,7 +56,7 @@ export default function SummaryPage({ tournament, onBack }) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 px-8 py-3 font-medium text-base transition-colors ${
+              className={`flex-1 px-2 py-2 sm:px-8 sm:py-3 font-medium text-xs sm:text-base transition-colors ${
                 activeTab === tab.id
                   ? 'text-green-600 border-b-2 border-green-600 bg-green-50'
                   : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
@@ -69,7 +69,7 @@ export default function SummaryPage({ tournament, onBack }) {
       </div>
 
       {/* 탭 컨텐츠 - 모든 탭 렌더링, 비활성 탭 숨김 (PDF 캡쳐용) */}
-      <div className="px-6 pt-4">
+      <div className="px-2 pt-2 sm:px-4 sm:pt-3 md:px-6 md:pt-4">
         <div style={{ display: activeTab === 'overview' ? 'block' : 'none' }}>
           <OverviewTab tournament={tournament} />
         </div>
