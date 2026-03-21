@@ -62,6 +62,16 @@ input[type="number"] {
   animation: bounce-slow 3s ease-in-out infinite;
 }
 
+/* 협동입력 버튼 금빛 글로우 애니메이션 */
+@keyframes gold-glow {
+  0%, 100% { box-shadow: 0 0 6px rgba(251, 191, 36, 0.3), 0 0 12px rgba(251, 191, 36, 0.1); border-color: #f59e0b; }
+  50% { box-shadow: 0 0 12px rgba(251, 191, 36, 0.6), 0 0 24px rgba(251, 191, 36, 0.2); border-color: #fbbf24; }
+}
+
+.animate-gold-glow {
+  animation: gold-glow 2s ease-in-out infinite;
+}
+
 /* PWA 설치 배너 숨김 */
 @media all and (display-mode: standalone) {
   .install-prompt {
