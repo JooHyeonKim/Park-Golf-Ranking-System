@@ -266,7 +266,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
       {/* 점수 입력 표 */}
       <div className="px-2 pt-2 sm:px-4 sm:pt-4">
         <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
-          <table className="w-full text-sm sm:text-lg font-bold border-collapse">
+          <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
             <thead className="text-base sm:text-xl">
               <tr className="border-b-2">
                 {!isRankingCalculated && <th className="bg-gray-300 py-3 px-1 border-r w-8"></th>}
@@ -344,7 +344,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) { handleNameBlur(player.id, e.target.value); e.target.blur(); } }}
                           onBlur={(e) => handleNameBlur(player.id, e.target.value)}
                           disabled={isRankingCalculated}
-                          className={`w-full px-1 sm:px-2 py-1.5 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                          className={`w-full min-w-[80px] px-1 sm:px-2 py-1.5 border rounded focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                           placeholder="이름"
                         />
                       </td>
@@ -379,7 +379,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       </td>
 
                       {/* A코스 */}
-                      <td className="py-2 px-2 border-r">
+                      <td className="py-2 px-1 border-r">
                         <input
                           type="number"
                           min="1"
@@ -387,12 +387,12 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           value={player.scoreA ?? ''}
                           onChange={(e) => handleScoreChange(player.id, 'scoreA', e.target.value)}
                           disabled={isRankingCalculated}
-                          className={`w-20 px-2 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                          className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                         />
                       </td>
 
                       {/* B코스 */}
-                      <td className="py-2 px-2 border-r">
+                      <td className="py-2 px-1 border-r">
                         <input
                           type="number"
                           min="1"
@@ -400,13 +400,13 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           value={player.scoreB ?? ''}
                           onChange={(e) => handleScoreChange(player.id, 'scoreB', e.target.value)}
                           disabled={isRankingCalculated}
-                          className={`w-20 px-2 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                          className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                         />
                       </td>
 
                       {/* C코스 - 36홀만 표시 */}
                       {is36Hole && (
-                        <td className="py-2 px-2 border-r">
+                        <td className="py-2 px-1 border-r">
                           <input
                             type="number"
                             min="1"
@@ -414,14 +414,14 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                             value={player.scoreC ?? ''}
                             onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
                             disabled={isRankingCalculated}
-                            className={`w-20 px-2 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                            className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                           />
                         </td>
                       )}
 
                       {/* D코스 - 36홀만 표시 */}
                       {is36Hole && (
-                        <td className="py-2 px-2 border-r">
+                        <td className="py-2 px-1 border-r">
                           <input
                             type="number"
                             min="1"
@@ -429,7 +429,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                             value={player.scoreD ?? ''}
                             onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
                             disabled={isRankingCalculated}
-                            className={`w-20 px-2 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                            className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                           />
                         </td>
                       )}
