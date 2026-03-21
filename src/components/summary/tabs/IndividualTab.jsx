@@ -45,30 +45,28 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
       </div>
       <div ref={tableRef} data-capture-id="개인전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <h3 className="text-center font-bold text-2xl py-5 bg-green-50">🏅 {tournament.name} - 개인전</h3>
-        <table className="w-full text-sm border-collapse">
+        <h3 className="text-center font-bold text-base sm:text-2xl py-3 sm:py-5 bg-green-50">🏅 {tournament.name} - 개인전</h3>
+        <table className="w-full text-xs sm:text-sm border-collapse">
           <thead>
-            {/* 첫번째 줄: 남자 / 순위 / 여자 */}
             <tr className="border-b">
-              <th colSpan={3} className="bg-blue-200 py-3 px-2 text-center border-r text-base font-bold">
+              <th colSpan={3} className="bg-blue-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r text-sm sm:text-base font-bold">
                 남자
               </th>
-              <th className="bg-gray-300 py-3 px-2 text-center border-r text-base font-bold">
+              <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r text-sm sm:text-base font-bold">
                 순위
               </th>
-              <th colSpan={3} className="bg-pink-200 py-3 px-2 text-center text-base font-bold">
+              <th colSpan={3} className="bg-pink-200 py-2 px-1 sm:py-3 sm:px-2 text-center text-sm sm:text-base font-bold">
                 여자
               </th>
             </tr>
-            {/* 두번째 줄: 성명, 타수 / (빈칸) / 성명, 타수 */}
             <tr className="border-b-2">
-              <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
-              <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
-              <th className="bg-blue-100 py-2 px-3 text-center border-r min-w-[60px]">타수</th>
-              <th className="bg-gray-200 py-2 px-3 text-center border-r min-w-[70px]"></th>
-              <th className="bg-pink-100 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
-              <th className="bg-pink-100 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
-              <th className="bg-pink-100 py-2 px-3 text-center min-w-[60px]">타수</th>
+              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
+              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[35px] sm:min-w-[60px]">타수</th>
+              <th className="bg-gray-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[70px]"></th>
+              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
+              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center min-w-[35px] sm:min-w-[60px]">타수</th>
             </tr>
           </thead>
           <tbody>
@@ -80,25 +78,25 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
                   key={rankLabel}
                   className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                 >
-                  <td className="py-3 px-3 text-center border-r">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {male?.club || ''}
                   </td>
-                  <td className="py-3 px-3 text-center border-r font-medium">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-medium">
                     {male?.name || ''}
                   </td>
-                  <td className="py-3 px-3 text-center border-r font-semibold">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-semibold">
                     {male ? calculateTotal(male) : ''}
                   </td>
-                  <td className="py-3 px-3 text-center border-r font-bold text-gray-700 bg-gray-100">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-bold text-gray-700 bg-gray-100">
                     {rankLabel}
                   </td>
-                  <td className="py-3 px-3 text-center border-r">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {female?.club || ''}
                   </td>
-                  <td className="py-3 px-3 text-center border-r font-medium">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-medium">
                     {female?.name || ''}
                   </td>
-                  <td className="py-3 px-3 text-center font-semibold">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center font-semibold">
                     {female ? calculateTotal(female) : ''}
                   </td>
                 </tr>
@@ -110,12 +108,12 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
         {/* 홀인원 수상자 */}
         {holeInOnePlayers.length > 0 && (
         <div className="mt-4">
-          <div className="relative flex items-center justify-end px-4 py-5 bg-green-50">
-            <h3 className="absolute left-0 right-0 text-center font-bold text-2xl pointer-events-none">🎯 홀인원 수상자</h3>
-            <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
+            <h3 className="text-center sm:text-left font-bold text-sm sm:text-2xl">🎯 홀인원 수상자</h3>
+            <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 self-center sm:self-auto">
               <button
                 onClick={() => setAllowDuplicate(false)}
-                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-colors ${
                   !allowDuplicate
                     ? 'bg-green-600 text-white'
                     : 'bg-white text-gray-600 hover:bg-gray-100'
@@ -125,7 +123,7 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
               </button>
               <button
                 onClick={() => setAllowDuplicate(true)}
-                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-colors ${
                   allowDuplicate
                     ? 'bg-green-600 text-white'
                     : 'bg-white text-gray-600 hover:bg-gray-100'
@@ -135,24 +133,24 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
               </button>
             </div>
           </div>
-          <table className="w-full text-sm border-collapse">
+          <table className="w-full text-xs sm:text-sm border-collapse">
             <thead>
               <tr className="border-b-2">
-                <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[50px]">번호</th>
-                <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[80px]">클럽</th>
-                <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[80px]">성명</th>
-                <th className="bg-orange-200 py-2 px-3 text-center border-r min-w-[50px]">성별</th>
-                <th className="bg-orange-200 py-2 px-3 text-center min-w-[60px]">홀 번호</th>
+                <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[30px] sm:min-w-[50px]">번호</th>
+                <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+                <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
+                <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[30px] sm:min-w-[50px]">성별</th>
+                <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center min-w-[40px] sm:min-w-[60px]">홀 번호</th>
               </tr>
             </thead>
             <tbody>
               {holeInOnePlayers.map((player, index) => (
                 <tr key={player.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td className="py-3 px-3 text-center border-r">{index + 1}</td>
-                  <td className="py-3 px-3 text-center border-r">{player.club}</td>
-                  <td className="py-3 px-3 text-center border-r font-medium">{player.name}</td>
-                  <td className="py-3 px-3 text-center border-r">{player.gender}</td>
-                  <td className="py-3 px-3 text-center">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{index + 1}</td>
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{player.club}</td>
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-medium">{player.name}</td>
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{player.gender}</td>
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center">
                     {!allowDuplicate && duplicateIds.has(player.id)
                       ? <span className="text-red-600 font-medium text-xs">중복수상 불가</span>
                       : (player.holeInOne === true ? '-' : player.holeInOne)

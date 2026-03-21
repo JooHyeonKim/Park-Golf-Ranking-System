@@ -78,10 +78,10 @@ export default function ClubManagement({
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-6">
       <div className="max-w-6xl mx-auto">
         {/* 헤더 */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <button
             onClick={onBack}
-            className="text-gray-700 hover:text-gray-900 font-bold text-lg"
+            className="text-gray-700 hover:text-gray-900 font-bold text-sm sm:text-lg"
           >
             &larr; 대회 목록
           </button>

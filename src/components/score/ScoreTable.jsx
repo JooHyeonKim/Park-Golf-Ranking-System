@@ -140,15 +140,15 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 pb-4">
       {/* 헤더 */}
       <div className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-full mx-auto px-4 py-3">
+        <div className="max-w-full mx-auto px-2 py-2 sm:px-4 sm:py-3">
           <div className="flex items-center justify-between mb-2">
             <button
               onClick={onBack}
-              className="text-gray-700 hover:text-gray-900 font-bold text-lg"
+              className="text-gray-700 hover:text-gray-900 font-bold text-sm sm:text-lg"
             >
               ← 대회 목록
             </button>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {!isRankingCalculated && onUpdateGroupCount && (
                 <div className="flex items-center gap-1">
                   <label className="text-sm text-gray-500">조 수</label>
@@ -173,12 +173,12 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                 </div>
               )}
               <div>
-                <h2 className="text-xl font-bold text-gray-800 text-right">{tournament.name}</h2>
-                <p className="text-sm text-gray-500 text-right">{tournament.date}</p>
+                <h2 className="text-sm sm:text-xl font-bold text-gray-800 text-right">{tournament.name}</h2>
+                <p className="text-xs sm:text-sm text-gray-500 text-right">{tournament.date}</p>
               </div>
             </div>
           </div>
-          <div className="flex gap-2 justify-end">
+          <div className="flex flex-wrap gap-2 justify-end">
             <button
               onClick={() => {
                 if (isRankingCalculated) {
@@ -192,19 +192,19 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                 }
                 onViewSummary();
               }}
-              className="flex-1 py-3 text-lg rounded-lg font-extrabold transition-colors bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg"
+              className="flex-1 py-2 sm:py-3 text-sm sm:text-lg rounded-lg font-extrabold transition-colors bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg"
             >
               🏆 결과 보기
             </button>
             <button
               onClick={handleFillTestData}
-              className="px-5 py-3 text-lg rounded-lg font-bold transition-colors bg-orange-500 text-white hover:bg-orange-600"
+              className="px-3 py-2 sm:px-5 sm:py-3 text-sm sm:text-lg rounded-lg font-bold transition-colors bg-orange-500 text-white hover:bg-orange-600"
             >
               테스트 데이터
             </button>
             <button
               onClick={handleCalculateRanking}
-              className={`px-5 py-3 text-lg rounded-lg font-bold transition-colors ${
+              className={`px-3 py-2 sm:px-5 sm:py-3 text-sm sm:text-lg rounded-lg font-bold transition-colors ${
                 isRankingCalculated
                   ? 'bg-gray-500 text-white hover:bg-gray-600'
                   : 'bg-blue-600 text-white hover:bg-blue-700'
@@ -215,7 +215,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
             <div className="relative" ref={sortMenuRef}>
               <button
                 onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
-                className="px-5 py-3 text-lg rounded-lg font-bold transition-colors bg-gray-300 text-gray-700 hover:bg-gray-400 flex items-center gap-1"
+                className="px-3 py-2 sm:px-5 sm:py-3 text-sm sm:text-lg rounded-lg font-bold transition-colors bg-gray-300 text-gray-700 hover:bg-gray-400 flex items-center gap-1"
               >
                 정렬: {sortBy === 'rank' ? '순위' : '조'}
                 <span className="text-xs">▼</span>
@@ -264,9 +264,9 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
       </div>
 
       {/* 점수 입력 표 */}
-      <div className="px-4 pt-4">
+      <div className="px-2 pt-2 sm:px-4 sm:pt-4">
         <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
-          <table className="w-full text-sm border-collapse">
+          <table className="w-full text-xs sm:text-sm border-collapse">
             <thead>
               <tr className="border-b-2">
                 {!isRankingCalculated && <th className="bg-gray-300 py-3 px-1 border-r w-8"></th>}
