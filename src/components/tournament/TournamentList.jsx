@@ -54,39 +54,34 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-3 sm:p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
-        {/* 헤더 */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-4">
-          <div className="flex items-center gap-4">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">파크골프 대회 관리</h1>
-          </div>
-          <div className="flex gap-2 sm:gap-3">
-            <button
-              onClick={() => setShowAddForm(!showAddForm)}
-              className="px-3 py-2 sm:px-5 sm:py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors text-sm sm:text-base"
-            >
-              + 새 대회
-            </button>
-            <button
-              onClick={onGoToClubs}
-              className="px-3 py-2 sm:px-5 sm:py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm sm:text-base"
-            >
-              클럽 관리
-            </button>
-          </div>
-        </div>
-
-        {/* 협동 입력 */}
-        {onCollab && (
-          <div className="mb-4 sm:mb-6">
+        {/* 상단: 제목 + 협동입력 */}
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">파크골프 대회 관리</h1>
+          {onCollab && (
             <button
               onClick={onCollab}
-              className="w-full py-3 sm:py-4 bg-white text-amber-700 rounded-xl font-bold hover:bg-amber-50 transition-colors text-sm sm:text-base border-2 border-amber-400 animate-gold-glow flex items-center justify-center gap-2"
+              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white text-amber-700 rounded-lg font-bold hover:bg-amber-50 transition-colors text-xs sm:text-sm border-2 border-amber-400 animate-gold-glow"
             >
-              🤝 협동 입력 모드
-              <span className="text-xs sm:text-sm font-normal text-amber-500">여러 명이 함께 점수 입력</span>
+              🤝 협동 입력
             </button>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* 대회 관리 버튼 */}
+        <div className="flex gap-2 sm:gap-3 mb-3 sm:mb-4">
+          <button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="px-3 py-2 sm:px-5 sm:py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors text-sm sm:text-base"
+          >
+            + 새 대회
+          </button>
+          <button
+            onClick={onGoToClubs}
+            className="px-3 py-2 sm:px-5 sm:py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm sm:text-base"
+          >
+            클럽 관리
+          </button>
+        </div>
 
         {/* 새 대회 추가 폼 */}
         {showAddForm && (
