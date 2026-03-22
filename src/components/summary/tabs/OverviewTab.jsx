@@ -9,7 +9,9 @@ import DetailScoreModal from '../../score/DetailScoreModal';
 import LoadingOverlay from '../../common/LoadingOverlay';
 
 export default function OverviewTab({ tournament }) {
-  const is36Hole = (tournament.holeCount || 36) === 36;
+  const holeCount = tournament.holeCount || 36;
+  const is36Hole = holeCount >= 36;
+  const is54Hole = holeCount === 54;
   const clubLabel = tournament.clubType === 'affiliation' ? '소속' : '클럽';
   const [sortBy, setSortBy] = useState('rank');
   const [genderFilter, setGenderFilter] = useState('all');
@@ -20,10 +22,10 @@ export default function OverviewTab({ tournament }) {
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, genderLabel, 24);
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, genderLabel, 24);
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, true);
-  // 18홀일 때 C/D 코스 선수 행 숨김
-  const sortedPlayers = is36Hole
-    ? allSortedPlayers
-    : allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B'));
+  // 18홀일 때 C~F 코스 선수 행 숨김
+  const sortedPlayers = holeCount === 18
+    ? allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B'))
+    : allSortedPlayers;
 
   // 성별 필터 적용 + 순위 재계산 (A/B/C/D + 상세점수 동점 처리 포함)
   const displayPlayers = useMemo(() => {
@@ -122,15 +124,22 @@ export default function OverviewTab({ tournament }) {
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[50px] sm:min-w-[80px]">{clubLabel}</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[50px]">성명</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[30px] sm:min-w-[50px]">성별</th>
-              <th className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r whitespace-nowrap">{is36Hole ? '36홀 합계' : '18홀 합계'}</th>
-              <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">A코스</th>
-              <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">B코스</th>
+              <th className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r whitespace-nowrap">{is54Hole ? '54홀 합계' : is36Hole ? '36홀 합계' : '18홀 합계'}</th>
+              <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'A1코스' : 'A코스'}</th>
+              <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'B1코스' : 'B코스'}</th>
               <th className="bg-sky-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
               {is36Hole && (
                 <>
-                  <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">C코스</th>
-                  <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">D코스</th>
+                  <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'C1코스' : 'C코스'}</th>
+                  <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'D1코스' : 'D코스'}</th>
                   <th className="bg-lime-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
+                </>
+              )}
+              {is54Hole && (
+                <>
+                  <th className="bg-purple-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">A2코스</th>
+                  <th className="bg-purple-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">B2코스</th>
+                  <th className="bg-purple-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
                 </>
               )}
               <th className="bg-orange-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r w-10 sm:w-16">홀인원</th>
@@ -172,6 +181,13 @@ export default function OverviewTab({ tournament }) {
                     <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-lime-50">{(player.scoreC != null && player.scoreD != null) ? player.scoreC + player.scoreD : '-'}</td>
                   </>
                 )}
+                {is54Hole && (
+                  <>
+                    <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreE ?? '-'}</td>
+                    <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreF ?? '-'}</td>
+                    <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-purple-50">{(player.scoreE != null && player.scoreF != null) ? player.scoreE + player.scoreF : '-'}</td>
+                  </>
+                )}
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r w-10 sm:w-16">
                   {player.holeInOne ? (
                     <span className="relative group cursor-pointer">
@@ -196,6 +212,7 @@ export default function OverviewTab({ tournament }) {
         <DetailScoreModal
           player={detailModalPlayer}
           is36Hole={is36Hole}
+          holeCount={holeCount}
           readOnly
           onClose={() => setDetailModalPlayer(null)}
         />

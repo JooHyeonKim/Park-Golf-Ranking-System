@@ -2,8 +2,13 @@ import React, { useState, useMemo } from 'react';
 
 const HOLES = 9;
 
-export default function DetailScoreModal({ player, is36Hole, onSave, onClose, readOnly = false }) {
-  const courses = is36Hole ? ['D', 'C', 'B', 'A'] : ['B', 'A'];
+const COURSE_TAB_LABELS = { A: 'A1', B: 'B1', C: 'C1', D: 'D1', E: 'A2', F: 'B2' };
+
+export default function DetailScoreModal({ player, is36Hole, holeCount, onSave, onClose, readOnly = false }) {
+  const effectiveHoleCount = holeCount || (is36Hole ? 36 : 18);
+  const courses = effectiveHoleCount === 54 ? ['F', 'E', 'D', 'C', 'B', 'A']
+               : effectiveHoleCount >= 36 ? ['D', 'C', 'B', 'A']
+               : ['B', 'A'];
   const [activeCourse, setActiveCourse] = useState(courses[0]);
   const [scores, setScores] = useState(() => player.detailScores || {});
 
@@ -61,7 +66,7 @@ export default function DetailScoreModal({ player, is36Hole, onSave, onClose, re
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              {c}코스
+              {effectiveHoleCount === 54 ? COURSE_TAB_LABELS[c] : c}코스
             </button>
           ))}
         </div>
@@ -105,7 +110,7 @@ export default function DetailScoreModal({ player, is36Hole, onSave, onClose, re
           {/* 코스 합계 */}
           <div className="mt-3 flex items-center px-2 py-2 bg-gray-100 rounded">
             <span className="font-semibold">
-              {activeCourse}코스 합계: {courseTotal ?? '-'}
+              {effectiveHoleCount === 54 ? COURSE_TAB_LABELS[activeCourse] : activeCourse}코스 합계: {courseTotal ?? '-'}
             </span>
           </div>
         </div>

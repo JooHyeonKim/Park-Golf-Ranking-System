@@ -8,6 +8,8 @@
  */
 export function compareDetailScores(p1, p2) {
   const holes = [
+    'F9', 'F8', 'F7', 'F6', 'F5', 'F4', 'F3', 'F2', 'F1',
+    'E9', 'E8', 'E7', 'E6', 'E5', 'E4', 'E3', 'E2', 'E1',
     'D9', 'D8', 'D7', 'D6', 'D5', 'D4', 'D3', 'D2', 'D1',
     'C9', 'C8', 'C7', 'C6', 'C5', 'C4', 'C3', 'C2', 'C1',
     'B9', 'B8', 'B7', 'B6', 'B5', 'B4', 'B3', 'B2', 'B1',
@@ -48,29 +50,13 @@ export function comparePlayers(p1, p2) {
     return total1 - total2;
   }
 
-  // 2차 정렬: 동점자 처리 (D → C → B → A 순서)
-  const scoreD1 = p1.scoreD ?? null;
-  const scoreD2 = p2.scoreD ?? null;
-  if (scoreD1 !== null && scoreD2 !== null && scoreD1 !== scoreD2) {
-    return scoreD1 - scoreD2;
-  }
-
-  const scoreC1 = p1.scoreC ?? null;
-  const scoreC2 = p2.scoreC ?? null;
-  if (scoreC1 !== null && scoreC2 !== null && scoreC1 !== scoreC2) {
-    return scoreC1 - scoreC2;
-  }
-
-  const scoreB1 = p1.scoreB ?? null;
-  const scoreB2 = p2.scoreB ?? null;
-  if (scoreB1 !== null && scoreB2 !== null && scoreB1 !== scoreB2) {
-    return scoreB1 - scoreB2;
-  }
-
-  const scoreA1 = p1.scoreA ?? null;
-  const scoreA2 = p2.scoreA ?? null;
-  if (scoreA1 !== null && scoreA2 !== null && scoreA1 !== scoreA2) {
-    return scoreA1 - scoreA2;
+  // 2차 정렬: 동점자 처리 (F → E → D → C → B → A 순서)
+  for (const key of ['scoreF', 'scoreE', 'scoreD', 'scoreC', 'scoreB', 'scoreA']) {
+    const s1 = p1[key] ?? null;
+    const s2 = p2[key] ?? null;
+    if (s1 !== null && s2 !== null && s1 !== s2) {
+      return s1 - s2;
+    }
   }
 
   // 3차 정렬: 상세 점수 비교
@@ -78,20 +64,22 @@ export function comparePlayers(p1, p2) {
 }
 
 /**
- * 36홀 합계 계산
+ * 합계 계산 (18/36/54홀)
  * @param {Object} player - 선수 객체
  * @returns {number|null} - 합계 (점수가 하나라도 있으면 계산)
  */
 export function calculateTotal(player) {
-  const { scoreA, scoreB, scoreC, scoreD } = player;
+  const { scoreA, scoreB, scoreC, scoreD, scoreE, scoreF } = player;
 
-  // 모든 점수가 null이면 null 반환
-  if (scoreA === null && scoreB === null && scoreC === null && scoreD === null) {
+  // 모든 점수가 null/undefined이면 null 반환
+  if ((scoreA ?? null) === null && (scoreB ?? null) === null &&
+      (scoreC ?? null) === null && (scoreD ?? null) === null &&
+      (scoreE ?? null) === null && (scoreF ?? null) === null) {
     return null;
   }
 
-  // 하나라도 있으면 합계 계산 (null은 0으로 처리)
-  return (scoreA ?? 0) + (scoreB ?? 0) + (scoreC ?? 0) + (scoreD ?? 0);
+  // 하나라도 있으면 합계 계산 (null/undefined은 0으로 처리)
+  return (scoreA ?? 0) + (scoreB ?? 0) + (scoreC ?? 0) + (scoreD ?? 0) + (scoreE ?? 0) + (scoreF ?? 0);
 }
 
 /**
@@ -158,7 +146,9 @@ export function needsDetailScores(player, players) {
     return p.scoreA === player.scoreA &&
            p.scoreB === player.scoreB &&
            p.scoreC === player.scoreC &&
-           p.scoreD === player.scoreD;
+           p.scoreD === player.scoreD &&
+           (p.scoreE ?? null) === (player.scoreE ?? null) &&
+           (p.scoreF ?? null) === (player.scoreF ?? null);
   });
 
   // 완전 동점자가 있으면 상세 점수 필요
