@@ -165,7 +165,7 @@ export default function TeamTab({ tournament }) {
               </tr>,
               showDivider && (
                 <tr key="divider">
-                  <td colSpan={11} className="border-b-[4px] border-green-700 p-0"></td>
+                  <td colSpan={11} className="border-b-[4px] border-[#7ba882] p-0"></td>
                 </tr>
               )
               ];
