@@ -48,7 +48,7 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
       </div>
       <div ref={tableRef} data-capture-id="개인전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <h3 className="text-center font-bold text-base sm:text-2xl py-3 sm:py-5 bg-green-50">🏅 {tournament.name} - 개인전</h3>
+        <h3 className="text-left font-bold text-base sm:text-2xl py-3 sm:py-5 bg-green-50">🏅 {tournament.name} - 개인전</h3>
         <table className="w-full text-sm sm:text-lg font-bold border-collapse">
           <thead className="text-base sm:text-xl">
             <tr className="border-b">
@@ -110,9 +110,9 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
 
         {/* 홀인원 수상자 */}
         {holeInOnePlayers.length > 0 && (
-        <div className="mt-4">
+        <div className="mt-8 sm:mt-10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
-            <h3 className="text-center sm:text-left font-bold text-sm sm:text-2xl">🎯 홀인원 수상자</h3>
+            <h3 className="text-left font-bold text-sm sm:text-2xl">🎯 홀인원 수상자</h3>
             <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 self-center sm:self-auto">
               <button
                 onClick={() => setAllowDuplicate(false)}

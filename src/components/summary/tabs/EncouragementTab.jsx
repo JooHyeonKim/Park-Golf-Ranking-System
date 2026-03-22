@@ -50,7 +50,7 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
       {/* 장려상 테이블 */}
       <div ref={tableRef} data-capture-id="장려상" className="bg-white rounded-lg shadow-sm overflow-x-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
-          <h3 className="text-center sm:text-left font-bold text-sm sm:text-2xl">🎖️ {tournament.name} - 장려상</h3>
+          <h3 className="text-left font-bold text-sm sm:text-2xl">🎖️ {tournament.name} - 장려상</h3>
           <div className="flex gap-2 sm:gap-3 justify-center sm:justify-end">
             <div className="flex items-center gap-1 sm:gap-1.5 bg-blue-50 border border-blue-200 rounded-lg px-1.5 py-1 sm:px-2.5 sm:py-1.5">
               <span className="text-xs sm:text-sm font-bold text-blue-700">남</span>
