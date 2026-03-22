@@ -193,19 +193,19 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                 }
                 onViewSummary();
               }}
-              className="flex-1 py-2 sm:py-3 text-sm sm:text-lg rounded-lg font-extrabold transition-colors bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg"
+              className="flex-1 py-1.5 sm:py-3 text-xs sm:text-lg rounded-lg font-extrabold transition-colors bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg"
             >
               🏆 결과 보기
             </button>
             <button
               onClick={handleFillTestData}
-              className="px-3 py-2 sm:px-5 sm:py-3 text-sm sm:text-lg rounded-lg font-bold transition-colors bg-orange-500 text-white hover:bg-orange-600"
+              className="px-2 py-1.5 sm:px-5 sm:py-3 text-xs sm:text-lg rounded-lg font-bold transition-colors bg-orange-500 text-white hover:bg-orange-600"
             >
               테스트 데이터
             </button>
             <button
               onClick={handleCalculateRanking}
-              className={`px-3 py-2 sm:px-5 sm:py-3 text-sm sm:text-lg rounded-lg font-bold transition-colors ${
+              className={`px-2 py-1.5 sm:px-5 sm:py-3 text-xs sm:text-lg rounded-lg font-bold transition-colors ${
                 isRankingCalculated
                   ? 'bg-gray-500 text-white hover:bg-gray-600'
                   : 'bg-blue-600 text-white hover:bg-blue-700'
@@ -216,7 +216,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
             <div className="relative" ref={sortMenuRef}>
               <button
                 onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
-                className="px-3 py-2 sm:px-5 sm:py-3 text-sm sm:text-lg rounded-lg font-bold transition-colors bg-gray-300 text-gray-700 hover:bg-gray-400 flex items-center gap-1"
+                className="px-2 py-1.5 sm:px-5 sm:py-3 text-xs sm:text-lg rounded-lg font-bold transition-colors bg-gray-300 text-gray-700 hover:bg-gray-400 flex items-center gap-1"
               >
                 정렬: {sortBy === 'rank' ? '순위' : '조'}
                 <span className="text-xs">▼</span>

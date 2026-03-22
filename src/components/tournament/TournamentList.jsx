@@ -54,7 +54,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
   const maxGroups = getMaxGroupCount(newHoleCount);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-3 sm:p-4">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 p-3 sm:p-4 pb-32 sm:pb-36">
       <div className="max-w-4xl mx-auto">
         {/* 상단: 협동입력 (좌) + 클럽/소속 관리 (우) */}
         <div className="flex justify-between items-center mb-6 sm:mb-8">
@@ -84,7 +84,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
 
         {/* 메인 제목 */}
         <div className="text-center mb-8 sm:mb-10">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800">⛳ 파크골프 스코어 집계 프로그램</h1>
+          <h1 className="text-[clamp(1.1rem,5vw,2.25rem)] sm:text-3xl md:text-4xl font-extrabold text-gray-800 whitespace-nowrap">⛳ 파크골프 스코어 집계 프로그램</h1>
         </div>
 
         {/* 새 대회 추가 폼 */}
@@ -239,22 +239,24 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                         <span>참가: {playerCount}명</span>
                       </div>
                     </div>
-                    <div className="flex gap-2 items-center">
-                      <button
-                        onClick={() => onSelect(tournament.id)}
-                        className="px-4 py-2 bg-amber-500 text-white rounded-lg font-bold hover:bg-amber-600 transition-colors text-sm"
-                      >
-                        수정
-                      </button>
-                      <button
-                        onClick={() => onViewSummary(tournament.id)}
-                        className="px-4 py-2 bg-teal-500 text-white rounded-lg font-bold hover:bg-teal-600 transition-colors text-sm"
-                      >
-                        집계 보기
-                      </button>
+                    <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => onSelect(tournament.id)}
+                          className="px-4 py-2 bg-amber-500 text-white rounded-lg font-bold hover:bg-amber-600 transition-colors text-sm"
+                        >
+                          수정
+                        </button>
+                        <button
+                          onClick={() => onViewSummary(tournament.id)}
+                          className="px-4 py-2 bg-teal-500 text-white rounded-lg font-bold hover:bg-teal-600 transition-colors text-sm"
+                        >
+                          집계 보기
+                        </button>
+                      </div>
                       <button
                         onClick={() => handleDelete(tournament.id, tournament.name)}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors ml-auto sm:ml-0"
                         title="삭제"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
