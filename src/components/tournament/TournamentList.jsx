@@ -17,23 +17,25 @@ function getTournamentGroupCount(tournament) {
   return (tournament.groupsPerCourse || 9) * numCourses;
 }
 
-export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onCollab, onBack }) {
+export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onGoToAffiliations, onCollab, onBack }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
   const [newHoleCount, setNewHoleCount] = useState(36);
   const [newGroupCount, setNewGroupCount] = useState(getDefaultGroupCount(36));
+  const [newClubType, setNewClubType] = useState('club');
 
   const handleAdd = () => {
     if (!newName.trim()) {
       alert('대회명을 입력해주세요.');
       return;
     }
-    onAdd(newName.trim(), newDate, newHoleCount, newGroupCount);
+    onAdd(newName.trim(), newDate, newHoleCount, newGroupCount, newClubType);
     setNewName('');
     setNewDate(new Date().toISOString().split('T')[0]);
     setNewHoleCount(36);
     setNewGroupCount(getDefaultGroupCount(36));
+    setNewClubType('club');
     setShowAddForm(false);
   };
 
@@ -84,6 +86,12 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
             className="px-3 py-2 sm:px-5 sm:py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm sm:text-base"
           >
             클럽 관리
+          </button>
+          <button
+            onClick={onGoToAffiliations}
+            className="px-3 py-2 sm:px-5 sm:py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors text-sm sm:text-base"
+          >
+            소속 관리
           </button>
         </div>
 
@@ -154,6 +162,33 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                   총 {newGroupCount * 4}명
                 </p>
               </div>
+              <div className="w-full md:w-40">
+                <label className="block text-sm font-medium text-gray-700 mb-1">구분</label>
+                <div className="flex gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setNewClubType('club')}
+                    className={`flex-1 py-2 sm:py-2.5 rounded-lg font-medium transition-colors ${
+                      newClubType === 'club'
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    클럽
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNewClubType('affiliation')}
+                    className={`flex-1 py-2 sm:py-2.5 rounded-lg font-medium transition-colors ${
+                      newClubType === 'affiliation'
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    소속
+                  </button>
+                </div>
+              </div>
               <div className="flex gap-2">
                 <button
                   onClick={handleAdd}
@@ -206,7 +241,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                       </td>
                       <td className="text-center px-4 py-4 text-gray-600">{tournament.date}</td>
                       <td className="text-center px-4 py-4 text-gray-600">{tournament.holeCount || 36}홀</td>
-                      <td className="text-center px-4 py-4 text-gray-600">{groupCount}조</td>
+                      <td className="text-center px-4 py-4 text-gray-600">{groupCount}조 / {tournament.clubType === 'affiliation' ? '소속' : '클럽'}</td>
                       <td className="text-center px-4 py-4 text-gray-600">{playerCount}명</td>
                       <td className="text-center px-4 py-4">
                         <div className="flex gap-2 justify-center items-center">

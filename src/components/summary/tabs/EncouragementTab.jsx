@@ -4,12 +4,14 @@ import { useImageCapture } from '../../../hooks/useImageCapture';
 import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
 import ImageDownloadButton from '../../common/ImageDownloadButton';
 import PdfDownloadButton from '../../common/PdfDownloadButton';
+import LoadingOverlay from '../../common/LoadingOverlay';
 
 const DEFAULT_MAX_RANK = 10;
 const RANK_OPTIONS = [9, 10, 11, 12, 13, 14, 15];
 const INDIVIDUAL_TOP = 5; // 개인전 탭에서 이미 표시한 상위 인원 수
 
 export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRank, onMaleMaxRankChange, onFemaleMaxRankChange }) {
+  const clubLabel = tournament.clubType === 'affiliation' ? '소속' : '클럽';
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '장려상');
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '장려상');
 
@@ -38,6 +40,7 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
 
   return (
     <div>
+      {(isGenerating || isCapturing) && <LoadingOverlay message={isGenerating ? 'PDF 생성 중...' : '이미지 생성 중...'} />}
       {/* 다운로드 버튼 */}
       <div className="flex justify-end mb-2 gap-2">
         <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
@@ -75,25 +78,25 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
             </div>
           </div>
         </div>
-        <table className="w-full text-xs sm:text-sm border-collapse">
-          <thead>
+        <table className="w-full text-sm sm:text-lg font-bold border-collapse">
+          <thead className="text-base sm:text-xl">
             <tr className="border-b">
-              <th colSpan={3} className="bg-blue-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r text-sm sm:text-base font-bold">
+              <th colSpan={3} className="bg-blue-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">
                 남자
               </th>
-              <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r text-sm sm:text-base font-bold">
+              <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">
                 순위
               </th>
-              <th colSpan={3} className="bg-pink-200 py-2 px-1 sm:py-3 sm:px-2 text-center text-sm sm:text-base font-bold">
+              <th colSpan={3} className="bg-pink-200 py-2 px-1 sm:py-3 sm:px-2 text-center">
                 여자
               </th>
             </tr>
             <tr className="border-b-2">
-              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+              <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">{clubLabel}</th>
               <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
               <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[35px] sm:min-w-[60px]">타수</th>
               <th className="bg-gray-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[70px]"></th>
-              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">클럽</th>
+              <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">{clubLabel}</th>
               <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[80px]">성명</th>
               <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center min-w-[35px] sm:min-w-[60px]">타수</th>
             </tr>
@@ -113,10 +116,10 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showMale ? (male?.club || '') : ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-medium">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showMale ? (male?.name || '') : ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-semibold">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r text-base sm:text-xl text-red-600">
                     {showMale && male ? calculateTotal(male) : ''}
                   </td>
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-bold text-gray-700 bg-gray-100">
@@ -125,10 +128,10 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showFemale ? (female?.club || '') : ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-medium">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showFemale ? (female?.name || '') : ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center font-semibold">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center text-base sm:text-xl text-red-600">
                     {showFemale && female ? calculateTotal(female) : ''}
                   </td>
                 </tr>

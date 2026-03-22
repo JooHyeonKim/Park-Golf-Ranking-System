@@ -69,7 +69,7 @@ export function createInitialPlayers(holeCount = 36, groupCount = null) {
  * @param {number} groupCount - 총 조 수 (기본: 18홀=18, 36홀=36)
  * @returns {Object} - 대회 객체
  */
-export function createTournament(name, date, holeCount = 36, groupCount = null) {
+export function createTournament(name, date, holeCount = 36, groupCount = null, clubType = 'club') {
   const courses = holeCount === 18 ? ['A', 'B'] : ['A', 'B', 'C', 'D'];
   if (groupCount === null) groupCount = courses.length * 9;
 
@@ -79,6 +79,7 @@ export function createTournament(name, date, holeCount = 36, groupCount = null) 
     date,
     holeCount,
     groupCount,
+    clubType,
     createdAt: Date.now(),
     players: createInitialPlayers(holeCount, groupCount)
   };
@@ -212,8 +213,8 @@ export function countExtraPlayers(players, baseCourse) {
 }
 
 /**
- * 추가 선수를 코스 그룹에 삽입 (최대 4명)
- * 추가된 선수의 코스명은 항상 baseCourse + "-1" (예: A-1 → A-1-1)
+ * 추가 선수를 코스 그룹에 삽입 (최대 20명 = 5세트, 4명씩)
+ * 코스명: baseCourse-1 (4명), baseCourse-2 (4명), ... baseCourse-5 (4명)
  * @param {Array} players - 선수 목록
  * @param {string} baseCourse - 기본 코스명 (예: "A-1")
  * @param {number} group - 조 번호
@@ -221,13 +222,17 @@ export function countExtraPlayers(players, baseCourse) {
  */
 export function addPlayerToCourse(players, baseCourse, group) {
   const extraCount = countExtraPlayers(players, baseCourse);
-  if (extraCount >= 4) return players;
+  if (extraCount >= 20) return players;
+
+  // 현재 세트 번호 결정 (4명씩 1세트)
+  const setNumber = Math.floor(extraCount / 4) + 1;
+  const courseName = `${baseCourse}-${setNumber}`;
 
   const newId = Math.max(0, ...players.map(p => p.id)) + 1;
   const newPlayer = {
     id: newId,
     group,
-    course: `${baseCourse}-1`,
+    course: courseName,
     name: '',
     gender: '',
     club: '',

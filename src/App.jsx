@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTournaments } from './hooks/useTournaments';
 import { useClubs } from './hooks/useClubs';
+import { useAffiliations } from './hooks/useAffiliations';
 import { useMembers } from './hooks/useMembers';
 import { useAuthContext } from './contexts/AuthContext';
 import TournamentList from './components/tournament/TournamentList';
@@ -33,6 +34,7 @@ export default function App() {
   } = useTournaments();
 
   const { clubs, addClub, editClub, deleteClub } = useClubs();
+  const { affiliations, addAffiliation, editAffiliation, deleteAffiliation } = useAffiliations();
   const {
     members,
     addMember,
@@ -73,8 +75,8 @@ export default function App() {
   // ==================== 풋터 ====================
 
   // ==================== 혼자입력 핸들러 (기존 그대로) ====================
-  const handleAddTournament = (name, date, holeCount, groupCount) => {
-    addTournament(name, date, holeCount, groupCount);
+  const handleAddTournament = (name, date, holeCount, groupCount, clubType) => {
+    addTournament(name, date, holeCount, groupCount, clubType);
     setScreenMode('score');
   };
 
@@ -101,6 +103,15 @@ export default function App() {
 
   const handleGoToClubs = () => {
     setScreenMode('clubs');
+  };
+
+  const handleGoToAffiliations = () => {
+    setScreenMode('affiliations');
+  };
+
+  const handleEditAffiliation = async (oldName, newName) => {
+    const success = await editAffiliation(oldName, newName);
+    return success;
   };
 
   const handleEditClub = async (oldName, newName) => {
@@ -428,6 +439,28 @@ export default function App() {
     );
   }
 
+  // 소속 관리
+  if (screenMode === 'affiliations') {
+    return (
+      <div className="pb-16 bg-green-100 min-h-screen">
+        <ClubManagement
+          clubs={affiliations}
+          onAddClub={addAffiliation}
+          onEditClub={handleEditAffiliation}
+          onDeleteClub={deleteAffiliation}
+          onBack={handleBackToList}
+          members={members}
+          onAddMember={addMember}
+          onEditMember={editMember}
+          onDeleteMember={deleteMember}
+          getMembersByClub={getMembersByClub}
+          label="소속"
+        />
+        {footer}
+      </div>
+    );
+  }
+
   // 결과 보기 (혼자입력 또는 협동입력 공용)
   if (screenMode === 'summary') {
     const tournamentData = collabTournament || currentTournament;
@@ -454,6 +487,7 @@ export default function App() {
           onAdd={handleAddTournament}
           onViewSummary={handleViewSummary}
           onGoToClubs={handleGoToClubs}
+          onGoToAffiliations={handleGoToAffiliations}
           onCollab={collabEnabled ? handleSelectCollab : undefined}
         />
         {footer}
@@ -465,7 +499,7 @@ export default function App() {
   return (
     <ScoreTable
       tournament={currentTournament}
-      clubs={clubs}
+      clubs={currentTournament.clubType === 'affiliation' ? affiliations : clubs}
       onBack={handleBackToList}
       onUpdatePlayer={updatePlayer}
       onAddPlayerToCourse={addPlayerToCourse}

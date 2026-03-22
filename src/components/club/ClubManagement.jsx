@@ -3,7 +3,8 @@ import ClubMemberList from './ClubMemberList';
 
 export default function ClubManagement({
   clubs, onAddClub, onEditClub, onDeleteClub, onBack,
-  members, onAddMember, onEditMember, onDeleteMember, getMembersByClub
+  members, onAddMember, onEditMember, onDeleteMember, getMembersByClub,
+  label = '클럽'
 }) {
   const [newClubName, setNewClubName] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
@@ -20,7 +21,7 @@ export default function ClubManagement({
       setNewClubName('');
       setError('');
     } else {
-      setError('이미 존재하는 클럽명입니다');
+      setError('이미 존재하는 이름입니다');
     }
   };
 
@@ -40,7 +41,7 @@ export default function ClubManagement({
       setEditingName('');
       setError('');
     } else {
-      setError('이미 존재하는 클럽명입니다');
+      setError('이미 존재하는 이름입니다');
     }
   };
 
@@ -51,7 +52,7 @@ export default function ClubManagement({
   };
 
   const handleDelete = (name) => {
-    if (confirm(`"${name}" 클럽을 삭제하시겠습니까?`)) {
+    if (confirm(`"${name}" ${label}을(를) 삭제하시겠습니까?`)) {
       onDeleteClub(name);
       if (selectedClub === name) {
         setSelectedClub(null);
@@ -85,18 +86,18 @@ export default function ClubManagement({
           >
             &larr; 대회 목록
           </button>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">클럽 관리</h1>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">{label} 관리</h1>
         </div>
 
         {/* 새 클럽 추가 */}
         <div className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-          <h3 className="font-bold text-gray-800 mb-3">새 클럽 추가</h3>
+          <h3 className="font-bold text-gray-800 mb-3">새 {label} 추가</h3>
           <div className="flex gap-2">
             <input
               type="text"
               value={newClubName}
               onChange={(e) => { setNewClubName(e.target.value); setError(''); }}
-              placeholder="클럽명 입력"
+              placeholder={`${label}명 입력`}
               className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
             />
@@ -113,8 +114,8 @@ export default function ClubManagement({
         {/* 클럽 목록 */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
           <div className="p-4 border-b">
-            <h3 className="font-bold text-gray-800">클럽 목록 ({clubs.length}개)</h3>
-            <p className="text-sm text-gray-500 mt-1">클럽을 클릭하면 회원 목록을 볼 수 있습니다</p>
+            <h3 className="font-bold text-gray-800">{label} 목록 ({clubs.length}개)</h3>
+            <p className="text-sm text-gray-500 mt-1">{label}을(를) 클릭하면 회원 목록을 볼 수 있습니다</p>
           </div>
           <div className="divide-y">
             {clubs.map((club, index) => (

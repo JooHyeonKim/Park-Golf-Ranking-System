@@ -1,13 +1,15 @@
 // IndexedDB 유틸리티 - 클럽 및 회원 데이터 관리
 
 const DB_NAME = 'parkgolf-db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 const DEFAULT_CLUBS = [
   '방배', '양재', '잠원', '반포', '서리풀',
   '서래', '우면', '서초', '내곡', '청계',
   '이수', '매헌', '향목'
 ];
+
+const DEFAULT_AFFILIATIONS = ['서초', '강남', '송파'];
 
 /**
  * IndexedDB 열기 (최초 실행 시 스키마 생성)
@@ -30,6 +32,16 @@ function openDB() {
         const memberStore = db.createObjectStore('members', { keyPath: 'id', autoIncrement: true });
         memberStore.createIndex('name', 'name', { unique: false });
         memberStore.createIndex('club', 'club', { unique: false });
+      }
+
+      // affiliations 스토어 (v2)
+      if (!db.objectStoreNames.contains('affiliations')) {
+        const affStore = db.createObjectStore('affiliations', { keyPath: 'id', autoIncrement: true });
+        affStore.createIndex('name', 'name', { unique: true });
+        // 기본 소속 데이터 삽입
+        for (const name of DEFAULT_AFFILIATIONS) {
+          affStore.add({ name });
+        }
       }
     };
 
@@ -356,6 +368,116 @@ export async function updateMembersClubInDB(oldClubName, newClubName) {
       for (const member of members) {
         store.put({ ...member, club: newClubName });
       }
+    });
+  } finally {
+    db.close();
+  }
+}
+
+// ============================================================
+// Affiliation (소속) CRUD
+// ============================================================
+
+export async function initAffiliations() {
+  const db = await openDB();
+  try {
+    const count = await new Promise((resolve, reject) => {
+      const tx = db.transaction('affiliations', 'readonly');
+      const store = tx.objectStore('affiliations');
+      const request = store.count();
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+
+    if (count > 0) return;
+
+    await withTransaction(db, 'affiliations', 'readwrite', (tx) => {
+      const store = tx.objectStore('affiliations');
+      for (const name of DEFAULT_AFFILIATIONS) {
+        store.add({ name });
+      }
+    });
+  } finally {
+    db.close();
+  }
+}
+
+export async function getAllAffiliations() {
+  const db = await openDB();
+  try {
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction('affiliations', 'readonly');
+      const store = tx.objectStore('affiliations');
+      const request = store.getAll();
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  } finally {
+    db.close();
+  }
+}
+
+export async function addAffiliationToDB(name) {
+  const trimmed = name.trim();
+  if (!trimmed) return null;
+
+  const db = await openDB();
+  try {
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction('affiliations', 'readwrite');
+      const store = tx.objectStore('affiliations');
+      const request = store.add({ name: trimmed });
+      request.onsuccess = () => resolve({ id: request.result, name: trimmed });
+      request.onerror = () => {
+        tx.abort();
+        resolve(null);
+      };
+    });
+  } finally {
+    db.close();
+  }
+}
+
+export async function updateAffiliationInDB(id, newName) {
+  const trimmed = newName.trim();
+  if (!trimmed) return false;
+
+  const db = await openDB();
+  try {
+    const existing = await new Promise((resolve, reject) => {
+      const tx = db.transaction('affiliations', 'readonly');
+      const store = tx.objectStore('affiliations');
+      const index = store.index('name');
+      const request = index.get(trimmed);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+
+    if (existing && existing.id !== id) return false;
+
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction('affiliations', 'readwrite');
+      const store = tx.objectStore('affiliations');
+      const request = store.put({ id, name: trimmed });
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+
+    return true;
+  } finally {
+    db.close();
+  }
+}
+
+export async function deleteAffiliationFromDB(id) {
+  const db = await openDB();
+  try {
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction('affiliations', 'readwrite');
+      const store = tx.objectStore('affiliations');
+      const request = store.delete(id);
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
     });
   } finally {
     db.close();

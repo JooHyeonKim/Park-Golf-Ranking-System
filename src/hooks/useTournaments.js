@@ -45,8 +45,8 @@ export function useTournaments() {
   // 새로고침 시 항상 대회 목록 화면으로 돌아가도록 함
 
   // 새 대회 추가
-  const addTournament = useCallback((name, date, holeCount = 36, groupCount = null) => {
-    const newTournament = createTournament(name, date, holeCount, groupCount);
+  const addTournament = useCallback((name, date, holeCount = 36, groupCount = null, clubType = 'club') => {
+    const newTournament = createTournament(name, date, holeCount, groupCount, clubType);
     setTournaments(prev => [newTournament, ...prev]);
     setCurrentTournamentId(newTournament.id);
     return newTournament.id;
