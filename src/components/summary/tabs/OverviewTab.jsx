@@ -174,12 +174,12 @@ export default function OverviewTab({ tournament }) {
                     )}
                   </div>
                 </td>
-                <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course.split('-').length >= 3 ? `${player.group}-1` : player.group}</td>
+                <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course.split('-').length >= 3 ? `${player.group}-${player.course.split('-')[2]}` : player.group}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-3 border-r">{player.club || '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-3 border-r">{player.name || '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.gender || '-'}</td>
-                <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-yellow-50 text-sm sm:text-lg">{player.total ?? '-'}</td>
+                <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-yellow-50 text-base sm:text-xl text-red-600">{player.total ?? '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreA ?? '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreB ?? '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-sky-50">{(player.scoreA != null && player.scoreB != null) ? player.scoreA + player.scoreB : '-'}</td>

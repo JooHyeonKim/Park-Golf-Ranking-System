@@ -331,7 +331,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                         </td>
                       )}
                       {/* 조 */}
-                      <td className="py-2 px-2 text-center border-r">{isExtraPlayer ? `${player.group}-1` : player.group}</td>
+                      <td className="py-2 px-2 text-center border-r">{isExtraPlayer ? `${player.group}-${player.course.split('-')[2]}` : player.group}</td>
 
                       {/* 코스 */}
                       <td className="py-2 px-2 text-center border-r">{player.course}</td>
@@ -493,7 +493,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
 
                     if (isLastInGroup) {
                       const extraCount = countExtraPlayers(tournament.players, baseCourse);
-                      if (extraCount < 4) {
+                      if (extraCount < 20) {
                         rows.push(
                           <tr key={`add-${baseCourse}`} className="bg-gray-100">
                             <td colSpan={is36Hole ? 13 : 11} className="py-1 text-center">

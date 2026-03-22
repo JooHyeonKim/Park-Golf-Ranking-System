@@ -117,7 +117,7 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showMale ? (male?.name || '') : ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r text-base sm:text-xl text-red-600">
                     {showMale && male ? calculateTotal(male) : ''}
                   </td>
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-bold text-gray-700 bg-gray-100">
@@ -129,7 +129,7 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {showFemale ? (female?.name || '') : ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center text-base sm:text-xl text-red-600">
                     {showFemale && female ? calculateTotal(female) : ''}
                   </td>
                 </tr>

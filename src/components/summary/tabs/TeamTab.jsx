@@ -143,7 +143,7 @@ export default function TeamTab({ tournament }) {
                 <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r">
                   {club.clubName}
                 </td>
-                <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-bold text-yellow-700 bg-yellow-50">
+                <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-bold text-red-600 bg-yellow-50 text-base sm:text-xl">
                   {club.total}
                 </td>
                 {[0, 1, 2, 3].map(i => (
@@ -151,7 +151,7 @@ export default function TeamTab({ tournament }) {
                     <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r">
                       {club.players[i]?.name || ''}
                     </td>
-                    <td className={`py-2 px-1 sm:py-3 sm:px-2 text-center ${i < 3 ? 'border-r' : ''}`}>
+                    <td className={`py-2 px-1 sm:py-3 sm:px-2 text-center text-base sm:text-xl text-red-600 ${i < 3 ? 'border-r' : ''}`}>
                       {club.players[i] ? calculateTotal(club.players[i]) : ''}
                     </td>
                   </Fragment>

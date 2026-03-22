@@ -85,7 +85,7 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {male?.name || ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r text-base sm:text-xl text-red-600">
                     {male ? calculateTotal(male) : ''}
                   </td>
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-bold text-gray-700 bg-gray-100">
@@ -97,7 +97,7 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">
                     {female?.name || ''}
                   </td>
-                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center">
+                  <td className="py-2 px-1 sm:py-3 sm:px-3 text-center text-base sm:text-xl text-red-600">
                     {female ? calculateTotal(female) : ''}
                   </td>
                 </tr>
@@ -153,7 +153,7 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{player.gender}</td>
                   <td className="py-2 px-1 sm:py-3 sm:px-3 text-center">
                     {!allowDuplicate && duplicateIds.has(player.id)
-                      ? <span className="text-red-600 font-medium text-xs">{player.holeInOne === true ? '-' : player.holeInOne}(중복수상 불가)</span>
+                      ? <span className="text-red-600 font-bold">{player.holeInOne === true ? '-' : player.holeInOne}(중복수상 불가)</span>
                       : (player.holeInOne === true ? '-' : player.holeInOne)
                     }
                   </td>
