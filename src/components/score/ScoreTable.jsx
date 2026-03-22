@@ -453,7 +453,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       </td>
 
                       {/* 36홀 합계 */}
-                      <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-lg">
+                      <td className="py-2 px-2 text-center border-r font-bold bg-yellow-50 text-base sm:text-xl text-red-600">
                         <div className="flex items-center justify-center gap-1">
                           <span>{player.total ?? '-'}</span>
                           {isRankingCalculated && player.needsDetail && (

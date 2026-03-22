@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useRanking } from '../../../hooks/useRanking';
 import { calculateRankings } from '../../../utils/ranking';
 import { useImageCapture } from '../../../hooks/useImageCapture';
@@ -15,8 +15,9 @@ export default function OverviewTab({ tournament }) {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
   const sortMenuRef = useRef(null);
-  const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '전체현황', 24);
-  const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '전체현황', 24);
+  const genderLabel = genderFilter === 'all' ? '전체현황' : `전체현황_${genderFilter}`;
+  const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, genderLabel, 24);
+  const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, genderLabel, 24);
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, true);
   // 18홀일 때 C/D 코스 선수 행 숨김
   const sortedPlayers = is36Hole
@@ -33,23 +34,6 @@ export default function OverviewTab({ tournament }) {
     const rankMap = new Map(reranked.map(p => [p.id, p.rank]));
     return filteredPlayers.map(p => ({ ...p, rank: rankMap.get(p.id) ?? null }));
   }, [sortedPlayers, genderFilter]);
-
-  // PDF/이미지 다운로드 시 전체 모드로 캡처
-  const handlePdfDownloadAll = useCallback(async () => {
-    const prev = genderFilter;
-    setGenderFilter('all');
-    await new Promise(r => setTimeout(r, 100));
-    await handlePdfDownload();
-    setGenderFilter(prev);
-  }, [genderFilter, handlePdfDownload]);
-
-  const handleCaptureImageAll = useCallback(async () => {
-    const prev = genderFilter;
-    setGenderFilter('all');
-    await new Promise(r => setTimeout(r, 100));
-    await handleCaptureImage();
-    setGenderFilter(prev);
-  }, [genderFilter, handleCaptureImage]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -71,8 +55,8 @@ export default function OverviewTab({ tournament }) {
     <div>
       {/* 정렬 버튼 */}
       <div className="flex flex-wrap justify-end mb-2 sm:mb-3 gap-1 sm:gap-2">
-        <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownloadAll} />
-        <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImageAll} />
+        <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
+        <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
         <div className="relative" ref={sortMenuRef}>
           <button
             onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
@@ -176,8 +160,8 @@ export default function OverviewTab({ tournament }) {
                 </td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course.split('-').length >= 3 ? `${player.group}-${player.course.split('-')[2]}` : player.group}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course}</td>
-                <td className="py-1 px-1 sm:py-2 sm:px-3 border-r">{player.club || '-'}</td>
-                <td className="py-1 px-1 sm:py-2 sm:px-3 border-r">{player.name || '-'}</td>
+                <td className="py-1 px-1 sm:py-2 sm:px-3 text-center border-r">{player.club || '-'}</td>
+                <td className="py-1 px-1 sm:py-2 sm:px-3 text-center border-r">{player.name || '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.gender || '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-yellow-50 text-base sm:text-xl text-red-600">{player.total ?? '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreA ?? '-'}</td>

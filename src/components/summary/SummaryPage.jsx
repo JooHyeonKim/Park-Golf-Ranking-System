@@ -23,30 +23,28 @@ export default function SummaryPage({ tournament, onBack }) {
       {/* 헤더 */}
       <div className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-full mx-auto px-2 py-2 sm:px-4 sm:py-3">
-          <div className="flex items-center justify-between mb-2 gap-2">
+          <div className="flex items-center justify-between mb-1 gap-2">
             <button
               onClick={onBack}
               className="text-gray-700 hover:text-gray-900 font-bold text-sm sm:text-lg whitespace-nowrap"
             >
               ← 점수 입력
             </button>
-            <div className="flex items-center gap-2 sm:gap-4">
-              <div className="text-right">
-                <h2 className="text-sm sm:text-xl font-bold text-gray-800">{tournament.name} - 집계</h2>
-                <p className="text-xs sm:text-sm text-gray-500">{tournament.date}</p>
-              </div>
-              <button
-                onClick={handlePdfDownload}
-                disabled={isGenerating}
-                className={`px-3 py-2 sm:px-4 rounded-lg font-bold transition-colors flex items-center gap-1 shadow text-xs sm:text-base whitespace-nowrap ${
-                  isGenerating
-                    ? 'bg-red-400 text-white cursor-not-allowed'
-                    : 'bg-red-600 text-white hover:bg-red-700'
-                }`}
-              >
-                {isGenerating ? '⏳ PDF 생성 중...' : '📄 PDF 다운로드'}
-              </button>
-            </div>
+            <button
+              onClick={handlePdfDownload}
+              disabled={isGenerating}
+              className={`px-3 py-2 sm:px-4 rounded-lg font-bold transition-colors flex items-center gap-1 shadow text-xs sm:text-base whitespace-nowrap ${
+                isGenerating
+                  ? 'bg-red-400 text-white cursor-not-allowed'
+                  : 'bg-red-600 text-white hover:bg-red-700'
+              }`}
+            >
+              {isGenerating ? '⏳ PDF 생성 중...' : '📄 PDF 다운로드'}
+            </button>
+          </div>
+          <div className="text-center mb-2">
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-800">{tournament.name} - 집계</h2>
+            <p className="text-sm sm:text-base text-gray-500">{tournament.date}</p>
           </div>
         </div>
 

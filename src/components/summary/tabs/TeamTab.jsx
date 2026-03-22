@@ -82,12 +82,13 @@ export default function TeamTab({ tournament }) {
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
       </div>
       <div ref={tableRef} data-capture-id="단체전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
-        <div className="relative flex items-center justify-end px-4 py-5 bg-green-50">
-          <h3 className="absolute left-0 right-0 text-center font-bold text-base sm:text-2xl pointer-events-none">👥 {tournament.name} - 단체전</h3>
-          <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
+       <div className="inline-block min-w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
+          <h3 className="text-center sm:text-left font-bold text-sm sm:text-2xl">👥 {tournament.name} - 단체전</h3>
+          <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 self-center sm:self-auto">
             <button
               onClick={() => setExcludeTop(false)}
-              className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-colors ${
                 !excludeTop
                   ? 'bg-green-600 text-white'
                   : 'bg-white text-gray-600 hover:bg-gray-100'
@@ -97,7 +98,7 @@ export default function TeamTab({ tournament }) {
             </button>
             <button
               onClick={() => setExcludeTop(true)}
-              className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-colors ${
                 excludeTop
                   ? 'bg-green-600 text-white'
                   : 'bg-white text-gray-600 hover:bg-gray-100'
@@ -107,7 +108,7 @@ export default function TeamTab({ tournament }) {
             </button>
           </div>
         </div>
-        <table className="w-full text-sm sm:text-lg font-bold border-collapse">
+        <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
           <thead className="text-base sm:text-xl">
             <tr className="border-b">
               <th rowSpan={2} className="bg-gray-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[35px] sm:min-w-[50px]">
@@ -160,6 +161,7 @@ export default function TeamTab({ tournament }) {
             ))}
           </tbody>
         </table>
+       </div>
       </div>
     </div>
   );
