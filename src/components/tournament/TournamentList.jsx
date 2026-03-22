@@ -2,18 +2,23 @@ import { useState } from 'react';
 
 // 총 조 수의 기본값 계산
 function getDefaultGroupCount(holeCount) {
-  return holeCount === 18 ? 18 : 36;
+  if (holeCount === 18) return 18;
+  if (holeCount === 54) return 54;
+  return 36;
 }
 
 // 총 조 수의 최대값 계산
 function getMaxGroupCount(holeCount) {
-  return holeCount === 18 ? 18 : 36;
+  if (holeCount === 18) return 18;
+  if (holeCount === 54) return 54;
+  return 36;
 }
 
 // 하위 호환: 기존 groupsPerCourse → groupCount 변환
 function getTournamentGroupCount(tournament) {
   if (tournament.groupCount) return tournament.groupCount;
-  const numCourses = (tournament.holeCount || 36) === 18 ? 2 : 4;
+  const hc = tournament.holeCount || 36;
+  const numCourses = hc === 18 ? 2 : hc === 54 ? 6 : 4;
   return (tournament.groupsPerCourse || 9) * numCourses;
 }
 
@@ -136,6 +141,17 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                     }`}
                   >
                     36홀
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleHoleCountChange(54)}
+                    className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                      newHoleCount === 54
+                        ? 'bg-green-600 text-white'
+                        : 'bg-white text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    54홀
                   </button>
                 </div>
               </div>

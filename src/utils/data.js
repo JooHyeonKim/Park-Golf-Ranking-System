@@ -2,6 +2,24 @@
 // 클럽/회원 데이터는 IndexedDB로 이동 (src/utils/db.js 참고)
 
 /**
+ * 홀 수에 따른 코스 목록 반환
+ * @param {number} holeCount - 홀 수 (18, 36, 54)
+ * @returns {Array} - 코스 목록
+ */
+export function getCoursesForHoleCount(holeCount) {
+  if (holeCount === 18) return ['A', 'B'];
+  if (holeCount === 54) return ['A', 'B', 'C', 'D', 'E', 'F'];
+  return ['A', 'B', 'C', 'D']; // 36홀 (기본)
+}
+
+/**
+ * 코스 내부명 → UI 표시명 매핑 (54홀용)
+ */
+export const COURSE_LABELS = {
+  A: 'A1', B: 'B1', C: 'C1', D: 'D1', E: 'A2', F: 'B2'
+};
+
+/**
  * 총 조 수를 코스별로 균등 분배하여 코스명 목록 생성
  * 예: 7조, 4코스 → A:2, B:2, C:2, D:1
  */
@@ -23,13 +41,13 @@ function distributeCourseNames(courses, groupCount) {
 
 /**
  * 초기 선수 데이터 생성
- * @param {number} holeCount - 홀 수 (18 또는 36)
- * @param {number} groupCount - 총 조 수 (기본: 18홀=18, 36홀=36)
+ * @param {number} holeCount - 홀 수 (18, 36, 54)
+ * @param {number} groupCount - 총 조 수 (기본: 18홀=18, 36홀=36, 54홀=54)
  * @returns {Array} - 선수 목록
  */
 export function createInitialPlayers(holeCount = 36, groupCount = null) {
   const players = [];
-  const courses = holeCount === 18 ? ['A', 'B'] : ['A', 'B', 'C', 'D'];
+  const courses = getCoursesForHoleCount(holeCount);
 
   if (groupCount === null) groupCount = courses.length * 9;
 
@@ -51,6 +69,8 @@ export function createInitialPlayers(holeCount = 36, groupCount = null) {
         scoreB: null,
         scoreC: null,
         scoreD: null,
+        scoreE: null,
+        scoreF: null,
         detailScores: null,
         holeInOne: null
       });
@@ -65,12 +85,12 @@ export function createInitialPlayers(holeCount = 36, groupCount = null) {
  * 새 대회 생성
  * @param {string} name - 대회명
  * @param {string} date - 날짜 (YYYY-MM-DD)
- * @param {number} holeCount - 홀 수 (18 또는 36)
- * @param {number} groupCount - 총 조 수 (기본: 18홀=18, 36홀=36)
+ * @param {number} holeCount - 홀 수 (18, 36, 54)
+ * @param {number} groupCount - 총 조 수 (기본: 18홀=18, 36홀=36, 54홀=54)
  * @returns {Object} - 대회 객체
  */
 export function createTournament(name, date, holeCount = 36, groupCount = null, clubType = 'club') {
-  const courses = holeCount === 18 ? ['A', 'B'] : ['A', 'B', 'C', 'D'];
+  const courses = getCoursesForHoleCount(holeCount);
   if (groupCount === null) groupCount = courses.length * 9;
 
   return {
@@ -240,6 +260,8 @@ export function addPlayerToCourse(players, baseCourse, group) {
     scoreB: null,
     scoreC: null,
     scoreD: null,
+    scoreE: null,
+    scoreF: null,
     detailScores: null,
     holeInOne: null
   };
@@ -263,12 +285,12 @@ export function addPlayerToCourse(players, baseCourse, group) {
  * - 늘리면: 새 빈 선수 슬롯 추가
  * - 기존 데이터와 추가 선수 보존
  * @param {Array} existingPlayers - 기존 선수 목록
- * @param {number} holeCount - 홀 수 (18 또는 36)
+ * @param {number} holeCount - 홀 수 (18, 36, 54)
  * @param {number} newGroupCount - 새 총 조 수
  * @returns {Array} - 재조정된 선수 목록
  */
 export function adjustGroupCount(existingPlayers, holeCount, newGroupCount) {
-  const courses = holeCount === 18 ? ['A', 'B'] : ['A', 'B', 'C', 'D'];
+  const courses = getCoursesForHoleCount(holeCount);
 
   // 기존 선수를 코스별로 분류 (기본 선수 / 추가 선수)
   const baseMap = {};  // "A-1" -> [player, ...]
@@ -306,6 +328,7 @@ export function adjustGroupCount(existingPlayers, holeCount, newGroupCount) {
           course: courseName,
           name: '', gender: '', club: '',
           scoreA: null, scoreB: null, scoreC: null, scoreD: null,
+          scoreE: null, scoreF: null,
           detailScores: null, holeInOne: null
         });
       }
