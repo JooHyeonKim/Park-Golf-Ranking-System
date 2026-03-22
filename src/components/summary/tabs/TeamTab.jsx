@@ -4,6 +4,7 @@ import { useImageCapture } from '../../../hooks/useImageCapture';
 import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
 import ImageDownloadButton from '../../common/ImageDownloadButton';
 import PdfDownloadButton from '../../common/PdfDownloadButton';
+import LoadingOverlay from '../../common/LoadingOverlay';
 
 const INDIVIDUAL_TOP = 5;
 
@@ -77,6 +78,7 @@ export default function TeamTab({ tournament }) {
 
   return (
     <div>
+      {(isGenerating || isCapturing) && <LoadingOverlay message={isGenerating ? 'PDF 생성 중...' : '이미지 생성 중...'} />}
       <div className="flex justify-end mb-2 gap-2">
         <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
@@ -136,7 +138,10 @@ export default function TeamTab({ tournament }) {
             </tr>
           </thead>
           <tbody>
-            {teamRankings.map((club, index) => (
+            {teamRankings.flatMap((club, index) => {
+              const nextClub = teamRankings[index + 1];
+              const showDivider = club.rank <= 5 && nextClub && nextClub.rank > 5;
+              return [
               <tr key={club.clubName} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                 <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-bold text-gray-700">
                   {club.rank}
@@ -157,8 +162,14 @@ export default function TeamTab({ tournament }) {
                     </td>
                   </Fragment>
                 ))}
-              </tr>
-            ))}
+              </tr>,
+              showDivider && (
+                <tr key="divider">
+                  <td colSpan={11} className="border-b-[6px] border-blue-300 p-0"></td>
+                </tr>
+              )
+              ];
+            })}
           </tbody>
         </table>
        </div>

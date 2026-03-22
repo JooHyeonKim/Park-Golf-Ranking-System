@@ -6,6 +6,7 @@ import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
 import ImageDownloadButton from '../../common/ImageDownloadButton';
 import PdfDownloadButton from '../../common/PdfDownloadButton';
 import DetailScoreModal from '../../score/DetailScoreModal';
+import LoadingOverlay from '../../common/LoadingOverlay';
 
 export default function OverviewTab({ tournament }) {
   const is36Hole = (tournament.holeCount || 36) === 36;
@@ -53,6 +54,7 @@ export default function OverviewTab({ tournament }) {
 
   return (
     <div>
+      {(isGenerating || isCapturing) && <LoadingOverlay message={isGenerating ? 'PDF 생성 중...' : '이미지 생성 중...'} />}
       {/* 다운로드 버튼 */}
       <div className="flex flex-wrap justify-end mb-2 sm:mb-3 gap-1 sm:gap-2">
         <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />

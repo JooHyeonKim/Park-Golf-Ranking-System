@@ -4,6 +4,7 @@ import { useImageCapture } from '../../../hooks/useImageCapture';
 import { useSinglePdfDownload } from '../../../hooks/useSinglePdfDownload';
 import ImageDownloadButton from '../../common/ImageDownloadButton';
 import PdfDownloadButton from '../../common/PdfDownloadButton';
+import LoadingOverlay from '../../common/LoadingOverlay';
 
 const DEFAULT_MAX_RANK = 10;
 const RANK_OPTIONS = [9, 10, 11, 12, 13, 14, 15];
@@ -39,6 +40,7 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
 
   return (
     <div>
+      {(isGenerating || isCapturing) && <LoadingOverlay message={isGenerating ? 'PDF 생성 중...' : '이미지 생성 중...'} />}
       {/* 다운로드 버튼 */}
       <div className="flex justify-end mb-2 gap-2">
         <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />

@@ -4,6 +4,7 @@ import OverviewTab from './tabs/OverviewTab';
 import IndividualTab from './tabs/IndividualTab';
 import EncouragementTab from './tabs/EncouragementTab';
 import TeamTab from './tabs/TeamTab';
+import LoadingOverlay from '../common/LoadingOverlay';
 
 export default function SummaryPage({ tournament, onBack }) {
   const [activeTab, setActiveTab] = useState('overview');
@@ -20,6 +21,7 @@ export default function SummaryPage({ tournament, onBack }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 pb-4">
+      {isGenerating && <LoadingOverlay message="PDF 전체 생성 중..." />}
       {/* 헤더 */}
       <div className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-full mx-auto px-2 py-2 sm:px-4 sm:py-3">
