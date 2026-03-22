@@ -86,7 +86,7 @@ export default function TeamTab({ tournament }) {
       <div ref={tableRef} data-capture-id="단체전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
        <div className="inline-block min-w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
-          <h3 className="text-center sm:text-left font-bold text-sm sm:text-2xl">👥 {tournament.name} - 단체전</h3>
+          <h3 className="text-left font-bold text-sm sm:text-2xl">👥 {tournament.name} - 단체전</h3>
           <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 self-center sm:self-auto">
             <button
               onClick={() => setExcludeTop(false)}
@@ -165,7 +165,7 @@ export default function TeamTab({ tournament }) {
               </tr>,
               showDivider && (
                 <tr key="divider">
-                  <td colSpan={11} className="border-b-[6px] border-green-700 p-0"></td>
+                  <td colSpan={11} className="border-b-[4px] border-green-700 p-0"></td>
                 </tr>
               )
               ];

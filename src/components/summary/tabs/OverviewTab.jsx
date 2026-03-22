@@ -65,7 +65,7 @@ export default function OverviewTab({ tournament }) {
       <div ref={tableRef} data-capture-id="전체현황" className="bg-white rounded-lg shadow-sm overflow-x-auto">
        <div className="inline-block min-w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
-          <h3 className="text-center sm:text-left font-bold text-sm sm:text-2xl">🏆 {tournament.name} - 전체 현황</h3>
+          <h3 className="text-left font-bold text-sm sm:text-2xl">🏆 {tournament.name} - 전체 현황</h3>
           <div className="flex gap-2 justify-center sm:justify-end">
             <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
               {[{ value: 'all', label: '전체' }, { value: '남', label: '남' }, { value: '여', label: '여' }].map(opt => (
