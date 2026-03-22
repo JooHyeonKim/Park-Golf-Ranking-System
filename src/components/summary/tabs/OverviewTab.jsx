@@ -53,66 +53,62 @@ export default function OverviewTab({ tournament }) {
 
   return (
     <div>
-      {/* 정렬 버튼 */}
+      {/* 다운로드 버튼 */}
       <div className="flex flex-wrap justify-end mb-2 sm:mb-3 gap-1 sm:gap-2">
         <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
-        <div className="relative" ref={sortMenuRef}>
-          <button
-            onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
-            className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-bold text-sm sm:text-base transition-colors bg-green-600 text-white hover:bg-green-700 flex items-center gap-1 shadow"
-          >
-            정렬: {sortBy === 'rank' ? '순위' : '조'}
-            <span className="text-xs">▼</span>
-          </button>
-          {isSortMenuOpen && (
-            <div className="absolute right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[120px]">
-              <button
-                onClick={() => {
-                  setSortBy('rank');
-                  setIsSortMenuOpen(false);
-                }}
-                className={`w-full px-4 py-2 text-left hover:bg-gray-100 rounded-t-lg ${
-                  sortBy === 'rank' ? 'bg-green-50 font-semibold text-green-700' : 'text-gray-700'
-                }`}
-              >
-                순위
-              </button>
-              <button
-                onClick={() => {
-                  setSortBy('group');
-                  setIsSortMenuOpen(false);
-                }}
-                className={`w-full px-4 py-2 text-left hover:bg-gray-100 rounded-b-lg ${
-                  sortBy === 'group' ? 'bg-green-50 font-semibold text-green-700' : 'text-gray-700'
-                }`}
-              >
-                조
-              </button>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* 테이블 */}
       <div ref={tableRef} data-capture-id="전체현황" className="bg-white rounded-lg shadow-sm overflow-x-auto">
        <div className="inline-block min-w-full">
-        <div className="relative flex items-center justify-end px-2 py-3 sm:px-4 sm:py-5 bg-green-50">
-          <h3 className="absolute left-0 right-0 text-center font-bold text-base sm:text-2xl pointer-events-none">🏆 {tournament.name} - 전체 현황</h3>
-          <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
-            {[{ value: 'all', label: '전체' }, { value: '남', label: '남' }, { value: '여', label: '여' }].map(opt => (
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
+          <h3 className="text-center sm:text-left font-bold text-sm sm:text-2xl">🏆 {tournament.name} - 전체 현황</h3>
+          <div className="flex gap-2 justify-center sm:justify-end">
+            <div className="inline-flex rounded-lg overflow-hidden border border-gray-300">
+              {[{ value: 'all', label: '전체' }, { value: '남', label: '남' }, { value: '여', label: '여' }].map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => setGenderFilter(opt.value)}
+                  className={`px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-colors ${
+                    genderFilter === opt.value
+                      ? 'bg-green-600 text-white'
+                      : 'bg-white text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+          </div>
+            <div className="relative" ref={sortMenuRef}>
               <button
-                key={opt.value}
-                onClick={() => setGenderFilter(opt.value)}
-                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-                  genderFilter === opt.value
-                    ? 'bg-green-600 text-white'
-                    : 'bg-white text-gray-600 hover:bg-gray-100'
-                }`}
+                onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
+                className="px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center gap-1"
               >
-                {opt.label}
+                정렬: {sortBy === 'rank' ? '순위' : '조'}
+                <span className="text-xs">▼</span>
               </button>
-            ))}
+              {isSortMenuOpen && (
+                <div className="absolute right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[100px]">
+                  <button
+                    onClick={() => { setSortBy('rank'); setIsSortMenuOpen(false); }}
+                    className={`w-full px-3 py-1.5 text-sm text-left hover:bg-gray-100 rounded-t-lg ${
+                      sortBy === 'rank' ? 'bg-green-50 font-semibold text-green-700' : 'text-gray-700'
+                    }`}
+                  >
+                    순위
+                  </button>
+                  <button
+                    onClick={() => { setSortBy('group'); setIsSortMenuOpen(false); }}
+                    className={`w-full px-3 py-1.5 text-sm text-left hover:bg-gray-100 rounded-b-lg ${
+                      sortBy === 'group' ? 'bg-green-50 font-semibold text-green-700' : 'text-gray-700'
+                    }`}
+                  >
+                    조
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
