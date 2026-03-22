@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
-const CAPTURE_IDS = ['전체현황', '개인전+장려상', '단체전'];
+const CAPTURE_IDS = ['전체현황', '전체현황_남', '전체현황_여', '개인전+장려상', '단체전'];
 const COMBINED_IDS = ['개인전', '장려상'];
 const ROWS_PER_PAGE = 24;
 
@@ -135,7 +135,7 @@ export function usePdfDownload(tournamentName) {
 
         const orig = prepareElement(el);
 
-        if (id === '전체현황') {
+        if (id === '전체현황' || id === '전체현황_남' || id === '전체현황_여') {
           // 전체현황은 24명씩 페이지 분할
           const tbody = el.querySelector('tbody');
           const rows = tbody ? Array.from(tbody.querySelectorAll('tr')) : [];
@@ -146,6 +146,7 @@ export function usePdfDownload(tournamentName) {
           }
 
           const totalPages = Math.ceil(rows.length / ROWS_PER_PAGE);
+          let referenceImgWidth = null;
 
           for (let page = 0; page < totalPages; page++) {
             const start = page * ROWS_PER_PAGE;
@@ -158,7 +159,35 @@ export function usePdfDownload(tournamentName) {
 
             const canvas = await captureElement(el);
             if (canvas) {
-              addCanvasToPage(pdf, canvas, isFirstPage);
+              if (!isFirstPage) pdf.addPage();
+
+              const pageWidth = pdf.internal.pageSize.getWidth();
+              const pageHeight = pdf.internal.pageSize.getHeight();
+              const margin = 5;
+              const availWidth = pageWidth - margin * 2;
+              const availHeight = pageHeight - margin * 2;
+
+              const imgRatio = canvas.width / canvas.height;
+              let imgWidth = availWidth;
+              let imgHeight = imgWidth / imgRatio;
+              if (imgHeight > availHeight) {
+                imgHeight = availHeight;
+                imgWidth = imgHeight * imgRatio;
+              }
+
+              // 첫 페이지의 imgWidth를 기준으로 저장
+              if (referenceImgWidth === null) {
+                referenceImgWidth = imgWidth;
+              } else {
+                // 이후 페이지는 기준 폭을 사용하여 동일한 스케일 유지
+                imgWidth = referenceImgWidth;
+                imgHeight = imgWidth / imgRatio;
+              }
+
+              const imgData = canvas.toDataURL('image/jpeg', 0.95);
+              const x = (pageWidth - imgWidth) / 2;
+              const y = margin;
+              pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
               isFirstPage = false;
             }
           }

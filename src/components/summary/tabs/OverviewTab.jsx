@@ -27,16 +27,23 @@ export default function OverviewTab({ tournament }) {
     ? allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B'))
     : allSortedPlayers;
 
+  // 성별 필터링 + 순위 재계산 헬퍼
+  const filterByGender = (players, gender) => {
+    const filtered = players.filter(p => p.gender === gender);
+    const reranked = calculateRankings(filtered);
+    const rankMap = new Map(reranked.map(p => [p.id, p.rank]));
+    return filtered.map(p => ({ ...p, rank: rankMap.get(p.id) ?? null }));
+  };
+
   // 성별 필터 적용 + 순위 재계산 (A/B/C/D + 상세점수 동점 처리 포함)
   const displayPlayers = useMemo(() => {
     if (genderFilter === 'all') return sortedPlayers;
-    const filteredPlayers = sortedPlayers.filter(p => p.gender === genderFilter);
-    // calculateRankings으로 순위 재계산 (comparePlayers 로직 동일 적용)
-    const reranked = calculateRankings(filteredPlayers);
-    // 기존 정렬(조별 등) 유지하면서 순위만 매핑
-    const rankMap = new Map(reranked.map(p => [p.id, p.rank]));
-    return filteredPlayers.map(p => ({ ...p, rank: rankMap.get(p.id) ?? null }));
+    return filterByGender(sortedPlayers, genderFilter);
   }, [sortedPlayers, genderFilter]);
+
+  // PDF 전체 다운로드용 남/여 데이터
+  const malePlayers = useMemo(() => filterByGender(sortedPlayers, '남'), [sortedPlayers]);
+  const femalePlayers = useMemo(() => filterByGender(sortedPlayers, '여'), [sortedPlayers]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -53,6 +60,83 @@ export default function OverviewTab({ tournament }) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isSortMenuOpen]);
+
+  // 테이블 렌더링 함수 (메인 + PDF용 숨김 테이블 공용)
+  const renderTableRows = (players) => players.map((player, index) => (
+    <tr key={player.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+      <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold text-red-600 text-sm sm:text-lg">
+        <span>{player.rank ?? '-'}</span>
+      </td>
+      <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course.split('-').length >= 3 ? `${player.group}-${player.course.split('-')[2]}` : player.group}</td>
+      <td className="py-1 px-1 sm:py-2 sm:px-3 text-center border-r">{player.club || '-'}</td>
+      <td className="py-1 px-1 sm:py-2 sm:px-3 text-center border-r">{player.name || '-'}</td>
+      <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.gender || '-'}</td>
+      <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-yellow-50 text-base sm:text-xl text-red-600">{player.total ?? '-'}</td>
+      <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreA ?? '-'}</td>
+      <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreB ?? '-'}</td>
+      <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-sky-50">{(player.scoreA != null && player.scoreB != null) ? player.scoreA + player.scoreB : '-'}</td>
+      {is36Hole && (
+        <>
+          <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreC ?? '-'}</td>
+          <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreD ?? '-'}</td>
+          <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-lime-50">{(player.scoreC != null && player.scoreD != null) ? player.scoreC + player.scoreD : '-'}</td>
+        </>
+      )}
+      {is54Hole && (
+        <>
+          <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreE ?? '-'}</td>
+          <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreF ?? '-'}</td>
+          <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-purple-50">{(player.scoreE != null && player.scoreF != null) ? player.scoreE + player.scoreF : '-'}</td>
+        </>
+      )}
+      <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r w-10 sm:w-16">
+        {player.holeInOne ? '⛳' : ''}
+      </td>
+    </tr>
+  ));
+
+  const renderTableHeader = () => (
+    <tr className="border-b-2">
+      <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[40px] sm:min-w-[60px]">순위</th>
+      <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">조</th>
+      <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[50px] sm:min-w-[80px]">{clubLabel}</th>
+      <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[50px]">성명</th>
+      <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[30px] sm:min-w-[50px]">성별</th>
+      <th className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r whitespace-nowrap">{is54Hole ? '54홀 합계' : is36Hole ? '36홀 합계' : '18홀 합계'}</th>
+      <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'A1코스' : 'A코스'}</th>
+      <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'B1코스' : 'B코스'}</th>
+      <th className="bg-sky-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
+      {is36Hole && (
+        <>
+          <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'C1코스' : 'C코스'}</th>
+          <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'D1코스' : 'D코스'}</th>
+          <th className="bg-lime-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
+        </>
+      )}
+      {is54Hole && (
+        <>
+          <th className="bg-purple-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">A2코스</th>
+          <th className="bg-purple-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">B2코스</th>
+          <th className="bg-purple-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
+        </>
+      )}
+      <th className="bg-orange-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r w-10 sm:w-16">홀인원</th>
+    </tr>
+  );
+
+  const renderHiddenTable = (captureId, title, players) => (
+    <div data-capture-id={captureId} className="bg-white" style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+      <div className="inline-block min-w-full">
+        <div className="px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
+          <h3 className="text-left font-bold text-sm sm:text-2xl">🏆 {tournament.name} - {title}</h3>
+        </div>
+        <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
+          <thead className="text-base sm:text-xl">{renderTableHeader()}</thead>
+          <tbody>{renderTableRows(players)}</tbody>
+        </table>
+      </div>
+    </div>
+  );
 
   return (
     <div>
@@ -206,6 +290,10 @@ export default function OverviewTab({ tournament }) {
         </table>
        </div>
       </div>
+
+      {/* PDF 전체 다운로드용 숨김 테이블 (남/여) */}
+      {renderHiddenTable('전체현황_남', '전체 현황 (남)', malePlayers)}
+      {renderHiddenTable('전체현황_여', '전체 현황 (여)', femalePlayers)}
 
       {/* 상세 점수 보기 모달 */}
       {detailModalPlayer && (
