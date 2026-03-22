@@ -120,7 +120,7 @@ export default function OverviewTab({ tournament }) {
             <tr className="border-b-2">
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[40px] sm:min-w-[60px]">순위</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">조</th>
-              <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">코스</th>
+              {genderFilter === 'all' && <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">코스</th>}
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[50px] sm:min-w-[80px]">{clubLabel}</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[50px]">성명</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[30px] sm:min-w-[50px]">성별</th>
@@ -159,7 +159,7 @@ export default function OverviewTab({ tournament }) {
                   </div>
                 </td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course.split('-').length >= 3 ? `${player.group}-${player.course.split('-')[2]}` : player.group}</td>
-                <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course}</td>
+                {genderFilter === 'all' && <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course}</td>}
                 <td className="py-1 px-1 sm:py-2 sm:px-3 text-center border-r">{player.club || '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-3 text-center border-r">{player.name || '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.gender || '-'}</td>
