@@ -147,10 +147,14 @@ export default function App() {
           <div className="bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300 rounded-2xl shadow-lg px-4 py-4 sm:px-8 sm:py-7 flex justify-center">
             <div className="inline-block text-left">
               <div className="text-sm sm:text-xl font-bold text-amber-800 mb-1 sm:mb-2">
-                ✉️ 프로그램 제작문의: <a href="mailto:subinkim0128@gmail.com" className="underline text-amber-600 hover:text-amber-500">subinkim0128@gmail.com</a>
+                ✉️ 프로그램 제작문의: <span className="underline text-amber-600 hover:text-amber-500 cursor-pointer" onClick={() => { navigator.clipboard.writeText('subinkim0128@gmail.com'); alert('이메일 주소가 복사되었습니다!\nsubinkim0128@gmail.com'); }}>subinkim0128@gmail.com</span>
               </div>
               <div className="text-sm sm:text-xl font-bold text-amber-800">
-                ☕ 개발자 후원 계좌: 신한 110-500-604303
+                ☕ 개발자 후원 계좌: 신한{' '}
+                <span
+                  className="underline text-amber-600 hover:text-amber-500 cursor-pointer"
+                  onClick={() => { navigator.clipboard.writeText('110500604303'); alert('계좌번호가 복사되었습니다!\n신한 110-500-604303'); }}
+                >110-500-604303</span>
               </div>
             </div>
           </div>
@@ -159,12 +163,17 @@ export default function App() {
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-200 flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-4 py-2 sm:py-4 text-xs sm:text-sm text-gray-500">
           <span>
             프로그램 제작문의:{' '}
-            <a href="mailto:subinkim0128@gmail.com" className="text-gray-500 underline">
+            <span className="underline cursor-pointer hover:text-gray-700" onClick={() => { navigator.clipboard.writeText('subinkim0128@gmail.com'); alert('이메일 주소가 복사되었습니다!\nsubinkim0128@gmail.com'); }}>
               subinkim0128@gmail.com
-            </a>
+            </span>
           </span>
           <span>|</span>
-          <span>개발자 후원 계좌: 신한 110500604303</span>
+          <span>개발자 후원 계좌: 신한{' '}
+            <span
+              className="underline cursor-pointer hover:text-gray-700"
+              onClick={() => { navigator.clipboard.writeText('110500604303'); alert('계좌번호가 복사되었습니다!\n신한 110-500-604303'); }}
+            >110500604303</span>
+          </span>
         </div>
       )}
     </>
