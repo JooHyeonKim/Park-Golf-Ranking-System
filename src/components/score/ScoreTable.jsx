@@ -538,7 +538,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
 
                     if (isLastInGroup) {
                       const extraCount = countExtraPlayers(tournament.players, baseCourse);
-                      if (extraCount < 20) {
+                      if (extraCount < 24) {
                         rows.push(
                           <tr key={`add-${baseCourse}`} className="bg-gray-100">
                             <td colSpan={is54Hole ? 15 : is36Hole ? 13 : 11} className="py-1 text-center">

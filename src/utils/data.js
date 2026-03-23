@@ -233,8 +233,8 @@ export function countExtraPlayers(players, baseCourse) {
 }
 
 /**
- * 추가 선수를 코스 그룹에 삽입 (최대 20명 = 5세트, 4명씩)
- * 코스명: baseCourse-1 (4명), baseCourse-2 (4명), ... baseCourse-5 (4명)
+ * 추가 선수를 코스 그룹에 삽입 (최대 24명 = 6세트, 4명씩)
+ * 코스명: baseCourse-1 (4명), baseCourse-2 (4명), ... baseCourse-6 (4명)
  * @param {Array} players - 선수 목록
  * @param {string} baseCourse - 기본 코스명 (예: "A-1")
  * @param {number} group - 조 번호
@@ -242,7 +242,7 @@ export function countExtraPlayers(players, baseCourse) {
  */
 export function addPlayerToCourse(players, baseCourse, group) {
   const extraCount = countExtraPlayers(players, baseCourse);
-  if (extraCount >= 20) return players;
+  if (extraCount >= 24) return players;
 
   // 현재 세트 번호 결정 (4명씩 1세트)
   const setNumber = Math.floor(extraCount / 4) + 1;
