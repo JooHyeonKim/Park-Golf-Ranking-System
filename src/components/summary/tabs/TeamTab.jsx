@@ -6,11 +6,9 @@ import ImageDownloadButton from '../../common/ImageDownloadButton';
 import PdfDownloadButton from '../../common/PdfDownloadButton';
 import LoadingOverlay from '../../common/LoadingOverlay';
 
-const INDIVIDUAL_TOP = 5;
-
 export default function TeamTab({ tournament }) {
   const clubLabel = tournament.clubType === 'affiliation' ? '소속' : '클럽';
-  const [excludeTop, setExcludeTop] = useState(true);
+  const [excludeCount, setExcludeCount] = useState(5);
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, '단체전');
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, '단체전');
 
@@ -19,10 +17,10 @@ export default function TeamTab({ tournament }) {
     const withScores = ranked.filter(p => p.name && calculateTotal(p) !== null);
 
     let eligible;
-    if (excludeTop) {
-      // 개인전 수상자 제외 대상 (남녀 각 상위 5명)
-      const topMales = withScores.filter(p => p.gender === '남').slice(0, INDIVIDUAL_TOP);
-      const topFemales = withScores.filter(p => p.gender === '여').slice(0, INDIVIDUAL_TOP);
+    if (excludeCount > 0) {
+      // 개인전 수상자 제외 대상 (남녀 각 상위 N명)
+      const topMales = withScores.filter(p => p.gender === '남').slice(0, excludeCount);
+      const topFemales = withScores.filter(p => p.gender === '여').slice(0, excludeCount);
       const excludedIds = new Set([
         ...topMales.map(p => p.id),
         ...topFemales.map(p => p.id)
@@ -65,7 +63,7 @@ export default function TeamTab({ tournament }) {
       }
       return { ...club, rank: currentRank };
     });
-  }, [tournament.players, excludeTop]);
+  }, [tournament.players, excludeCount]);
 
   if (teamRankings.length === 0) {
     return (
@@ -87,28 +85,16 @@ export default function TeamTab({ tournament }) {
        <div className="inline-block min-w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
           <h3 className="text-left font-bold text-sm sm:text-2xl">👥 {tournament.name} - 단체전</h3>
-          <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 self-center sm:self-auto">
-            <button
-              onClick={() => setExcludeTop(false)}
-              className={`px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-colors ${
-                !excludeTop
-                  ? 'bg-green-600 text-white'
-                  : 'bg-white text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              전체 포함
-            </button>
-            <button
-              onClick={() => setExcludeTop(true)}
-              className={`px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium transition-colors ${
-                excludeTop
-                  ? 'bg-green-600 text-white'
-                  : 'bg-white text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              수상자 제외
-            </button>
-          </div>
+          <select
+            value={excludeCount}
+            onChange={(e) => setExcludeCount(Number(e.target.value))}
+            className="px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 self-center sm:self-auto"
+          >
+            <option value={0}>전체 포함</option>
+            {[1, 2, 3, 4, 5, 6, 7].map(n => (
+              <option key={n} value={n}>수상자 {n}위까지 제외</option>
+            ))}
+          </select>
         </div>
         <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
           <thead className="text-base sm:text-xl">
