@@ -48,7 +48,7 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
       </div>
 
       {/* 장려상 테이블 */}
-      <div ref={tableRef} data-capture-id="장려상" className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
           <h3 className="text-left font-bold text-sm sm:text-2xl">🎖️ {tournament.name} - 장려상</h3>
           <div className="flex gap-2 sm:gap-3 justify-center sm:justify-end">
@@ -139,6 +139,53 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* PDF/이미지 캡처용 숨김 테이블 */}
+      <div ref={tableRef} data-capture-id="장려상" className="bg-white" style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+        <div className="inline-block min-w-full">
+          <div className="px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
+            <h3 className="text-left font-bold text-sm sm:text-2xl">🎖️ {tournament.name} - 장려상</h3>
+          </div>
+          <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
+            <thead className="text-base sm:text-xl">
+              <tr className="border-b">
+                <th colSpan={3} className="bg-blue-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">남자</th>
+                <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">순위</th>
+                <th colSpan={3} className="bg-pink-200 py-2 px-1 sm:py-3 sm:px-2 text-center">여자</th>
+              </tr>
+              <tr className="border-b-2">
+                <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">{clubLabel}</th>
+                <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">성명</th>
+                <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">타수</th>
+                <th className="bg-gray-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r"></th>
+                <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">{clubLabel}</th>
+                <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">성명</th>
+                <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center">타수</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: maxDisplayCount }, (_, index) => {
+                const rankNumber = INDIVIDUAL_TOP + 1 + index;
+                const male = index < maleDisplayCount ? males[index] : null;
+                const female = index < femaleDisplayCount ? females[index] : null;
+                const showMale = index < maleDisplayCount;
+                const showFemale = index < femaleDisplayCount;
+                return (
+                  <tr key={rankNumber} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{showMale ? (male?.club || '') : ''}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{showMale ? (male?.name || '') : ''}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r text-base sm:text-xl text-red-600">{showMale && male ? calculateTotal(male) : ''}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-bold text-gray-700 bg-gray-100">{rankNumber}위</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{showFemale ? (female?.club || '') : ''}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{showFemale ? (female?.name || '') : ''}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center text-base sm:text-xl text-red-600">{showFemale && female ? calculateTotal(female) : ''}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

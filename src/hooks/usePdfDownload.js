@@ -2,8 +2,7 @@ import { useState, useCallback } from 'react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
-const CAPTURE_IDS = ['전체현황', '전체현황_남', '전체현황_여', '개인전+장려상', '단체전'];
-const COMBINED_IDS = ['개인전', '장려상'];
+const CAPTURE_IDS = ['전체현황', '전체현황_남', '전체현황_여', '개인전', '장려상', '단체전'];
 const ROWS_PER_PAGE = 24;
 
 function prepareElement(el) {
@@ -89,47 +88,6 @@ export function usePdfDownload(tournamentName) {
       let isFirstPage = true;
 
       for (const id of CAPTURE_IDS) {
-        // 개인전+장려상은 가상 ID (DOM 요소 없음)
-        if (id === '개인전+장려상') {
-          const canvases = [];
-          for (const subId of COMBINED_IDS) {
-            const subEl = document.querySelector(`[data-capture-id="${subId}"]`);
-            if (!subEl) continue;
-            const subOrig = prepareElement(subEl);
-            const canvas = await captureElement(subEl);
-            restoreElement(subEl, subOrig);
-            if (canvas) canvases.push(canvas);
-          }
-
-          if (canvases.length > 0) {
-            if (!isFirstPage) pdf.addPage();
-            isFirstPage = false;
-
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-            const margin = 5;
-            const gap = 3;
-            const availWidth = pageWidth - margin * 2;
-            const availHeight = pageHeight - margin * 2;
-
-            const ratios = canvases.map(c => c.width / c.height);
-            const heights = ratios.map(r => availWidth / r);
-            const totalHeight = heights.reduce((a, b) => a + b, 0) + gap * (canvases.length - 1);
-            const scale = totalHeight > availHeight ? availHeight / totalHeight : 1;
-
-            let y = margin;
-            canvases.forEach((canvas, i) => {
-              const imgHeight = heights[i] * scale;
-              const imgWidth = imgHeight * ratios[i];
-              const imgData = canvas.toDataURL('image/jpeg', 0.95);
-              const x = (pageWidth - imgWidth) / 2;
-              pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
-              y += imgHeight + gap;
-            });
-          }
-          continue;
-        }
-
         const el = document.querySelector(`[data-capture-id="${id}"]`);
         if (!el) continue;
 

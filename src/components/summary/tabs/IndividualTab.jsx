@@ -47,7 +47,7 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
         <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
       </div>
-      <div ref={tableRef} data-capture-id="개인전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
         <h3 className="text-left font-bold text-base sm:text-2xl py-3 sm:py-5 bg-green-50">🏅 {tournament.name} - 개인전</h3>
         <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
           <thead className="text-base sm:text-xl">
@@ -165,6 +165,84 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
           </table>
         </div>
         )}
+      </div>
+
+      {/* PDF/이미지 캡처용 숨김 테이블 */}
+      <div ref={tableRef} data-capture-id="개인전" className="bg-white" style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+        <div className="inline-block min-w-full">
+          <div className="px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
+            <h3 className="text-left font-bold text-sm sm:text-2xl">🏅 {tournament.name} - 개인전</h3>
+          </div>
+          <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
+            <thead className="text-base sm:text-xl">
+              <tr className="border-b">
+                <th colSpan={3} className="bg-blue-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">남자</th>
+                <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">순위</th>
+                <th colSpan={3} className="bg-pink-200 py-2 px-1 sm:py-3 sm:px-2 text-center">여자</th>
+              </tr>
+              <tr className="border-b-2">
+                <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">{clubLabel}</th>
+                <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">성명</th>
+                <th className="bg-blue-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">타수</th>
+                <th className="bg-gray-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r"></th>
+                <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">{clubLabel}</th>
+                <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">성명</th>
+                <th className="bg-pink-100 py-1.5 px-1 sm:py-2 sm:px-3 text-center">타수</th>
+              </tr>
+            </thead>
+            <tbody>
+              {RANKS.map((rankLabel, index) => {
+                const male = males[index];
+                const female = females[index];
+                return (
+                  <tr key={rankLabel} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{male?.club || ''}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{male?.name || ''}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r text-base sm:text-xl text-red-600">{male ? calculateTotal(male) : ''}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r font-bold text-gray-700 bg-gray-100">{rankLabel}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{female?.club || ''}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{female?.name || ''}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-3 text-center text-base sm:text-xl text-red-600">{female ? calculateTotal(female) : ''}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {holeInOnePlayers.length > 0 && (
+            <div className="mt-8 sm:mt-10">
+              <div className="px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
+                <h3 className="text-left font-bold text-sm sm:text-2xl">🎯 홀인원 수상자</h3>
+              </div>
+              <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
+                <thead className="text-base sm:text-xl">
+                  <tr className="border-b-2">
+                    <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">번호</th>
+                    <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">{clubLabel}</th>
+                    <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">성명</th>
+                    <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r">성별</th>
+                    <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center">홀 번호</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {holeInOnePlayers.map((player, index) => (
+                    <tr key={player.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{index + 1}</td>
+                      <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{player.club}</td>
+                      <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{player.name}</td>
+                      <td className="py-2 px-1 sm:py-3 sm:px-3 text-center border-r">{player.gender}</td>
+                      <td className="py-2 px-1 sm:py-3 sm:px-3 text-center">
+                        {!allowDuplicate && duplicateIds.has(player.id)
+                          ? <span className="text-red-600 font-bold">{player.holeInOne === true ? '-' : player.holeInOne}(중복수상 불가)</span>
+                          : (player.holeInOne === true ? '-' : player.holeInOne)
+                        }
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
