@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useAuthContext } from './contexts/AuthContext';
+import { useDataMigration } from './hooks/useDataMigration';
 import { useTournaments } from './hooks/useTournaments';
 import { useClubs } from './hooks/useClubs';
 import { useAffiliations } from './hooks/useAffiliations';
 import { useMembers } from './hooks/useMembers';
-import { useAuthContext } from './contexts/AuthContext';
+import AuthLoginScreen from './components/auth/AuthLoginScreen';
+import AuthProfileScreen from './components/auth/AuthProfileScreen';
 import TournamentList from './components/tournament/TournamentList';
 import ScoreTable from './components/score/ScoreTable';
 import SummaryPage from './components/summary/SummaryPage';
 import ClubManagement from './components/club/ClubManagement';
-import CollabModeSelect from './components/collab/CollabModeSelect';
 import CollabRoleSelect from './components/collab/CollabRoleSelect';
 import CollabLeaderAction from './components/collab/CollabLeaderAction';
 import CollabLeaderSetup from './components/collab/CollabLeaderSetup';
@@ -17,10 +19,30 @@ import CollabJoinScreen from './components/collab/CollabJoinScreen';
 import CollabGroupSelect from './components/collab/CollabGroupSelect';
 import CollabScoreCard from './components/collab/CollabScoreCard';
 import CollabSubmissionStatus from './components/collab/CollabSubmissionStatus';
-import AuthLoginScreen from './components/auth/AuthLoginScreen';
-import AuthProfileScreen from './components/auth/AuthProfileScreen';
 
-export default function App() {
+// 로딩 스피너
+function LoadingScreen() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center">
+      <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full mb-4" />
+      <div className="text-green-700 text-sm">로딩 중...</div>
+    </div>
+  );
+}
+
+// 마이그레이션 오버레이
+function MigrationOverlay() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center">
+      <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full mb-4" />
+      <div className="text-green-700 text-sm font-semibold mb-1">데이터 동기화 중...</div>
+      <div className="text-green-600 text-xs">기존 데이터를 서버로 이전하고 있습니다</div>
+    </div>
+  );
+}
+
+// ==================== 인증 후 메인 앱 ====================
+function AuthenticatedApp() {
   const {
     tournaments,
     currentTournament,
@@ -45,14 +67,8 @@ export default function App() {
     updateMembersClub
   } = useMembers();
 
-  const { user, isAuthenticated, isLoading, signOut, getDisplayName } = useAuthContext();
+  const { user, isAuthenticated, signOut, getDisplayName } = useAuthContext();
 
-  // 화면 모드
-  // 'mode-select' | 'list' | 'score' | 'summary' | 'clubs'
-  // | 'auth-login' | 'auth-profile'
-  // | 'collab-role' | 'collab-leader-action' | 'collab-leader-setup' | 'collab-leader-dashboard'
-  // | 'collab-score-view'
-  // | 'collab-join' | 'collab-group-select' | 'collab-scorecard' | 'collab-submission-status'
   const [screenMode, setScreenMode] = useState('list');
 
   // 협동입력 관련 state
@@ -62,20 +78,7 @@ export default function App() {
   const [collabNickname, setCollabNickname] = useState('');
   const [loginReturnTo, setLoginReturnTo] = useState('collab-role');
 
-  // OAuth 콜백 후 네비게이션 의도 복원
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      const intent = localStorage.getItem('parkgolf-auth-redirect-intent');
-      if (intent) {
-        localStorage.removeItem('parkgolf-auth-redirect-intent');
-        setScreenMode(intent);
-      }
-    }
-  }, [isLoading, isAuthenticated]);
-
-  // ==================== 풋터 ====================
-
-  // ==================== 혼자입력 핸들러 (기존 그대로) ====================
+  // ==================== 혼자입력 핸들러 ====================
   const handleAddTournament = (name, date, holeCount, groupCount, clubType) => {
     addTournament(name, date, holeCount, groupCount, clubType);
     setScreenMode('score');
@@ -126,17 +129,8 @@ export default function App() {
   // ==================== 모드 선택 핸들러 ====================
   const collabEnabled = import.meta.env.VITE_ENABLE_COLLAB === 'true';
 
-  const handleSelectSolo = () => {
-    setScreenMode('list');
-  };
-
   const handleSelectCollab = () => {
-    if (isAuthenticated) {
-      setScreenMode('collab-role');
-    } else {
-      setLoginReturnTo('collab-role');
-      setScreenMode('auth-login');
-    }
+    setScreenMode('collab-role');
   };
 
   const showFooter = screenMode !== 'score' && screenMode !== 'collab-scorecard';
@@ -181,10 +175,6 @@ export default function App() {
     </>
   );
 
-  const handleLoginSuccess = () => {
-    setScreenMode(loginReturnTo);
-  };
-
   const handleGoToProfile = () => {
     setScreenMode('auth-profile');
   };
@@ -192,7 +182,6 @@ export default function App() {
   const handleLogout = async () => {
     await signOut();
     localStorage.removeItem('parkgolf-auth-redirect-intent');
-    setScreenMode('list');
   };
 
   const handleBackToModeSelect = () => {
@@ -262,7 +251,6 @@ export default function App() {
     setScreenMode('collab-score-view');
   };
 
-  // 협동모드 입력현황 뷰에서 로컬 편집 (Firestore에 반영 안 됨)
   const handleCollabViewUpdatePlayer = (tournamentId, playerId, updates) => {
     setCollabTournament(prev => ({
       ...prev,
@@ -277,45 +265,11 @@ export default function App() {
 
   // ==================== 화면 라우팅 ====================
 
-  // 인증 세션 확인 중 로딩 화면
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full mb-4" />
-        <div className="text-green-700 text-sm">로딩 중...</div>
-      </div>
-    );
-  }
-
-  // 모드 선택 화면
-  if (screenMode === 'mode-select') {
-    return (
-      <CollabModeSelect
-        onSelectSolo={handleSelectSolo}
-        onSelectCollab={handleSelectCollab}
-        isAuthenticated={isAuthenticated}
-        displayName={getDisplayName()}
-        onGoToProfile={handleGoToProfile}
-      />
-    );
-  }
-
-  // 인증 - 로그인/회원가입
-  if (screenMode === 'auth-login') {
-    return (
-      <AuthLoginScreen
-        onLoginSuccess={handleLoginSuccess}
-        onBack={handleBackToModeSelect}
-        returnTo={loginReturnTo}
-      />
-    );
-  }
-
   // 인증 - 프로필
   if (screenMode === 'auth-profile') {
     return (
       <AuthProfileScreen
-        onLogin={() => setScreenMode('auth-login')}
+        onLogin={() => setScreenMode('list')}
         onBack={handleBackToModeSelect}
       />
     );
@@ -332,7 +286,7 @@ export default function App() {
     );
   }
 
-  // 협동입력 - 팀장 액션 선택 (새 대회 / 기존 대회)
+  // 협동입력 - 팀장 액션 선택
   if (screenMode === 'collab-leader-action') {
     return (
       <CollabLeaderAction
@@ -366,7 +320,7 @@ export default function App() {
     );
   }
 
-  // 협동입력 - 입력 현황 보기 (ScoreTable 양식)
+  // 협동입력 - 입력 현황 보기
   if (screenMode === 'collab-score-view') {
     return (
       <ScoreTable
@@ -430,7 +384,7 @@ export default function App() {
     );
   }
 
-  // 클럽 관리 (기존)
+  // 클럽 관리
   if (screenMode === 'clubs') {
     return (
       <div className="pb-16 bg-green-100 min-h-screen">
@@ -473,7 +427,7 @@ export default function App() {
     );
   }
 
-  // 결과 보기 (혼자입력 또는 협동입력 공용)
+  // 결과 보기
   if (screenMode === 'summary') {
     const tournamentData = collabTournament || currentTournament;
     const backHandler = collabTournament ? handleBackFromCollabSummary : handleBackToScore;
@@ -488,7 +442,7 @@ export default function App() {
     );
   }
 
-  // 대회 목록 (기존)
+  // 대회 목록
   if (screenMode === 'list' || !currentTournament) {
     return (
       <div className="pb-16 bg-green-100 min-h-screen">
@@ -504,7 +458,7 @@ export default function App() {
           isAuthenticated={isAuthenticated}
           displayName={getDisplayName()}
           userEmail={user?.email}
-          onLogin={() => { setLoginReturnTo('list'); setScreenMode('auth-login'); }}
+          onLogin={() => {}}
           onProfile={() => setScreenMode('auth-profile')}
         />
         {footer}
@@ -512,7 +466,7 @@ export default function App() {
     );
   }
 
-  // 점수 입력 (기존)
+  // 점수 입력
   return (
     <ScoreTable
       tournament={currentTournament}
@@ -526,4 +480,45 @@ export default function App() {
       searchByName={searchByName}
     />
   );
+}
+
+// ==================== 루트 앱 (인증 게이트) ====================
+export default function App() {
+  const { user, isAuthenticated, isLoading } = useAuthContext();
+  const { isMigrating, isDone } = useDataMigration(user?.id);
+
+  // OAuth 콜백 후 네비게이션 의도 복원
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      const intent = localStorage.getItem('parkgolf-auth-redirect-intent');
+      if (intent) {
+        localStorage.removeItem('parkgolf-auth-redirect-intent');
+      }
+    }
+  }, [isLoading, isAuthenticated]);
+
+  // 인증 세션 확인 중
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  // 필수 로그인
+  if (!isAuthenticated) {
+    return (
+      <AuthLoginScreen
+        onLoginSuccess={() => {}}
+        onBack={() => {}}
+        hideBackButton={true}
+        subtitle="로그인하면 모든 기기에서 데이터를 동기화할 수 있습니다"
+      />
+    );
+  }
+
+  // 데이터 마이그레이션 중
+  if (isMigrating || !isDone) {
+    return <MigrationOverlay />;
+  }
+
+  // 인증 완료 → 메인 앱
+  return <AuthenticatedApp />;
 }

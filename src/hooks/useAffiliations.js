@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  initAffiliations,
-  getAllAffiliations,
-  addAffiliationToDB,
-  updateAffiliationInDB,
-  deleteAffiliationFromDB
-} from '../utils/db';
+  loadAffiliations as loadAffiliationsFromDB,
+  addAffiliation as addAffiliationToDB,
+  updateAffiliation as updateAffiliationInDB,
+  deleteAffiliation as deleteAffiliationFromDB
+} from '../utils/supabaseData';
+
+const DEFAULT_AFFILIATIONS = ['서초', '강남', '송파'];
 
 export function useAffiliations() {
   const [affiliations, setAffiliations] = useState([]);
@@ -14,8 +15,16 @@ export function useAffiliations() {
   useEffect(() => {
     async function init() {
       try {
-        await initAffiliations();
-        const loaded = await getAllAffiliations();
+        let loaded = await loadAffiliationsFromDB();
+
+        // 신규 유저: 기본 소속 시딩
+        if (loaded.length === 0) {
+          for (const name of DEFAULT_AFFILIATIONS) {
+            await addAffiliationToDB(name);
+          }
+          loaded = await loadAffiliationsFromDB();
+        }
+
         setAffiliations(loaded);
       } catch (error) {
         console.error('Failed to initialize affiliations:', error);

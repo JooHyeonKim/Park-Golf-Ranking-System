@@ -1,16 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  getAllMembers,
-  getMembersByClubFromDB,
-  searchMembersByName,
-  addMemberToDB,
-  updateMemberInDB,
-  deleteMemberFromDB,
-  updateMembersClubInDB
-} from '../utils/db';
+  loadMembers as loadMembersFromDB,
+  addMember as addMemberToDB,
+  updateMember as updateMemberInDB,
+  deleteMember as deleteMemberFromDB,
+  updateMembersClub as updateMembersClubInDB
+} from '../utils/supabaseData';
 
 /**
- * 회원 관리 커스텀 훅 (IndexedDB 기반)
+ * 회원 관리 커스텀 훅 (Supabase 기반)
  */
 export function useMembers() {
   const [members, setMembers] = useState([]);
@@ -20,7 +18,7 @@ export function useMembers() {
   useEffect(() => {
     async function init() {
       try {
-        const loaded = await getAllMembers();
+        const loaded = await loadMembersFromDB();
         setMembers(loaded);
       } catch (error) {
         console.error('Failed to load members:', error);
@@ -32,10 +30,14 @@ export function useMembers() {
 
   // 회원 추가
   const addMember = useCallback(async (name, gender, club, birthDate = '') => {
-    const result = await addMemberToDB(name, gender, club, birthDate);
-    if (result) {
-      setMembers(prev => [...prev, result]);
-      return true;
+    try {
+      const result = await addMemberToDB(name, gender, club, birthDate);
+      if (result) {
+        setMembers(prev => [...prev, result]);
+        return true;
+      }
+    } catch (error) {
+      console.error('Failed to add member:', error);
     }
     return false;
   }, []);
