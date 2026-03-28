@@ -81,7 +81,7 @@ export default function TeamTab({ tournament }) {
         <PdfDownloadButton isGenerating={isGenerating} onClick={handlePdfDownload} />
         <ImageDownloadButton isCapturing={isCapturing} onClick={handleCaptureImage} />
       </div>
-      <div ref={tableRef} data-capture-id="단체전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
        <div className="inline-block min-w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
           <h3 className="text-left font-bold text-sm sm:text-2xl">👥 {tournament.name} - 단체전</h3>
@@ -159,6 +159,59 @@ export default function TeamTab({ tournament }) {
           </tbody>
         </table>
        </div>
+      </div>
+
+      {/* PDF/이미지 캡처용 숨김 테이블 */}
+      <div ref={tableRef} data-capture-id="단체전" className="bg-white" style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+        <div className="inline-block min-w-full">
+          <div className="px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
+            <h3 className="text-left font-bold text-sm sm:text-2xl">👥 {tournament.name} - 단체전</h3>
+          </div>
+          <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
+            <thead className="text-base sm:text-xl">
+              <tr className="border-b">
+                <th rowSpan={2} className="bg-gray-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">순위</th>
+                <th rowSpan={2} className="bg-gray-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{clubLabel}명</th>
+                <th rowSpan={2} className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">합계</th>
+                {[1, 2, 3, 4].map(n => (
+                  <th key={n} colSpan={2} className="bg-green-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r last:border-r-0">{n}</th>
+                ))}
+              </tr>
+              <tr className="border-b-2">
+                {[1, 2, 3, 4].map(n => (
+                  <Fragment key={n}>
+                    <th className="bg-green-100 py-1.5 px-1 sm:py-2 sm:px-2 text-center border-r">성명</th>
+                    <th className={`bg-green-100 py-1.5 px-1 sm:py-2 sm:px-2 text-center ${n < 4 ? 'border-r' : ''}`}>타수</th>
+                  </Fragment>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {teamRankings.flatMap((club, index) => {
+                const nextClub = teamRankings[index + 1];
+                const showDivider = club.rank <= 5 && nextClub && nextClub.rank > 5;
+                return [
+                  <tr key={club.clubName} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-bold text-gray-700">{club.rank}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{club.clubName}</td>
+                    <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r font-bold text-red-600 bg-yellow-50 text-base sm:text-xl">{club.total}</td>
+                    {[0, 1, 2, 3].map(i => (
+                      <Fragment key={i}>
+                        <td className="py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{club.players[i]?.name || ''}</td>
+                        <td className={`py-2 px-1 sm:py-3 sm:px-2 text-center text-base sm:text-xl text-blue-600 ${i < 3 ? 'border-r' : ''}`}>{club.players[i] ? calculateTotal(club.players[i]) : ''}</td>
+                      </Fragment>
+                    ))}
+                  </tr>,
+                  showDivider && (
+                    <tr key="divider">
+                      <td colSpan={11} className="border-b-[4px] border-[#7ba882] p-0"></td>
+                    </tr>
+                  )
+                ];
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
