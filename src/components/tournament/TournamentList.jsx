@@ -28,12 +28,15 @@ const VIP_EMAILS = ['yonmi282@naver.com', 'subin_282@naver.com'];
 
 export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onGoToAffiliations, onCollab, isAuthenticated, displayName, userEmail, onLogin, onProfile }) {
   const isVip = isAuthenticated && VIP_EMAILS.includes(userEmail);
+  const [clubTypeFilter, setClubTypeFilter] = useState('club');
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
   const [newHoleCount, setNewHoleCount] = useState(36);
   const [newGroupCount, setNewGroupCount] = useState(getDefaultGroupCount(36));
   const [newClubType, setNewClubType] = useState('club');
+
+  const filteredTournaments = tournaments.filter(t => (t.clubType || 'club') === clubTypeFilter);
 
   const handleAdd = () => {
     if (!newName.trim()) {
@@ -45,7 +48,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
     setNewDate(new Date().toISOString().split('T')[0]);
     setNewHoleCount(36);
     setNewGroupCount(getDefaultGroupCount(36));
-    setNewClubType('club');
+    setNewClubType(clubTypeFilter);
     setShowAddForm(false);
   };
 
@@ -117,6 +120,32 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
         {/* 메인 제목 */}
         <div className="text-center mb-8 sm:mb-10">
           <h1 className="text-[clamp(1.1rem,5vw,2.25rem)] sm:text-3xl md:text-4xl font-extrabold text-gray-800 whitespace-nowrap">⛳ 파크골프 스코어 집계 프로그램</h1>
+        </div>
+
+        {/* 클럽/소속 탭 */}
+        <div className="mb-4">
+          <div className="inline-flex rounded-lg overflow-hidden">
+            <button
+              onClick={() => { setClubTypeFilter('club'); setNewClubType('club'); }}
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 font-bold text-xs sm:text-sm transition-colors ${
+                clubTypeFilter === 'club'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white text-gray-500 hover:bg-gray-100'
+              }`}
+            >
+              🏷️ 클럽
+            </button>
+            <button
+              onClick={() => { setClubTypeFilter('affiliation'); setNewClubType('affiliation'); }}
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 font-bold text-xs sm:text-sm transition-colors ${
+                clubTypeFilter === 'affiliation'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white text-gray-500 hover:bg-gray-100'
+              }`}
+            >
+              🏢 소속
+            </button>
+          </div>
         </div>
 
         {/* 새 대회 추가 폼 */}
@@ -231,15 +260,15 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
         </div>
 
         {/* 대회 목록 */}
-        {tournaments.length === 0 ? (
+        {filteredTournaments.length === 0 ? (
           <div className="bg-white rounded-xl p-12 text-center shadow-sm">
             <div className="text-6xl mb-4">📋</div>
-            <p className="text-xl text-gray-600">등록된 대회가 없습니다</p>
+            <p className="text-xl text-gray-600">등록된 {clubTypeFilter === 'affiliation' ? '소속' : '클럽'} 대회가 없습니다</p>
             <p className="text-sm text-gray-400 mt-2">새 대회를 추가하여 시작하세요</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {tournaments.map(tournament => {
+            {filteredTournaments.map(tournament => {
               const playerCount = tournament.players.filter(p => p.name && p.name.trim()).length;
               const groupCount = getTournamentGroupCount(tournament);
 
