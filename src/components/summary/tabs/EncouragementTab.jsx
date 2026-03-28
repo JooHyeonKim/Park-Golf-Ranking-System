@@ -78,7 +78,7 @@ export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRan
             </div>
           </div>
         </div>
-        <table className="w-full text-sm sm:text-lg font-bold border-collapse">
+        <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
           <thead className="text-base sm:text-xl">
             <tr className="border-b">
               <th colSpan={3} className="bg-blue-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">

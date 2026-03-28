@@ -49,7 +49,7 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
       </div>
       <div ref={tableRef} data-capture-id="개인전" className="bg-white rounded-lg shadow-sm overflow-x-auto">
         <h3 className="text-left font-bold text-base sm:text-2xl py-3 sm:py-5 bg-green-50">🏅 {tournament.name} - 개인전</h3>
-        <table className="w-full text-sm sm:text-lg font-bold border-collapse">
+        <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
           <thead className="text-base sm:text-xl">
             <tr className="border-b">
               <th colSpan={3} className="bg-blue-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">
@@ -136,7 +136,7 @@ export default function IndividualTab({ tournament, maleMaxRank = 10, femaleMaxR
               </button>
             </div>
           </div>
-          <table className="w-full text-sm sm:text-lg font-bold border-collapse">
+          <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
             <thead className="text-base sm:text-xl">
               <tr className="border-b-2">
                 <th className="bg-orange-200 py-1.5 px-1 sm:py-2 sm:px-3 text-center border-r min-w-[30px] sm:min-w-[50px]">번호</th>
