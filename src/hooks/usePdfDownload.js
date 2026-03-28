@@ -85,7 +85,7 @@ export function usePdfDownload(tournamentName) {
     if (isGenerating) return;
     setIsGenerating(true);
     try {
-      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       let isFirstPage = true;
 
       for (const id of CAPTURE_IDS) {

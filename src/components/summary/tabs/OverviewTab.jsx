@@ -154,7 +154,7 @@ export default function OverviewTab({ tournament }) {
       </div>
 
       {/* 테이블 */}
-      <div ref={tableRef} data-capture-id="전체현황" className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
        <div className="inline-block min-w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
           <h3 className="text-left font-bold text-sm sm:text-2xl">🏆 {tournament.name} - 전체 현황</h3>
@@ -297,7 +297,21 @@ export default function OverviewTab({ tournament }) {
        </div>
       </div>
 
-      {/* PDF 전체 다운로드용 숨김 테이블 (남/여) */}
+      {/* 개별 탭 PDF/이미지 캡처용 숨김 테이블 (현재 필터 반영) */}
+      <div ref={tableRef} className="bg-white" style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+        <div className="inline-block min-w-full">
+          <div className="px-2 py-2 sm:px-4 sm:py-5 bg-green-50">
+            <h3 className="text-left font-bold text-sm sm:text-2xl">🏆 {tournament.name} - 전체 현황{genderFilter !== 'all' ? ` (${genderFilter})` : ''}</h3>
+          </div>
+          <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
+            <thead className="text-base sm:text-xl">{renderTableHeader()}</thead>
+            <tbody>{renderTableRows(displayPlayers)}</tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* PDF 전체 다운로드용 숨김 테이블 (전체/남/여) */}
+      {renderHiddenTable('전체현황', '전체 현황', sortedPlayers)}
       {renderHiddenTable('전체현황_남', '전체 현황 (남)', malePlayers)}
       {renderHiddenTable('전체현황_여', '전체 현황 (여)', femalePlayers)}
 
