@@ -22,7 +22,7 @@ function getTournamentGroupCount(tournament) {
   return (tournament.groupsPerCourse || 9) * numCourses;
 }
 
-export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onGoToAffiliations, onCollab }) {
+export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onGoToAffiliations, onCollab, isAuthenticated, displayName, onLogin, onProfile }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
@@ -84,6 +84,21 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
             >
               🏢 소속 관리
             </button>
+            {isAuthenticated ? (
+              <button
+                onClick={onProfile}
+                className="px-4 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-full font-bold hover:from-gray-600 hover:to-gray-700 transition-all text-xs sm:text-sm"
+              >
+                👤 {displayName || '프로필'}
+              </button>
+            ) : (
+              <button
+                onClick={onLogin}
+                className="px-4 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full font-bold hover:from-green-600 hover:to-emerald-600 transition-all text-xs sm:text-sm"
+              >
+                🔑 로그인
+              </button>
+            )}
           </div>
         </div>
 

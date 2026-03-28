@@ -498,6 +498,10 @@ export default function App() {
           onGoToClubs={handleGoToClubs}
           onGoToAffiliations={handleGoToAffiliations}
           onCollab={collabEnabled ? handleSelectCollab : undefined}
+          isAuthenticated={isAuthenticated}
+          displayName={getDisplayName()}
+          onLogin={() => setScreenMode('auth-login')}
+          onProfile={() => setScreenMode('auth-profile')}
         />
         {footer}
       </div>
