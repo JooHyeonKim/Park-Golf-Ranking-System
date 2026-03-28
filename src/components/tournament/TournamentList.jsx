@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSubscriptionContext } from '../../contexts/SubscriptionContext';
 
 // 총 조 수의 기본값 계산
 function getDefaultGroupCount(holeCount) {
@@ -24,10 +25,9 @@ function getTournamentGroupCount(tournament) {
   return (tournament.groupsPerCourse || 9) * numCourses;
 }
 
-const VIP_EMAILS = ['yonmi282@naver.com', 'subin_282@naver.com'];
-
 export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onGoToAffiliations, onCollab, isAuthenticated, displayName, userEmail, onLogin, onProfile }) {
-  const isVip = isAuthenticated && VIP_EMAILS.includes(userEmail);
+  const { isActive } = useSubscriptionContext();
+  const isVip = isActive;
   const [clubTypeFilter, setClubTypeFilter] = useState('club');
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');

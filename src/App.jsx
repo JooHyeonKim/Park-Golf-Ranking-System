@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useAuthContext } from './contexts/AuthContext';
+import { useSubscriptionContext } from './contexts/SubscriptionContext';
 import { useDataMigration } from './hooks/useDataMigration';
 import { useTournaments } from './hooks/useTournaments';
 import { useClubs } from './hooks/useClubs';
@@ -11,6 +12,9 @@ import TournamentList from './components/tournament/TournamentList';
 import ScoreTable from './components/score/ScoreTable';
 import SummaryPage from './components/summary/SummaryPage';
 import ClubManagement from './components/club/ClubManagement';
+import SubscriptionRequired from './components/subscription/SubscriptionRequired';
+import SubscriptionManagement from './components/subscription/SubscriptionManagement';
+import TrialBanner from './components/subscription/TrialBanner';
 import CollabRoleSelect from './components/collab/CollabRoleSelect';
 import CollabLeaderAction from './components/collab/CollabLeaderAction';
 import CollabLeaderSetup from './components/collab/CollabLeaderSetup';
@@ -265,12 +269,22 @@ function AuthenticatedApp() {
 
   // ==================== 화면 라우팅 ====================
 
+  // 구독 관리
+  if (screenMode === 'subscription-manage') {
+    return (
+      <SubscriptionManagement
+        onBack={() => setScreenMode('auth-profile')}
+      />
+    );
+  }
+
   // 인증 - 프로필
   if (screenMode === 'auth-profile') {
     return (
       <AuthProfileScreen
         onLogin={() => setScreenMode('list')}
         onBack={handleBackToModeSelect}
+        onSubscriptionManage={() => setScreenMode('subscription-manage')}
       />
     );
   }
@@ -482,6 +496,26 @@ function AuthenticatedApp() {
   );
 }
 
+// ==================== 구독 게이트 래퍼 ====================
+function SubscriptionGate() {
+  const { isLoading: subLoading, isExpired, hasAccess, refetch } = useSubscriptionContext();
+
+  if (subLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (isExpired || !hasAccess) {
+    return <SubscriptionRequired onSubscribed={refetch} />;
+  }
+
+  return (
+    <>
+      <TrialBanner />
+      <AuthenticatedApp />
+    </>
+  );
+}
+
 // ==================== 루트 앱 (인증 게이트) ====================
 export default function App() {
   const { user, isAuthenticated, isLoading } = useAuthContext();
@@ -519,6 +553,6 @@ export default function App() {
     return <MigrationOverlay />;
   }
 
-  // 인증 완료 → 메인 앱
-  return <AuthenticatedApp />;
+  // 인증 + 마이그레이션 완료 → 구독 확인
+  return <SubscriptionGate />;
 }

@@ -1,8 +1,10 @@
 import React from 'react';
 import { useAuthContext } from '../../contexts/AuthContext';
+import { useSubscriptionContext } from '../../contexts/SubscriptionContext';
 
-export default function AuthProfileScreen({ onLogin, onBack }) {
+export default function AuthProfileScreen({ onLogin, onBack, onSubscriptionManage }) {
   const { user, isAuthenticated, signOut, getDisplayName } = useAuthContext();
+  const { isTrialing, isActive, isCanceled, trialDaysLeft } = useSubscriptionContext();
 
   const handleLogout = async () => {
     await signOut();
@@ -74,7 +76,26 @@ export default function AuthProfileScreen({ onLogin, onBack }) {
               {new Date(user.created_at).toLocaleDateString('ko-KR')}
             </span>
           </div>
+          <div className="flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg">
+            <span className="text-gray-600 text-sm">구독 상태</span>
+            <span className={`text-sm font-medium ${
+              isActive ? 'text-green-600' :
+              isTrialing ? 'text-blue-600' :
+              isCanceled ? 'text-orange-600' : 'text-red-600'
+            }`}>
+              {isActive ? '구독 중' :
+               isTrialing ? `무료체험 (${trialDaysLeft}일 남음)` :
+               isCanceled ? '해지 예정' : '만료'}
+            </span>
+          </div>
         </div>
+
+        <button
+          onClick={onSubscriptionManage}
+          className="w-full py-3 bg-green-50 text-green-700 rounded-lg font-semibold hover:bg-green-100 transition-colors mb-3"
+        >
+          구독 관리
+        </button>
 
         <button
           onClick={handleLogout}
