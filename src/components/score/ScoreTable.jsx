@@ -59,6 +59,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
   };
 
   const handleScoreChange = (playerId, field, value) => {
+    // 숫자만 허용
+    if (value !== '' && !/^\d+$/.test(value)) return;
     // 빈 문자열이면 null, 아니면 숫자로 변환
     const numValue = value === '' ? null : parseInt(value, 10);
     if (numValue !== null && numValue > 100) return;
@@ -365,9 +367,6 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       <td className="py-2 px-2 border-r whitespace-nowrap">
                         <input
                           type="text"
-                          lang="ko"
-                          inputMode="text"
-                          style={{ imeMode: 'active' }}
                           value={player.name || ''}
                           onChange={(e) => handleInputChange(player.id, 'name', e.target.value)}
                           onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) { handleNameBlur(player.id, e.target.value); e.target.blur(); } }}
@@ -410,9 +409,9 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       {/* A코스 */}
                       <td className="py-2 px-1 border-r">
                         <input
-                          type="number"
-                          min="1"
-                          max="12"
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
                           value={player.scoreA ?? ''}
                           onChange={(e) => handleScoreChange(player.id, 'scoreA', e.target.value)}
                           disabled={isRankingCalculated}
@@ -423,9 +422,9 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       {/* B코스 */}
                       <td className="py-2 px-1 border-r">
                         <input
-                          type="number"
-                          min="1"
-                          max="12"
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
                           value={player.scoreB ?? ''}
                           onChange={(e) => handleScoreChange(player.id, 'scoreB', e.target.value)}
                           disabled={isRankingCalculated}
@@ -437,9 +436,9 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       {hasScoreC && (
                         <td className="py-2 px-1 border-r">
                           <input
-                            type="number"
-                            min="1"
-                            max="12"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             value={player.scoreC ?? ''}
                             onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
                             disabled={isRankingCalculated}
@@ -452,9 +451,9 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       {hasScoreD && (
                         <td className="py-2 px-1 border-r">
                           <input
-                            type="number"
-                            min="1"
-                            max="12"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             value={player.scoreD ?? ''}
                             onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
                             disabled={isRankingCalculated}
@@ -467,9 +466,9 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       {hasScoreEF && (
                         <td className="py-2 px-1 border-r">
                           <input
-                            type="number"
-                            min="1"
-                            max="12"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             value={player.scoreE ?? ''}
                             onChange={(e) => handleScoreChange(player.id, 'scoreE', e.target.value)}
                             disabled={isRankingCalculated}
@@ -482,9 +481,9 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       {hasScoreEF && (
                         <td className="py-2 px-1 border-r">
                           <input
-                            type="number"
-                            min="1"
-                            max="12"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             value={player.scoreF ?? ''}
                             onChange={(e) => handleScoreChange(player.id, 'scoreF', e.target.value)}
                             disabled={isRankingCalculated}
