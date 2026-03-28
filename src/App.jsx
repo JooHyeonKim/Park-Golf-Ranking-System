@@ -60,6 +60,7 @@ export default function App() {
   const [collabTournament, setCollabTournament] = useState(null);
   const [collabGroupNumber, setCollabGroupNumber] = useState(null);
   const [collabNickname, setCollabNickname] = useState('');
+  const [loginReturnTo, setLoginReturnTo] = useState('collab-role');
 
   // OAuth 콜백 후 네비게이션 의도 복원
   useEffect(() => {
@@ -133,6 +134,7 @@ export default function App() {
     if (isAuthenticated) {
       setScreenMode('collab-role');
     } else {
+      setLoginReturnTo('collab-role');
       setScreenMode('auth-login');
     }
   };
@@ -180,7 +182,7 @@ export default function App() {
   );
 
   const handleLoginSuccess = () => {
-    setScreenMode('collab-role');
+    setScreenMode(loginReturnTo);
   };
 
   const handleGoToProfile = () => {
@@ -304,6 +306,7 @@ export default function App() {
       <AuthLoginScreen
         onLoginSuccess={handleLoginSuccess}
         onBack={handleBackToModeSelect}
+        returnTo={loginReturnTo}
       />
     );
   }
@@ -500,7 +503,7 @@ export default function App() {
           onCollab={collabEnabled ? handleSelectCollab : undefined}
           isAuthenticated={isAuthenticated}
           displayName={getDisplayName()}
-          onLogin={() => setScreenMode('auth-login')}
+          onLogin={() => { setLoginReturnTo('list'); setScreenMode('auth-login'); }}
           onProfile={() => setScreenMode('auth-profile')}
         />
         {footer}

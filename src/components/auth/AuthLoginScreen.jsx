@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '../../contexts/AuthContext';
 
-export default function AuthLoginScreen({ onLoginSuccess, onBack }) {
+export default function AuthLoginScreen({ onLoginSuccess, onBack, returnTo = 'collab-role' }) {
   const { signUp, signIn, signInWithOAuth, error: authError } = useAuthContext();
   const [tab, setTab] = useState('login'); // 'login' | 'register'
   const [email, setEmail] = useState('');
@@ -44,7 +44,7 @@ export default function AuthLoginScreen({ onLoginSuccess, onBack }) {
 
   const handleOAuth = async (provider) => {
     setLocalError('');
-    localStorage.setItem('parkgolf-auth-redirect-intent', 'collab-role');
+    localStorage.setItem('parkgolf-auth-redirect-intent', returnTo);
     await signInWithOAuth(provider);
   };
 
