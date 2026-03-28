@@ -503,6 +503,7 @@ export default function App() {
           onCollab={collabEnabled ? handleSelectCollab : undefined}
           isAuthenticated={isAuthenticated}
           displayName={getDisplayName()}
+          userEmail={user?.email}
           onLogin={() => { setLoginReturnTo('list'); setScreenMode('auth-login'); }}
           onProfile={() => setScreenMode('auth-profile')}
         />
