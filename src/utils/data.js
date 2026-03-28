@@ -21,20 +21,24 @@ export const COURSE_LABELS = {
 };
 
 /**
- * 총 조 수를 코스별로 균등 분배하여 코스명 목록 생성
- * 예: 7조, 4코스 → A:2, B:2, C:2, D:1
+ * 총 조 수를 코스별로 9조씩 순차 배분하여 코스명 목록 생성
+ * 예: 11조, 2코스(A,B) → A-1~A-9, B-1, B-2
+ * 예: 20조, 2코스(A,B) → A-1~A-9, B-1~B-9, A-10, A-11
  */
 function distributeCourseNames(courses, groupCount) {
-  const numCourses = courses.length;
-  const base = Math.floor(groupCount / numCourses);
-  const remainder = groupCount % numCourses;
   const courseNames = [];
+  let remaining = groupCount;
+  let courseIndex = 0;
 
-  for (let c = 0; c < courses.length; c++) {
-    const count = base + (c < remainder ? 1 : 0);
-    for (let i = 1; i <= count; i++) {
-      courseNames.push(`${courses[c]}-${i}`);
+  while (remaining > 0) {
+    const course = courses[courseIndex % courses.length];
+    const existingCount = courseNames.filter(n => n.startsWith(course + '-')).length;
+    const assign = Math.min(9, remaining);
+    for (let i = 1; i <= assign; i++) {
+      courseNames.push(`${course}-${existingCount + i}`);
     }
+    remaining -= assign;
+    courseIndex++;
   }
 
   return courseNames;

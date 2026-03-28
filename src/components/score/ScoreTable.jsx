@@ -365,6 +365,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       <td className="py-2 px-2 border-r whitespace-nowrap">
                         <input
                           type="text"
+                          lang="ko"
+                          inputMode="text"
                           value={player.name || ''}
                           onChange={(e) => handleInputChange(player.id, 'name', e.target.value)}
                           onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) { handleNameBlur(player.id, e.target.value); e.target.blur(); } }}
