@@ -11,8 +11,12 @@ function getBaseCourse(course) {
 
 export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onAddPlayerToCourse, onRemovePlayerFromCourse, onUpdateGroupCount, onViewSummary, searchByName }) {
   const holeCount = tournament.holeCount || 36;
+  const is27Hole = holeCount === 27;
   const is36Hole = holeCount >= 36;
   const is54Hole = holeCount === 54;
+  const hasScoreC = holeCount >= 27;
+  const hasScoreD = holeCount >= 36;
+  const hasScoreEF = holeCount === 54;
   const clubLabel = tournament.clubType === 'affiliation' ? '소속' : '클럽';
   const [sortBy, setSortBy] = useState('group'); // 'rank' | 'group'
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
@@ -25,9 +29,11 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
 
   const sortMenuRef = useRef(null);
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, isRankingCalculated);
-  // 18홀일 때 C~F 코스 선수 행 숨김
+  // 18홀일 때 C~F, 27홀일 때 D~F 코스 선수 행 숨김
   const sortedPlayers = holeCount === 18
     ? allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B'))
+    : holeCount === 27
+    ? allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B') || p.course.startsWith('C'))
     : allSortedPlayers;
 
   // 드롭다운 외부 클릭 감지
@@ -126,14 +132,16 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
       const scoreA = Math.floor(Math.random() * 15) + 20; // 20~34
       const scoreB = Math.floor(Math.random() * 15) + 20;
 
-      const courseLetters = holeCount === 54 ? ['A','B','C','D','E','F'] : is36Hole ? ['A','B','C','D'] : ['A','B'];
+      const courseLetters = holeCount === 54 ? ['A','B','C','D','E','F'] : holeCount >= 36 ? ['A','B','C','D'] : holeCount === 27 ? ['A','B','C'] : ['A','B'];
       const holeInOneOptions = courseLetters.flatMap(c => Array.from({ length: 9 }, (_, i) => `${c}${i + 1}`));
       const updates = { name, gender, club, scoreA, scoreB, holeInOne: holeInOneIndices.has(index) ? holeInOneOptions[Math.floor(Math.random() * holeInOneOptions.length)] : null };
-      if (is36Hole) {
+      if (hasScoreC) {
         updates.scoreC = Math.floor(Math.random() * 15) + 20;
+      }
+      if (hasScoreD) {
         updates.scoreD = Math.floor(Math.random() * 15) + 20;
       }
-      if (is54Hole) {
+      if (hasScoreEF) {
         updates.scoreE = Math.floor(Math.random() * 15) + 20;
         updates.scoreF = Math.floor(Math.random() * 15) + 20;
       }
@@ -161,10 +169,10 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                 <div className="flex items-center gap-1">
                   <label className="text-sm text-gray-500">조 수</label>
                   <select
-                    value={tournament.groupCount || (holeCount === 54 ? 54 : is36Hole ? 36 : 18)}
+                    value={tournament.groupCount || (holeCount === 54 ? 54 : holeCount >= 36 ? 36 : holeCount === 27 ? 27 : 18)}
                     onChange={(e) => {
                       const newVal = parseInt(e.target.value, 10);
-                      const maxVal = holeCount === 54 ? 54 : is36Hole ? 36 : 18;
+                      const maxVal = holeCount === 54 ? 54 : holeCount >= 36 ? 36 : holeCount === 27 ? 27 : 18;
                       const oldVal = tournament.groupCount || maxVal;
                       if (newVal < oldVal) {
                         const hasData = tournament.players.some(p => p.group > newVal && p.name && p.name.trim());
@@ -174,7 +182,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                     }}
                     className="w-16 px-1 py-1 border border-gray-300 rounded text-sm text-center focus:outline-none focus:ring-1 focus:ring-green-500"
                   >
-                    {Array.from({ length: holeCount === 54 ? 54 : is36Hole ? 36 : 18 }, (_, i) => i + 1).map(n => (
+                    {Array.from({ length: holeCount === 54 ? 54 : holeCount >= 36 ? 36 : holeCount === 27 ? 27 : 18 }, (_, i) => i + 1).map(n => (
                       <option key={n} value={n}>{n}조</option>
                     ))}
                   </select>
@@ -289,16 +297,18 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                 <th className="bg-sky-200 py-3 px-2 text-center border-r">{is54Hole ? 'A1코스' : 'A코스'}</th>
                 <th className="bg-sky-200 py-3 px-2 text-center border-r">{is54Hole ? 'B1코스' : 'B코스'}</th>
 
-                {/* 연두색 그룹 - 36홀 이상 표시 */}
-                {is36Hole && (
-                  <>
-                    <th className="bg-lime-200 py-3 px-2 text-center border-r">{is54Hole ? 'C1코스' : 'C코스'}</th>
-                    <th className="bg-lime-200 py-3 px-2 text-center border-r">{is54Hole ? 'D1코스' : 'D코스'}</th>
-                  </>
+                {/* C코스 - 27홀 이상 표시 */}
+                {hasScoreC && (
+                  <th className="bg-lime-200 py-3 px-2 text-center border-r">{is54Hole ? 'C1코스' : 'C코스'}</th>
+                )}
+
+                {/* D코스 - 36홀 이상 표시 */}
+                {hasScoreD && (
+                  <th className="bg-lime-200 py-3 px-2 text-center border-r">{is54Hole ? 'D1코스' : 'D코스'}</th>
                 )}
 
                 {/* 보라색 그룹 - 54홀만 표시 */}
-                {is54Hole && (
+                {hasScoreEF && (
                   <>
                     <th className="bg-purple-200 py-3 px-2 text-center border-r">A2코스</th>
                     <th className="bg-purple-200 py-3 px-2 text-center border-r">B2코스</th>
@@ -309,7 +319,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                 <th className="bg-orange-200 py-3 px-2 text-center border-r">홀인원</th>
 
                 {/* 노란색 (합계) */}
-                <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is54Hole ? '54홀 합계' : is36Hole ? '36홀 합계' : '18홀 합계'}</th>
+                <th className="bg-yellow-200 py-3 px-2 text-center border-r">{is54Hole ? '54홀 합계' : is36Hole ? '36홀 합계' : is27Hole ? '27홀 합계' : '18홀 합계'}</th>
 
                 {/* 회색 (순위) */}
                 <th className="bg-gray-300 py-3 px-2 text-center min-w-[60px]">순위</th>
@@ -420,8 +430,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                         />
                       </td>
 
-                      {/* C코스 - 36홀만 표시 */}
-                      {is36Hole && (
+                      {/* C코스 - 27홀 이상 표시 */}
+                      {hasScoreC && (
                         <td className="py-2 px-1 border-r">
                           <input
                             type="number"
@@ -435,8 +445,8 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                         </td>
                       )}
 
-                      {/* D코스 - 36홀만 표시 */}
-                      {is36Hole && (
+                      {/* D코스 - 36홀 이상 표시 */}
+                      {hasScoreD && (
                         <td className="py-2 px-1 border-r">
                           <input
                             type="number"
@@ -451,7 +461,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       )}
 
                       {/* E코스 (A2) - 54홀만 표시 */}
-                      {is54Hole && (
+                      {hasScoreEF && (
                         <td className="py-2 px-1 border-r">
                           <input
                             type="number"
@@ -466,7 +476,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       )}
 
                       {/* F코스 (B2) - 54홀만 표시 */}
-                      {is54Hole && (
+                      {hasScoreEF && (
                         <td className="py-2 px-1 border-r">
                           <input
                             type="number"
@@ -489,7 +499,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           className={`w-20 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-orange-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
                         >
                           <option value="">-</option>
-                          {(is54Hole ? ['A','B','C','D','E','F'] : is36Hole ? ['A','B','C','D'] : ['A','B']).flatMap(course =>
+                          {(hasScoreEF ? ['A','B','C','D','E','F'] : hasScoreD ? ['A','B','C','D'] : hasScoreC ? ['A','B','C'] : ['A','B']).flatMap(course =>
                             Array.from({ length: 9 }, (_, i) => `${course}${i + 1}`)
                           ).map(hole => (
                             <option key={hole} value={hole}>{hole}</option>
@@ -541,7 +551,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       if (extraCount < 24) {
                         rows.push(
                           <tr key={`add-${baseCourse}`} className="bg-gray-100">
-                            <td colSpan={is54Hole ? 15 : is36Hole ? 13 : 11} className="py-1 text-center">
+                            <td colSpan={hasScoreEF ? 15 : hasScoreD ? 13 : hasScoreC ? 12 : 11} className="py-1 text-center">
                               <button
                                 onClick={() => onAddPlayerToCourse(tournament.id, baseCourse, player.group)}
                                 className="px-3 py-1 text-xs text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition-colors"

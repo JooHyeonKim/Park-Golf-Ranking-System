@@ -166,6 +166,17 @@ export default function AuthLoginScreen({ onLoginSuccess, onBack }) {
 
           <div className="space-y-3">
             <button
+              onClick={() => handleOAuth('kakao')}
+              className="w-full py-3 px-4 rounded-lg flex items-center justify-center gap-3 font-medium transition-colors"
+              style={{ backgroundColor: '#FEE500', color: '#191919' }}
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#191919" d="M12 3C6.48 3 2 6.36 2 10.5c0 2.67 1.77 5.02 4.44 6.38-.14.52-.91 3.35-.94 3.56 0 0-.02.17.09.24.11.06.24.01.24.01.32-.05 3.72-2.44 4.31-2.87.6.08 1.22.13 1.86.13 5.52 0 10-3.36 10-7.5S17.52 3 12 3z"/>
+              </svg>
+              카카오로 계속하기
+            </button>
+
+            <button
               onClick={() => handleOAuth('google')}
               className="w-full py-3 px-4 border border-gray-300 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors font-medium text-gray-700"
             >
@@ -176,17 +187,6 @@ export default function AuthLoginScreen({ onLoginSuccess, onBack }) {
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
               Google로 계속하기
-            </button>
-
-            <button
-              onClick={() => handleOAuth('kakao')}
-              className="w-full py-3 px-4 rounded-lg flex items-center justify-center gap-3 font-medium transition-colors"
-              style={{ backgroundColor: '#FEE500', color: '#191919' }}
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path fill="#191919" d="M12 3C6.48 3 2 6.36 2 10.5c0 2.67 1.77 5.02 4.44 6.38-.14.52-.91 3.35-.94 3.56 0 0-.02.17.09.24.11.06.24.01.24.01.32-.05 3.72-2.44 4.31-2.87.6.08 1.22.13 1.86.13 5.52 0 10-3.36 10-7.5S17.52 3 12 3z"/>
-              </svg>
-              카카오로 계속하기
             </button>
           </div>
         </div>

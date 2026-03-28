@@ -8,6 +8,7 @@
  */
 export function getCoursesForHoleCount(holeCount) {
   if (holeCount === 18) return ['A', 'B'];
+  if (holeCount === 27) return ['A', 'B', 'C'];
   if (holeCount === 54) return ['A', 'B', 'C', 'D', 'E', 'F'];
   return ['A', 'B', 'C', 'D']; // 36홀 (기본)
 }

@@ -8,6 +8,7 @@ export default function DetailScoreModal({ player, is36Hole, holeCount, onSave, 
   const effectiveHoleCount = holeCount || (is36Hole ? 36 : 18);
   const courses = effectiveHoleCount === 54 ? ['F', 'E', 'D', 'C', 'B', 'A']
                : effectiveHoleCount >= 36 ? ['D', 'C', 'B', 'A']
+               : effectiveHoleCount === 27 ? ['C', 'B', 'A']
                : ['B', 'A'];
   const [activeCourse, setActiveCourse] = useState(courses[0]);
   const [scores, setScores] = useState(() => player.detailScores || {});
