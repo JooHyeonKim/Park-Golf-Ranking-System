@@ -76,6 +76,27 @@ input[type="number"] {
   animation: gold-glow 2s ease-in-out infinite;
 }
 
+/* VIP 왕관 흔들림 애니메이션 */
+@keyframes vip-crown {
+  0%, 100% { transform: rotate(-4deg) scale(1); }
+  50% { transform: rotate(4deg) scale(1.05); }
+}
+
+.animate-vip-crown {
+  animation: vip-crown 3s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* VIP 시머(빛 반사) 효과 */
+@keyframes vip-shimmer {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+
+.animate-vip-shimmer {
+  animation: vip-shimmer 3s ease-in-out infinite;
+}
+
 /* PWA 설치 배너 숨김 */
 @media all and (display-mode: standalone) {
   .install-prompt {
