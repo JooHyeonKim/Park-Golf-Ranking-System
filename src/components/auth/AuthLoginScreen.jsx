@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '../../contexts/AuthContext';
 
-export default function AuthLoginScreen({ onLoginSuccess, onBack, returnTo = 'collab-role' }) {
+export default function AuthLoginScreen({ onLoginSuccess, onBack, returnTo = 'collab-role', hideBackButton = false, subtitle }) {
   const { signUp, signIn, signInWithOAuth, error: authError } = useAuthContext();
   const [tab, setTab] = useState('login'); // 'login' | 'register'
   const [email, setEmail] = useState('');
@@ -74,7 +74,7 @@ export default function AuthLoginScreen({ onLoginSuccess, onBack, returnTo = 'co
       <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-green-800 mb-1">파크골프 대회 관리</h1>
-          <p className="text-gray-500 text-sm">협동 입력 모드를 사용하려면 로그인이 필요합니다</p>
+          <p className="text-gray-500 text-sm">{subtitle || '협동 입력 모드를 사용하려면 로그인이 필요합니다'}</p>
         </div>
 
         {/* 탭 */}
@@ -192,12 +192,14 @@ export default function AuthLoginScreen({ onLoginSuccess, onBack, returnTo = 'co
         </div>
 
         {/* 뒤로가기 */}
-        <button
-          onClick={onBack}
-          className="w-full mt-6 py-2 text-gray-500 hover:text-gray-700 text-sm transition-colors"
-        >
-          ← 모드 선택으로 돌아가기
-        </button>
+        {!hideBackButton && (
+          <button
+            onClick={onBack}
+            className="w-full mt-6 py-2 text-gray-500 hover:text-gray-700 text-sm transition-colors"
+          >
+            ← 모드 선택으로 돌아가기
+          </button>
+        )}
       </div>
     </div>
   );
