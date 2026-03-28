@@ -143,13 +143,13 @@ function AuthenticatedApp() {
   const footer = showFooter && (
     <>
       {isMainScreen ? (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-2xl animate-bounce-slow">
-          <div className="bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300 rounded-2xl shadow-lg px-4 py-4 sm:px-8 sm:py-7 flex justify-center">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-lg animate-bounce-slow">
+          <div className="bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300 rounded-xl shadow-lg px-4 py-3 sm:px-6 sm:py-5 flex justify-center">
             <div className="inline-block text-left">
-              <div className="text-[14px] sm:text-[20px] font-bold text-amber-800 mb-1 sm:mb-2">
+              <div className="text-[13px] sm:text-[16px] font-bold text-amber-800 mb-1 sm:mb-1.5">
                 ✉️ 프로그램 제작문의: <span className="underline text-amber-600 hover:text-amber-500 cursor-pointer" onClick={() => { navigator.clipboard.writeText('subinkim0128@gmail.com'); alert('이메일 주소가 복사되었습니다!\nsubinkim0128@gmail.com'); }}>subinkim0128@gmail.com</span>
               </div>
-              <div className="text-[14px] sm:text-[20px] font-bold text-amber-800">
+              <div className="text-[13px] sm:text-[16px] font-bold text-amber-800">
                 ☕ 개발자 후원 계좌: 신한{' '}
                 <span
                   className="underline text-amber-600 hover:text-amber-500 cursor-pointer"

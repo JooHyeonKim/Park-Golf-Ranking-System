@@ -25,9 +25,9 @@ export default function AuthLoginScreen({ onLoginSuccess, onBack, returnTo = 'co
           setIsLoading(false);
           return;
         }
-        const { error } = await signUp(email, password, displayName.trim());
-        if (!error) {
-          setSignUpSuccess(true);
+        const { data, error } = await signUp(email, password, displayName.trim());
+        if (!error && data?.user) {
+          onLoginSuccess();
         }
       } else {
         const { error } = await signIn(email, password);
