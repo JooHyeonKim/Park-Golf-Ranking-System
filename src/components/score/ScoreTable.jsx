@@ -367,6 +367,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           type="text"
                           lang="ko"
                           inputMode="text"
+                          style={{ imeMode: 'active' }}
                           value={player.name || ''}
                           onChange={(e) => handleInputChange(player.id, 'name', e.target.value)}
                           onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) { handleNameBlur(player.id, e.target.value); e.target.blur(); } }}
