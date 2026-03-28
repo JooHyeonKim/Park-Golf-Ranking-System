@@ -44,7 +44,19 @@ export function useAuth() {
         data: { display_name: displayName },
       },
     });
-    if (error) setError(error.message);
+    if (error) {
+      const msg = error.message.includes('already registered')
+        ? '이미 가입된 이메일입니다. 로그인해주세요.'
+        : error.message;
+      setError(msg);
+      return { data, error: { ...error, message: msg } };
+    }
+    // 이메일 인증 활성화 시: 이미 가입된 이메일은 identities가 빈 배열
+    if (data?.user?.identities?.length === 0) {
+      const dupError = { message: '이미 가입된 이메일입니다. 로그인해주세요.' };
+      setError(dupError.message);
+      return { data: null, error: dupError };
+    }
     return { data, error };
   }, []);
 
