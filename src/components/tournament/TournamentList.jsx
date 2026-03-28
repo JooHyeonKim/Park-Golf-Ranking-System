@@ -3,6 +3,7 @@ import { useState } from 'react';
 // 총 조 수의 기본값 계산
 function getDefaultGroupCount(holeCount) {
   if (holeCount === 18) return 18;
+  if (holeCount === 27) return 27;
   if (holeCount === 54) return 54;
   return 36;
 }
@@ -10,6 +11,7 @@ function getDefaultGroupCount(holeCount) {
 // 총 조 수의 최대값 계산
 function getMaxGroupCount(holeCount) {
   if (holeCount === 18) return 18;
+  if (holeCount === 27) return 27;
   if (holeCount === 54) return 54;
   return 36;
 }
@@ -18,7 +20,7 @@ function getMaxGroupCount(holeCount) {
 function getTournamentGroupCount(tournament) {
   if (tournament.groupCount) return tournament.groupCount;
   const hc = tournament.holeCount || 36;
-  const numCourses = hc === 18 ? 2 : hc === 54 ? 6 : 4;
+  const numCourses = hc === 18 ? 2 : hc === 27 ? 3 : hc === 54 ? 6 : 4;
   return (tournament.groupsPerCourse || 9) * numCourses;
 }
 
@@ -134,41 +136,16 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
               {/* 홀 수 */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-500 mb-1.5">홀 수</label>
-                <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 w-full">
-                  <button
-                    type="button"
-                    onClick={() => handleHoleCountChange(18)}
-                    className={`flex-1 py-2 text-sm font-medium transition-colors ${
-                      newHoleCount === 18
-                        ? 'bg-green-600 text-white'
-                        : 'bg-white text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
-                    18홀
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleHoleCountChange(36)}
-                    className={`flex-1 py-2 text-sm font-medium transition-colors ${
-                      newHoleCount === 36
-                        ? 'bg-green-600 text-white'
-                        : 'bg-white text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
-                    36홀
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleHoleCountChange(54)}
-                    className={`flex-1 py-2 text-sm font-medium transition-colors ${
-                      newHoleCount === 54
-                        ? 'bg-green-600 text-white'
-                        : 'bg-white text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
-                    54홀
-                  </button>
-                </div>
+                <select
+                  value={newHoleCount}
+                  onChange={(e) => handleHoleCountChange(parseInt(e.target.value, 10))}
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg text-center text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value={18}>18홀</option>
+                  <option value={27}>27홀</option>
+                  <option value={36}>36홀</option>
+                  <option value={54}>54홀</option>
+                </select>
               </div>
 
               {/* 구분 */}

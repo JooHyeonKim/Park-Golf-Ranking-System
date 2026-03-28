@@ -10,8 +10,12 @@ import LoadingOverlay from '../../common/LoadingOverlay';
 
 export default function OverviewTab({ tournament }) {
   const holeCount = tournament.holeCount || 36;
+  const is27Hole = holeCount === 27;
   const is36Hole = holeCount >= 36;
   const is54Hole = holeCount === 54;
+  const hasScoreC = holeCount >= 27;
+  const hasScoreD = holeCount >= 36;
+  const hasScoreEF = holeCount === 54;
   const clubLabel = tournament.clubType === 'affiliation' ? '소속' : '클럽';
   const [sortBy, setSortBy] = useState('rank');
   const [genderFilter, setGenderFilter] = useState('all');
@@ -22,9 +26,11 @@ export default function OverviewTab({ tournament }) {
   const { tableRef, isCapturing, handleCaptureImage } = useImageCapture(tournament.name, genderLabel, 24);
   const { isGenerating, handlePdfDownload } = useSinglePdfDownload(tableRef, tournament.name, genderLabel, 24);
   const { sortedPlayers: allSortedPlayers } = useRanking(tournament.players, sortBy, true);
-  // 18홀일 때 C~F 코스 선수 행 숨김
+  // 18홀일 때 C~F, 27홀일 때 D~F 코스 선수 행 숨김
   const sortedPlayers = holeCount === 18
     ? allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B'))
+    : holeCount === 27
+    ? allSortedPlayers.filter(p => p.course.startsWith('A') || p.course.startsWith('B') || p.course.startsWith('C'))
     : allSortedPlayers;
 
   // 성별 필터링 + 순위 재계산 헬퍼
@@ -74,15 +80,15 @@ export default function OverviewTab({ tournament }) {
       <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-yellow-50 text-base sm:text-xl text-red-600">{player.total ?? '-'}</td>
       <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreA ?? '-'}</td>
       <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreB ?? '-'}</td>
-      <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-sky-50">{(player.scoreA != null && player.scoreB != null) ? player.scoreA + player.scoreB : '-'}</td>
-      {is36Hole && (
+      {!is27Hole && <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-sky-50">{(player.scoreA != null && player.scoreB != null) ? player.scoreA + player.scoreB : '-'}</td>}
+      {hasScoreC && <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreC ?? '-'}</td>}
+      {hasScoreD && (
         <>
-          <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreC ?? '-'}</td>
           <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreD ?? '-'}</td>
           <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-lime-50">{(player.scoreC != null && player.scoreD != null) ? player.scoreC + player.scoreD : '-'}</td>
         </>
       )}
-      {is54Hole && (
+      {hasScoreEF && (
         <>
           <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreE ?? '-'}</td>
           <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreF ?? '-'}</td>
@@ -102,18 +108,18 @@ export default function OverviewTab({ tournament }) {
       <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[50px] sm:min-w-[80px]">{clubLabel}</th>
       <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[50px]">성명</th>
       <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[30px] sm:min-w-[50px]">성별</th>
-      <th className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r whitespace-nowrap">{is54Hole ? '54홀 합계' : is36Hole ? '36홀 합계' : '18홀 합계'}</th>
+      <th className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r whitespace-nowrap">{is54Hole ? '54홀 합계' : is36Hole ? '36홀 합계' : is27Hole ? '27홀 합계' : '18홀 합계'}</th>
       <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'A1코스' : 'A코스'}</th>
       <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'B1코스' : 'B코스'}</th>
-      <th className="bg-sky-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
-      {is36Hole && (
+      {!is27Hole && <th className="bg-sky-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>}
+      {hasScoreC && <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'C1코스' : 'C코스'}</th>}
+      {hasScoreD && (
         <>
-          <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'C1코스' : 'C코스'}</th>
           <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'D1코스' : 'D코스'}</th>
           <th className="bg-lime-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
         </>
       )}
-      {is54Hole && (
+      {hasScoreEF && (
         <>
           <th className="bg-purple-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">A2코스</th>
           <th className="bg-purple-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">B2코스</th>
@@ -208,18 +214,18 @@ export default function OverviewTab({ tournament }) {
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[50px] sm:min-w-[80px]">{clubLabel}</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[50px]">성명</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[30px] sm:min-w-[50px]">성별</th>
-              <th className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r whitespace-nowrap">{is54Hole ? '54홀 합계' : is36Hole ? '36홀 합계' : '18홀 합계'}</th>
+              <th className="bg-yellow-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r whitespace-nowrap">{is54Hole ? '54홀 합계' : is36Hole ? '36홀 합계' : is27Hole ? '27홀 합계' : '18홀 합계'}</th>
               <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'A1코스' : 'A코스'}</th>
               <th className="bg-sky-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'B1코스' : 'B코스'}</th>
-              <th className="bg-sky-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
-              {is36Hole && (
+              {!is27Hole && <th className="bg-sky-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>}
+              {hasScoreC && <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'C1코스' : 'C코스'}</th>}
+              {hasScoreD && (
                 <>
-                  <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'C1코스' : 'C코스'}</th>
                   <th className="bg-lime-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">{is54Hole ? 'D1코스' : 'D코스'}</th>
                   <th className="bg-lime-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">총계</th>
                 </>
               )}
-              {is54Hole && (
+              {hasScoreEF && (
                 <>
                   <th className="bg-purple-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">A2코스</th>
                   <th className="bg-purple-200 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">B2코스</th>
@@ -257,15 +263,15 @@ export default function OverviewTab({ tournament }) {
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-yellow-50 text-base sm:text-xl text-red-600">{player.total ?? '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreA ?? '-'}</td>
                 <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreB ?? '-'}</td>
-                <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-sky-50">{(player.scoreA != null && player.scoreB != null) ? player.scoreA + player.scoreB : '-'}</td>
-                {is36Hole && (
+                {!is27Hole && <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-sky-50">{(player.scoreA != null && player.scoreB != null) ? player.scoreA + player.scoreB : '-'}</td>}
+                {hasScoreC && <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreC ?? '-'}</td>}
+                {hasScoreD && (
                   <>
-                    <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreC ?? '-'}</td>
                     <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreD ?? '-'}</td>
                     <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold bg-lime-50">{(player.scoreC != null && player.scoreD != null) ? player.scoreC + player.scoreD : '-'}</td>
                   </>
                 )}
-                {is54Hole && (
+                {hasScoreEF && (
                   <>
                     <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreE ?? '-'}</td>
                     <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.scoreF ?? '-'}</td>
