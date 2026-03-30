@@ -70,7 +70,7 @@ export default function OverviewTab({ tournament }) {
   // 테이블 렌더링 함수 (메인 + PDF용 숨김 테이블 공용)
   const renderTableRows = (players) => players.map((player, index) => (
     <tr key={player.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-      <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold text-red-600 text-sm sm:text-lg">
+      <td className="py-1 px-0.5 sm:py-2 sm:px-1 text-center border-r font-bold text-red-600 text-sm sm:text-lg whitespace-nowrap">
         <span>{player.rank ?? '-'}</span>
       </td>
       <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r">{player.course.split('-').length >= 3 ? `${player.group}-${player.course.split('-')[2]}` : player.group}</td>
@@ -103,7 +103,7 @@ export default function OverviewTab({ tournament }) {
 
   const renderTableHeader = () => (
     <tr className="border-b-2">
-      <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[40px] sm:min-w-[60px]">순위</th>
+      <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[28px] sm:min-w-[40px] whitespace-nowrap">순위</th>
       <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">조</th>
       <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[50px] sm:min-w-[80px]">{clubLabel}</th>
       <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[40px] sm:min-w-[50px]">성명</th>
@@ -208,7 +208,7 @@ export default function OverviewTab({ tournament }) {
         <table className="w-full text-sm sm:text-lg font-bold border-collapse whitespace-nowrap">
           <thead className="text-base sm:text-xl">
             <tr className="border-b-2">
-              <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[40px] sm:min-w-[60px]">순위</th>
+              <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r min-w-[28px] sm:min-w-[40px] whitespace-nowrap">순위</th>
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">조</th>
               {genderFilter === 'all' && <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-2 text-center border-r">코스</th>}
               <th className="bg-gray-300 py-2 px-1 sm:py-3 sm:px-3 text-center border-r min-w-[50px] sm:min-w-[80px]">{clubLabel}</th>
@@ -241,7 +241,7 @@ export default function OverviewTab({ tournament }) {
                 key={player.id}
                 className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
               >
-                <td className="py-1 px-1 sm:py-2 sm:px-2 text-center border-r font-bold text-red-600 text-sm sm:text-lg">
+                <td className="py-1 px-0.5 sm:py-2 sm:px-1 text-center border-r font-bold text-red-600 text-sm sm:text-lg whitespace-nowrap">
                   <div className="flex items-center justify-center gap-1">
                     <span>{player.rank ?? '-'}</span>
                     {player.detailScores && Object.keys(player.detailScores).length > 0 && (
