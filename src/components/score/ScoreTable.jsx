@@ -215,12 +215,6 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
               🏆 결과 보기
             </button>
             <button
-              onClick={handleFillTestData}
-              className="px-2 py-1.5 sm:px-5 sm:py-3 text-xs sm:text-lg rounded-lg font-bold transition-colors bg-orange-500 text-white hover:bg-orange-600"
-            >
-              테스트 데이터
-            </button>
-            <button
               onClick={handleCalculateRanking}
               className={`px-2 py-1.5 sm:px-5 sm:py-3 text-xs sm:text-lg rounded-lg font-bold transition-colors ${
                 isRankingCalculated
@@ -229,6 +223,12 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
               }`}
             >
               {isRankingCalculated ? '수정하기' : '등수 계산하기'}
+            </button>
+            <button
+              onClick={handleFillTestData}
+              className="px-1.5 py-1 sm:px-2 sm:py-1.5 text-[10px] sm:text-xs rounded font-medium transition-colors bg-orange-400 text-white hover:bg-orange-500"
+            >
+              테스트
             </button>
             <div className="relative" ref={sortMenuRef}>
               <button
