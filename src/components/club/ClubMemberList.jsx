@@ -155,7 +155,7 @@ export default function ClubMemberList({
                 등록된 회원이 없습니다
               </div>
             ) : (
-              members.map((member) => (
+              [...members].sort((a, b) => a.name.localeCompare(b.name, 'ko')).map((member) => (
                 <div key={member.id} className="flex items-center justify-between p-4">
                   {editingId === member.id ? (
                     <div className="flex-1 flex gap-2 flex-wrap">
