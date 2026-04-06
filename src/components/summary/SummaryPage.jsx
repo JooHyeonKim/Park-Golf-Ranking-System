@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { usePdfDownload } from '../../hooks/usePdfDownload';
-import { useExcelDownload } from '../../hooks/useExcelDownload';
 import OverviewTab from './tabs/OverviewTab';
 import IndividualTab from './tabs/IndividualTab';
 import EncouragementTab from './tabs/EncouragementTab';
@@ -12,7 +11,6 @@ export default function SummaryPage({ tournament, onBack }) {
   const [maleMaxRank, setMaleMaxRank] = useState(10);
   const [femaleMaxRank, setFemaleMaxRank] = useState(10);
   const { isGenerating, handlePdfDownload } = usePdfDownload(tournament.name);
-  const { isGenerating: isExcelGenerating, handleExcelDownload } = useExcelDownload(tournament, maleMaxRank, femaleMaxRank);
 
   const tabs = [
     { id: 'overview', label: '전체 현황' },
@@ -24,7 +22,6 @@ export default function SummaryPage({ tournament, onBack }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 pb-4">
       {isGenerating && <LoadingOverlay message="PDF 전체 생성 중..." />}
-      {isExcelGenerating && <LoadingOverlay message="Excel 전체 생성 중..." />}
       {/* 헤더 */}
       <div className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-full mx-auto px-2 py-2 sm:px-4 sm:py-3">
@@ -35,30 +32,17 @@ export default function SummaryPage({ tournament, onBack }) {
             >
               ← 점수 입력
             </button>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleExcelDownload}
-                disabled={isExcelGenerating}
-                className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg font-bold transition-colors flex items-center gap-1 shadow text-xs sm:text-sm whitespace-nowrap ${
-                  isExcelGenerating
-                    ? 'bg-green-400 text-white cursor-not-allowed'
-                    : 'bg-green-600 text-white hover:bg-green-700'
-                }`}
-              >
-                {isExcelGenerating ? '⏳ Excel 생성 중...' : '📊 Excel 전체 다운로드'}
-              </button>
-              <button
-                onClick={handlePdfDownload}
-                disabled={isGenerating}
-                className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg font-bold transition-colors flex items-center gap-1 shadow text-xs sm:text-sm whitespace-nowrap ${
-                  isGenerating
-                    ? 'bg-red-400 text-white cursor-not-allowed'
-                    : 'bg-red-600 text-white hover:bg-red-700'
-                }`}
-              >
-                {isGenerating ? '⏳ PDF 생성 중...' : '📄 PDF 전체 다운로드'}
-              </button>
-            </div>
+            <button
+              onClick={handlePdfDownload}
+              disabled={isGenerating}
+              className={`px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg font-bold transition-colors flex items-center gap-1 shadow text-xs sm:text-sm whitespace-nowrap ${
+                isGenerating
+                  ? 'bg-red-400 text-white cursor-not-allowed'
+                  : 'bg-red-600 text-white hover:bg-red-700'
+              }`}
+            >
+              {isGenerating ? '⏳ PDF 생성 중...' : '📄 PDF 전체 다운로드'}
+            </button>
           </div>
           <div className="text-center mb-2">
             <h2 className="text-lg sm:text-2xl font-bold text-gray-800">{tournament.name} - 집계</h2>
