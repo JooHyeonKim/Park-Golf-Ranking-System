@@ -318,6 +318,31 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
           </div>
         )}
       </div>
+
+      {/* 사용법 영상 플로팅 패널 */}
+      <a
+        href="https://www.youtube.com/watch?v=lfHT7PlZbpo"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed right-12 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-5 bg-white border-2 border-red-200 rounded-2xl shadow-lg px-5 py-10 hover:shadow-xl hover:border-red-400 hover:scale-105 transition-all group cursor-pointer"
+        title="사용법 영상 보기"
+      >
+        {/* YouTube 아이콘 */}
+        <svg className="w-12 h-12 text-red-600 group-hover:text-red-700 transition-colors flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z" />
+        </svg>
+
+        {/* 구분선 */}
+        <div className="w-8 h-px bg-red-100 group-hover:bg-red-200 transition-colors" />
+
+        {/* 세로 텍스트 */}
+        <span
+          className="text-[23px] font-bold text-gray-500 group-hover:text-red-600 transition-colors leading-tight"
+          style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+        >
+          사용법 영상
+        </span>
+      </a>
     </div>
   );
 }
