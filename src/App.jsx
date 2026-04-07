@@ -143,8 +143,8 @@ function AuthenticatedApp() {
   const footer = showFooter && (
     <>
       {isMainScreen ? (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-lg animate-bounce-slow">
-          <div className="bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300 rounded-xl shadow-lg px-4 py-3 sm:px-6 sm:py-5 flex justify-center">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-lg animate-bounce-slow flex items-stretch gap-2">
+          <div className="flex-1 bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300 rounded-xl shadow-lg px-4 py-3 sm:px-6 sm:py-5 flex justify-center">
             <div className="inline-block text-left">
               <div className="text-[13px] sm:text-[16px] font-bold text-amber-800 mb-1 sm:mb-1.5">
                 ✉️ 프로그램 제작문의: <span className="underline text-amber-600 hover:text-amber-500 cursor-pointer" onClick={() => { navigator.clipboard.writeText('subinkim0128@gmail.com'); alert('이메일 주소가 복사되었습니다!\nsubinkim0128@gmail.com'); }}>subinkim0128@gmail.com</span>
@@ -158,6 +158,18 @@ function AuthenticatedApp() {
               </div>
             </div>
           </div>
+          <a
+            href="https://www.youtube.com/watch?v=lfHT7PlZbpo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sm:hidden flex flex-col items-center justify-center gap-1.5 bg-white border-2 border-red-200 rounded-xl shadow-lg px-3 hover:border-red-400 transition-all group"
+            title="사용법 영상 보기"
+          >
+            <svg className="w-6 h-6 text-red-600 group-hover:text-red-700 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z" />
+            </svg>
+            <span className="text-[11px] font-bold text-gray-500 group-hover:text-red-600 leading-tight text-center">사용법{'\n'}영상</span>
+          </a>
         </div>
       ) : (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-200 flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-4 py-2 sm:py-4 text-[12px] sm:text-[14px] text-gray-500">
