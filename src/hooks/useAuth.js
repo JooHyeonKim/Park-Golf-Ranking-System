@@ -90,6 +90,23 @@ export function useAuth() {
     if (error) setError(error.message);
   }, []);
 
+  const deleteAccount = useCallback(async () => {
+    if (!supabase) return { error: { message: 'Supabase not configured' } };
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return { error: { message: '세션이 없습니다.' } };
+    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-user`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    const result = await res.json();
+    if (!res.ok) return { error: result };
+    await supabase.auth.signOut();
+    return { error: null };
+  }, []);
+
   const getDisplayName = useCallback(() => {
     if (!user) return '';
     return (
@@ -112,6 +129,7 @@ export function useAuth() {
     signIn,
     signInWithOAuth,
     signOut,
+    deleteAccount,
     getDisplayName,
   };
 }

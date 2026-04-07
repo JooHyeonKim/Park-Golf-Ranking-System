@@ -3,12 +3,22 @@ import { useAuthContext } from '../../contexts/AuthContext';
 import { useSubscriptionContext } from '../../contexts/SubscriptionContext';
 
 export default function AuthProfileScreen({ onLogin, onBack, onSubscriptionManage }) {
-  const { user, isAuthenticated, signOut, getDisplayName } = useAuthContext();
+  const { user, isAuthenticated, signOut, deleteAccount, getDisplayName } = useAuthContext();
   const { isTrialing, isActive, isCanceled, trialDaysLeft } = useSubscriptionContext();
 
   const handleLogout = async () => {
     await signOut();
     onBack();
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!confirm('정말로 계정을 탈퇴하시겠습니까?\n모든 데이터가 삭제되며 복구할 수 없습니다.')) return;
+    const { error } = await deleteAccount();
+    if (error) {
+      alert('탈퇴 처리 중 오류가 발생했습니다: ' + (error.error || error.message || '알 수 없는 오류'));
+      return;
+    }
+    window.location.reload();
   };
 
   // 로그인 방법 표시
@@ -102,6 +112,12 @@ export default function AuthProfileScreen({ onLogin, onBack, onSubscriptionManag
           className="w-full py-3 bg-red-50 text-red-600 rounded-lg font-semibold hover:bg-red-100 transition-colors mb-3"
         >
           로그아웃
+        </button>
+        <button
+          onClick={handleDeleteAccount}
+          className="w-full py-2 text-red-400 hover:text-red-600 text-sm transition-colors"
+        >
+          회원 탈퇴
         </button>
         <button
           onClick={onBack}
