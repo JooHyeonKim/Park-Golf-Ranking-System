@@ -162,7 +162,7 @@ function AuthenticatedApp() {
             href="https://www.youtube.com/watch?v=lfHT7PlZbpo"
             target="_blank"
             rel="noopener noreferrer"
-            className="sm:hidden flex flex-col items-center justify-center gap-1.5 bg-white border-2 border-red-200 rounded-xl shadow-lg px-3 hover:border-red-400 transition-all group"
+            className="flex flex-col items-center justify-center gap-1.5 bg-white border-2 border-red-200 rounded-xl shadow-lg px-3 hover:border-red-400 transition-all group"
             title="사용법 영상 보기"
           >
             <svg className="w-6 h-6 text-red-600 group-hover:text-red-700 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
