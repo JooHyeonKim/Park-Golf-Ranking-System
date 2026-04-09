@@ -147,7 +147,9 @@ function AuthenticatedApp() {
                 ✉️ 프로그램 제작문의: <span className="underline text-amber-600 hover:text-amber-500 cursor-pointer" onClick={() => { navigator.clipboard.writeText('subinkim0128@gmail.com'); alert('이메일 주소가 복사되었습니다!\nsubinkim0128@gmail.com'); }}>subinkim0128@gmail.com</span>
               </div>
               <div className="text-[13px] sm:text-[16px] font-bold text-amber-800">
-                ☕ 개발자 후원 계좌: 신한{' '}
+                <span className="sm:hidden">☕ 개발자 후원 계좌:<br /></span>
+                <span className="hidden sm:inline">☕ 개발자 후원 계좌: </span>
+                신한{' '}
                 <span
                   className="underline text-amber-600 hover:text-amber-500 cursor-pointer"
                   onClick={() => { navigator.clipboard.writeText('110500604303'); alert('계좌번호가 복사되었습니다!\n신한 110-500-604303'); }}
