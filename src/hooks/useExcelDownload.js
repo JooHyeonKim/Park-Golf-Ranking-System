@@ -39,7 +39,7 @@ function border() {
   return { top: s, bottom: s, left: s, right: s };
 }
 
-function styleHeader(cell, bg, fontColor = C.textWhite, fontSize = 11) {
+function styleHeader(cell, bg, fontColor = C.textWhite, fontSize = 13) {
   cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } };
   cell.font = { bold: true, color: { argb: fontColor }, size: fontSize };
   cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
@@ -48,7 +48,7 @@ function styleHeader(cell, bg, fontColor = C.textWhite, fontSize = 11) {
 
 function styleData(cell, bg, fontColor = C.textDark, bold = false) {
   if (bg) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } };
-  cell.font = { bold, color: { argb: fontColor }, size: 11 };
+  cell.font = { bold, color: { argb: fontColor }, size: 12 };
   cell.alignment = { horizontal: 'center', vertical: 'middle' };
   cell.border = border();
 }
@@ -115,7 +115,7 @@ function addOverviewSheet(wb, tournament, genderFilter, holeCount, clubLabel, sh
 
   // 헤더 행
   const hRow = ws.addRow(cols.map(c => c.label));
-  hRow.height = 22;
+  hRow.height = 26;
   hRow.eachCell((cell, colNum) => {
     const col = cols[colNum - 1];
     styleHeader(cell, col.hBg, col.hFont || C.textWhite);
@@ -145,7 +145,7 @@ function addOverviewSheet(wb, tournament, genderFilter, holeCount, clubLabel, sh
     values.push(player.holeInOne ? 'O' : '');
 
     const dRow = ws.addRow(values);
-    dRow.height = 18;
+    dRow.height = 22;
     dRow.eachCell((cell, colNum) => {
       const col = cols[colNum - 1];
       const bg = col.dBg || rowBg;
@@ -171,7 +171,7 @@ function addIndividualSheet(wb, tournament, clubLabel) {
 
   // 행1: 남자 / 순위 / 여자
   const r1 = ws.addRow([`남자`, '', '', '순위', `여자`, '', '']);
-  r1.height = 22;
+  r1.height = 26;
   ws.mergeCells(r1.number, 1, r1.number, 3);
   ws.mergeCells(r1.number, 5, r1.number, 7);
   styleHeader(ws.getCell(r1.number, 1), C.hMale);
@@ -180,7 +180,7 @@ function addIndividualSheet(wb, tournament, clubLabel) {
 
   // 행2: 서브 헤더
   const r2 = ws.addRow([clubLabel, '성명', '타수', '', clubLabel, '성명', '타수']);
-  r2.height = 20;
+  r2.height = 24;
   [1,2,3].forEach(c => styleHeader(ws.getCell(r2.number, c), 'FF93C5FD', C.textDark));
   styleHeader(ws.getCell(r2.number, 4), 'FFD1D5DB', C.textDark);
   [5,6,7].forEach(c => styleHeader(ws.getCell(r2.number, c), 'FFFBCFE8', C.textDark));
@@ -195,7 +195,7 @@ function addIndividualSheet(wb, tournament, clubLabel) {
       rankLabel,
       female?.club || '', female?.name || '', female ? calculateTotal(female) : '',
     ]);
-    dRow.height = 18;
+    dRow.height = 22;
     [1,2].forEach(c => styleData(ws.getCell(dRow.number, c), bg));
     styleData(ws.getCell(dRow.number, 3), bg, C.textRed, true);
     styleData(ws.getCell(dRow.number, 4), 'FFF3F4F6', C.textGray, true);
@@ -239,7 +239,7 @@ function addEncouragementSheet(wb, tournament, maleMaxRank, femaleMaxRank, clubL
   ];
 
   const r1 = ws.addRow(['남자', '', '', '순위', '여자', '', '']);
-  r1.height = 22;
+  r1.height = 26;
   ws.mergeCells(r1.number, 1, r1.number, 3);
   ws.mergeCells(r1.number, 5, r1.number, 7);
   styleHeader(ws.getCell(r1.number, 1), C.hMale);
@@ -247,7 +247,7 @@ function addEncouragementSheet(wb, tournament, maleMaxRank, femaleMaxRank, clubL
   styleHeader(ws.getCell(r1.number, 5), C.hFemale);
 
   const r2 = ws.addRow([clubLabel, '성명', '타수', '', clubLabel, '성명', '타수']);
-  r2.height = 20;
+  r2.height = 24;
   [1,2,3].forEach(c => styleHeader(ws.getCell(r2.number, c), 'FF93C5FD', C.textDark));
   styleHeader(ws.getCell(r2.number, 4), 'FFD1D5DB', C.textDark);
   [5,6,7].forEach(c => styleHeader(ws.getCell(r2.number, c), 'FFFBCFE8', C.textDark));
@@ -264,7 +264,7 @@ function addEncouragementSheet(wb, tournament, maleMaxRank, femaleMaxRank, clubL
       `${rankNumber}위`,
       showFemale ? (female?.club || '') : '', showFemale ? (female?.name || '') : '', showFemale && female ? calculateTotal(female) : '',
     ]);
-    dRow.height = 18;
+    dRow.height = 22;
     [1,2].forEach(c => styleData(ws.getCell(dRow.number, c), bg));
     styleData(ws.getCell(dRow.number, 3), bg, C.textRed, true);
     styleData(ws.getCell(dRow.number, 4), 'FFF3F4F6', C.textGray, true);
@@ -313,7 +313,7 @@ function addTeamSheet(wb, tournament, clubLabel) {
 
   // 헤더 행1
   const r1 = ws.addRow(['순위', `${clubLabel}명`, '합계', '1번', '', '2번', '', '3번', '', '4번', '']);
-  r1.height = 22;
+  r1.height = 26;
   ws.mergeCells(r1.number, 4, r1.number, 5);
   ws.mergeCells(r1.number, 6, r1.number, 7);
   ws.mergeCells(r1.number, 8, r1.number, 9);
@@ -325,7 +325,7 @@ function addTeamSheet(wb, tournament, clubLabel) {
 
   // 헤더 행2
   const r2 = ws.addRow(['', '', '', '성명', '타수', '성명', '타수', '성명', '타수', '성명', '타수']);
-  r2.height = 20;
+  r2.height = 24;
   styleHeader(ws.getCell(r2.number, 1), 'FF6B7280');
   styleHeader(ws.getCell(r2.number, 2), 'FF6B7280');
   styleHeader(ws.getCell(r2.number, 3), C.hYellow4, C.textDark);
@@ -341,7 +341,7 @@ function addTeamSheet(wb, tournament, clubLabel) {
       club.players[2]?.name || '', club.players[2] ? calculateTotal(club.players[2]) : '',
       club.players[3]?.name || '', club.players[3] ? calculateTotal(club.players[3]) : '',
     ]);
-    dRow.height = 18;
+    dRow.height = 22;
     styleData(ws.getCell(dRow.number, 1), bg, C.textDark, true);
     styleData(ws.getCell(dRow.number, 2), bg);
     styleData(ws.getCell(dRow.number, 3), C.dYellow, C.textRed, true);
