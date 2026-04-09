@@ -1,6 +1,5 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthContext } from './contexts/AuthContext';
-import { useSubscriptionContext } from './contexts/SubscriptionContext';
 import { useDataMigration } from './hooks/useDataMigration';
 import { useTournaments } from './hooks/useTournaments';
 import { useClubs } from './hooks/useClubs';
@@ -12,9 +11,7 @@ import TournamentList from './components/tournament/TournamentList';
 import ScoreTable from './components/score/ScoreTable';
 import SummaryPage from './components/summary/SummaryPage';
 import ClubManagement from './components/club/ClubManagement';
-import SubscriptionRequired from './components/subscription/SubscriptionRequired';
 import SubscriptionManagement from './components/subscription/SubscriptionManagement';
-import TrialBanner from './components/subscription/TrialBanner';
 import CollabRoleSelect from './components/collab/CollabRoleSelect';
 import CollabLeaderAction from './components/collab/CollabLeaderAction';
 import CollabLeaderSetup from './components/collab/CollabLeaderSetup';
@@ -508,24 +505,9 @@ function AuthenticatedApp() {
   );
 }
 
-// ==================== 구독 게이트 래퍼 ====================
+// ==================== 구독 게이트 래퍼 (결제 기능 비활성화 중) ====================
 function SubscriptionGate() {
-  const { isLoading: subLoading, isExpired, hasAccess, refetch } = useSubscriptionContext();
-
-  if (subLoading) {
-    return <LoadingScreen />;
-  }
-
-  if (isExpired || !hasAccess) {
-    return <SubscriptionRequired onSubscribed={refetch} />;
-  }
-
-  return (
-    <>
-      <TrialBanner />
-      <AuthenticatedApp />
-    </>
-  );
+  return <AuthenticatedApp />;
 }
 
 // ==================== 루트 앱 (인증 게이트) ====================

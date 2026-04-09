@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSubscriptionContext } from '../../contexts/SubscriptionContext';
 
 // 총 조 수의 기본값 계산
 function getDefaultGroupCount(holeCount) {
@@ -26,8 +25,6 @@ function getTournamentGroupCount(tournament) {
 }
 
 export default function TournamentList({ tournaments, onSelect, onDelete, onAdd, onViewSummary, onGoToClubs, onGoToAffiliations, onCollab, isAuthenticated, displayName, userEmail, onLogin, onProfile }) {
-  const { isActive } = useSubscriptionContext();
-  const isVip = isActive;
   const [clubTypeFilter, setClubTypeFilter] = useState('club');
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
@@ -95,16 +92,9 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
             {isAuthenticated ? (
               <button
                 onClick={onProfile}
-                className={`px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-bold transition-all text-xs sm:text-sm relative ${
-                  isVip
-                    ? 'bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-500 text-amber-900 hover:from-yellow-600 hover:via-amber-500 hover:to-yellow-600 shadow-lg animate-gold-glow'
-                    : 'bg-gradient-to-r from-gray-500 to-gray-600 text-white hover:from-gray-600 hover:to-gray-700'
-                }`}
+                className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-bold transition-all text-xs sm:text-sm bg-gradient-to-r from-gray-500 to-gray-600 text-white hover:from-gray-600 hover:to-gray-700"
               >
-                {isVip && <span className="overflow-hidden rounded-full absolute inset-0 pointer-events-none"><span className="animate-vip-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"></span></span>}
-                {isVip && <span className="animate-vip-crown absolute -top-3 -left-1 text-base sm:text-lg drop-shadow-md">👑</span>}
-                {!isVip && '👤 '}{displayName || '프로필'}
-                {isVip && <span className="ml-1 px-1.5 py-0.5 bg-amber-900/20 rounded text-[10px] sm:text-xs font-black tracking-wider">VIP</span>}
+                👤 {displayName || '프로필'}
               </button>
             ) : (
               <button
