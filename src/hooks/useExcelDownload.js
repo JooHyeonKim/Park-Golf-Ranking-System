@@ -51,8 +51,8 @@ function addTitle(ws, title, colSpan) {
   tRow.height = 38;
   ws.mergeCells(tRow.number, 1, tRow.number, colSpan);
   const cell = ws.getCell(tRow.number, 1);
-  cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF166534' } };
-  cell.font = { bold: true, color: { argb: C.textWhite }, size: 20 };
+  cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF86EFAC' } };
+  cell.font = { bold: true, color: { argb: C.textDark }, size: 20 };
   cell.alignment = { horizontal: 'center', vertical: 'middle' };
 }
 
