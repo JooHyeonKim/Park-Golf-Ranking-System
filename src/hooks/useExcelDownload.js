@@ -42,7 +42,7 @@ function border() {
 function styleHeader(cell, bg, fontColor = C.textWhite, fontSize = 15) {
   cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } };
   cell.font = { bold: true, color: { argb: fontColor }, size: fontSize };
-  cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+  cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: false };
   cell.border = border();
 }
 
@@ -94,20 +94,20 @@ function addOverviewSheet(wb, tournament, genderFilter, holeCount, clubLabel, sh
     { label: '성명',       hBg: C.hGray,    dBg: null,     dFont: C.textDark, bold: false, width: 10 },
     { label: '성별',       hBg: C.hGray,    dBg: null,     dFont: C.textDark, bold: false, width: 6  },
     { label: is54Hole ? '54홀 합계' : holeCount === 36 ? '36홀 합계' : is27Hole ? '27홀 합계' : '18홀 합계',
-                           hBg: C.hRed,     dBg: C.dYellow, dFont: C.textRed,  bold: true,  width: 10 },
-    { label: is54Hole ? 'A1코스' : 'A코스', hBg: C.hPink3, dBg: null,     dFont: C.textDark, bold: false, width: 8  },
-    { label: is54Hole ? 'B1코스' : 'B코스', hBg: C.hPink3, dBg: null,     dFont: C.textDark, bold: false, width: 8  },
+                           hBg: C.hRed,     dBg: C.dYellow, dFont: C.textRed,  bold: true,  width: 14 },
+    { label: is54Hole ? 'A1코스' : 'A코스', hBg: C.hPink3, dBg: null,     dFont: C.textDark, bold: false, width: 10  },
+    { label: is54Hole ? 'B1코스' : 'B코스', hBg: C.hPink3, dBg: null,     dFont: C.textDark, bold: false, width: 10  },
   ];
-  if (!is27Hole) cols.push({ label: 'AB총계', hBg: C.hPink4, dBg: C.dPink, dFont: C.textDark, bold: true, width: 8 });
-  if (hasScoreC) cols.push({ label: is54Hole ? 'C1코스' : 'C코스', hBg: C.hBlue3, dBg: null, dFont: C.textDark, bold: false, width: 8 });
+  if (!is27Hole) cols.push({ label: 'AB총계', hBg: C.hPink4, dBg: C.dPink, dFont: C.textDark, bold: true, width: 12 });
+  if (hasScoreC) cols.push({ label: is54Hole ? 'C1코스' : 'C코스', hBg: C.hBlue3, dBg: null, dFont: C.textDark, bold: false, width: 10 });
   if (hasScoreD) {
-    cols.push({ label: is54Hole ? 'D1코스' : 'D코스', hBg: C.hBlue3, dBg: null, dFont: C.textDark, bold: false, width: 8 });
-    cols.push({ label: 'CD총계', hBg: C.hBlue4, dBg: C.dBlue, dFont: C.textDark, bold: true, width: 8 });
+    cols.push({ label: is54Hole ? 'D1코스' : 'D코스', hBg: C.hBlue3, dBg: null, dFont: C.textDark, bold: false, width: 10 });
+    cols.push({ label: 'CD총계', hBg: C.hBlue4, dBg: C.dBlue, dFont: C.textDark, bold: true, width: 12 });
   }
   if (hasScoreEF) {
-    cols.push({ label: 'A2코스', hBg: C.hViolet3, dBg: null, dFont: C.textDark, bold: false, width: 8 });
-    cols.push({ label: 'B2코스', hBg: C.hViolet3, dBg: null, dFont: C.textDark, bold: false, width: 8 });
-    cols.push({ label: 'EF총계', hBg: C.hViolet4, dBg: C.dViolet, dFont: C.textDark, bold: true, width: 8 });
+    cols.push({ label: 'A2코스', hBg: C.hViolet3, dBg: null, dFont: C.textDark, bold: false, width: 10 });
+    cols.push({ label: 'B2코스', hBg: C.hViolet3, dBg: null, dFont: C.textDark, bold: false, width: 10 });
+    cols.push({ label: 'EF총계', hBg: C.hViolet4, dBg: C.dViolet, dFont: C.textDark, bold: true, width: 12 });
   }
   cols.push({ label: '홀인원', hBg: C.hOrange, dBg: null, dFont: C.textDark, bold: false, width: 8, hFont: C.textDark });
 
