@@ -46,6 +46,16 @@ function styleHeader(cell, bg, fontColor = C.textWhite, fontSize = 15) {
   cell.border = border();
 }
 
+function addTitle(ws, title, colSpan) {
+  const tRow = ws.addRow([title]);
+  tRow.height = 38;
+  ws.mergeCells(tRow.number, 1, tRow.number, colSpan);
+  const cell = ws.getCell(tRow.number, 1);
+  cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF166534' } };
+  cell.font = { bold: true, color: { argb: C.textWhite }, size: 20 };
+  cell.alignment = { horizontal: 'center', vertical: 'middle' };
+}
+
 function styleData(cell, bg, fontColor = C.textDark, bold = false) {
   if (bg) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } };
   cell.font = { bold, color: { argb: fontColor }, size: 14 };
@@ -113,6 +123,10 @@ function addOverviewSheet(wb, tournament, genderFilter, holeCount, clubLabel, sh
 
   ws.columns = cols.map(c => ({ width: c.width }));
 
+  // 제목 행
+  const genderSuffix = genderFilter === '남' ? ' (남자)' : genderFilter === '여' ? ' (여자)' : '';
+  addTitle(ws, `${tournament.name} 전체현황${genderSuffix}`, cols.length);
+
   // 헤더 행
   const hRow = ws.addRow(cols.map(c => c.label));
   hRow.height = 30;
@@ -168,6 +182,8 @@ function addIndividualSheet(wb, tournament, clubLabel) {
     { width: 8 },
     { width: 12 }, { width: 12 }, { width: 8 },
   ];
+
+  addTitle(ws, `${tournament.name} 개인전`, 7);
 
   // 행1: 남자 / 순위 / 여자
   const r1 = ws.addRow([`남자`, '', '', '순위', `여자`, '', '']);
@@ -237,6 +253,8 @@ function addEncouragementSheet(wb, tournament, maleMaxRank, femaleMaxRank, clubL
     { width: 8 },
     { width: 12 }, { width: 12 }, { width: 8 },
   ];
+
+  addTitle(ws, `${tournament.name} 장려상`, 7);
 
   const r1 = ws.addRow(['남자', '', '', '순위', '여자', '', '']);
   r1.height = 30;
@@ -310,6 +328,8 @@ function addTeamSheet(wb, tournament, clubLabel) {
     { width: 12 }, { width: 8 },
     { width: 12 }, { width: 8 },
   ];
+
+  addTitle(ws, `${tournament.name} 단체전`, 11);
 
   // 헤더 행1
   const r1 = ws.addRow(['순위', `${clubLabel}명`, '합계', '1번', '', '2번', '', '3번', '', '4번', '']);
