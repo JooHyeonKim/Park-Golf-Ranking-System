@@ -408,87 +408,141 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
 
                       {/* A코스 */}
                       <td className="py-2 px-1 border-r">
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
-                          value={player.scoreA ?? ''}
-                          onChange={(e) => handleScoreChange(player.id, 'scoreA', e.target.value)}
-                          disabled={isRankingCalculated}
-                          className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                        />
+                        <div className="flex flex-col items-center gap-0.5">
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            value={player.scoreA ?? ''}
+                            onChange={(e) => handleScoreChange(player.id, 'scoreA', e.target.value)}
+                            disabled={isRankingCalculated}
+                            className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                          />
+                          {!isRankingCalculated && (
+                            <button
+                              onClick={() => setDetailModalPlayer({ player, initialCourse: 'A' })}
+                              className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                              title="A코스 홀별 입력"
+                            >홀별</button>
+                          )}
+                        </div>
                       </td>
 
                       {/* B코스 */}
                       <td className="py-2 px-1 border-r">
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
-                          value={player.scoreB ?? ''}
-                          onChange={(e) => handleScoreChange(player.id, 'scoreB', e.target.value)}
-                          disabled={isRankingCalculated}
-                          className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                        />
+                        <div className="flex flex-col items-center gap-0.5">
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            value={player.scoreB ?? ''}
+                            onChange={(e) => handleScoreChange(player.id, 'scoreB', e.target.value)}
+                            disabled={isRankingCalculated}
+                            className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                          />
+                          {!isRankingCalculated && (
+                            <button
+                              onClick={() => setDetailModalPlayer({ player, initialCourse: 'B' })}
+                              className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                              title="B코스 홀별 입력"
+                            >홀별</button>
+                          )}
+                        </div>
                       </td>
 
                       {/* C코스 - 27홀 이상 표시 */}
                       {hasScoreC && (
                         <td className="py-2 px-1 border-r">
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            value={player.scoreC ?? ''}
-                            onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
-                            disabled={isRankingCalculated}
-                            className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                          />
+                          <div className="flex flex-col items-center gap-0.5">
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              value={player.scoreC ?? ''}
+                              onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
+                              disabled={isRankingCalculated}
+                              className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                            />
+                            {!isRankingCalculated && (
+                              <button
+                                onClick={() => setDetailModalPlayer({ player, initialCourse: 'C' })}
+                                className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                                title="C코스 홀별 입력"
+                              >홀별</button>
+                            )}
+                          </div>
                         </td>
                       )}
 
                       {/* D코스 - 36홀 이상 표시 */}
                       {hasScoreD && (
                         <td className="py-2 px-1 border-r">
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            value={player.scoreD ?? ''}
-                            onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
-                            disabled={isRankingCalculated}
-                            className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                          />
+                          <div className="flex flex-col items-center gap-0.5">
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              value={player.scoreD ?? ''}
+                              onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
+                              disabled={isRankingCalculated}
+                              className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                            />
+                            {!isRankingCalculated && (
+                              <button
+                                onClick={() => setDetailModalPlayer({ player, initialCourse: 'D' })}
+                                className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                                title="D코스 홀별 입력"
+                              >홀별</button>
+                            )}
+                          </div>
                         </td>
                       )}
 
                       {/* E코스 (A2) - 54홀만 표시 */}
                       {hasScoreEF && (
                         <td className="py-2 px-1 border-r">
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            value={player.scoreE ?? ''}
-                            onChange={(e) => handleScoreChange(player.id, 'scoreE', e.target.value)}
-                            disabled={isRankingCalculated}
-                            className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                          />
+                          <div className="flex flex-col items-center gap-0.5">
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              value={player.scoreE ?? ''}
+                              onChange={(e) => handleScoreChange(player.id, 'scoreE', e.target.value)}
+                              disabled={isRankingCalculated}
+                              className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                            />
+                            {!isRankingCalculated && (
+                              <button
+                                onClick={() => setDetailModalPlayer({ player, initialCourse: 'E' })}
+                                className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                                title="A2코스 홀별 입력"
+                              >홀별</button>
+                            )}
+                          </div>
                         </td>
                       )}
 
                       {/* F코스 (B2) - 54홀만 표시 */}
                       {hasScoreEF && (
                         <td className="py-2 px-1 border-r">
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            value={player.scoreF ?? ''}
-                            onChange={(e) => handleScoreChange(player.id, 'scoreF', e.target.value)}
-                            disabled={isRankingCalculated}
-                            className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                          />
+                          <div className="flex flex-col items-center gap-0.5">
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              value={player.scoreF ?? ''}
+                              onChange={(e) => handleScoreChange(player.id, 'scoreF', e.target.value)}
+                              disabled={isRankingCalculated}
+                              className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
+                            />
+                            {!isRankingCalculated && (
+                              <button
+                                onClick={() => setDetailModalPlayer({ player, initialCourse: 'F' })}
+                                className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                                title="B2코스 홀별 입력"
+                              >홀별</button>
+                            )}
+                          </div>
                         </td>
                       )}
 
@@ -516,7 +570,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           {isRankingCalculated && player.needsDetail && (
                             player.detailScores && Object.keys(player.detailScores).length > 0 ? (
                               <button
-                                onClick={() => setDetailModalPlayer(player)}
+                                onClick={() => setDetailModalPlayer({ player, initialCourse: null })}
                                 className="ml-1 px-1.5 py-0.5 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition-colors whitespace-nowrap"
                                 title="동점자 - 백카운트 입력 완료"
                               >
@@ -524,7 +578,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                               </button>
                             ) : (
                               <button
-                                onClick={() => setDetailModalPlayer(player)}
+                                onClick={() => setDetailModalPlayer({ player, initialCourse: null })}
                                 className="ml-1 px-1.5 py-0.5 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors animate-pulse whitespace-nowrap"
                                 title="동점자 - 백카운트 입력 필요"
                               >
@@ -579,9 +633,10 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
       {/* 동점자 상세 점수 입력 모달 */}
       {detailModalPlayer && (
         <DetailScoreModal
-          player={detailModalPlayer}
+          player={detailModalPlayer.player}
           is36Hole={is36Hole}
           holeCount={holeCount}
+          initialCourse={detailModalPlayer.initialCourse}
           onSave={(playerId, updates) => {
             onUpdatePlayer(tournament.id, playerId, updates);
           }}
