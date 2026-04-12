@@ -451,7 +451,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'A' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
                                   title="A코스 홀별 입력"
-                                >홀별</button>
+                                >홀별 입력</button>
                               )}
                             </div>
                           </td>
@@ -483,7 +483,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'B' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
                                   title="B코스 홀별 입력"
-                                >홀별</button>
+                                >홀별 입력</button>
                               )}
                             </div>
                           </td>
@@ -515,7 +515,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'C' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
                                   title="C코스 홀별 입력"
-                                >홀별</button>
+                                >홀별 입력</button>
                               )}
                             </div>
                           </td>
@@ -547,7 +547,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'D' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
                                   title="D코스 홀별 입력"
-                                >홀별</button>
+                                >홀별 입력</button>
                               )}
                             </div>
                           </td>
@@ -579,7 +579,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'E' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
                                   title="A2코스 홀별 입력"
-                                >홀별</button>
+                                >홀별 입력</button>
                               )}
                             </div>
                           </td>
@@ -611,7 +611,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'F' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
                                   title="B2코스 홀별 입력"
-                                >홀별</button>
+                                >홀별 입력</button>
                               )}
                             </div>
                           </td>
