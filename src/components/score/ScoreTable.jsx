@@ -10,6 +10,24 @@ function getBaseCourse(course) {
   return `${parts[0]}-${parts[1]}`;
 }
 
+// detailScores에서 특정 코스 합계 계산 (A1~A9)
+function getDetailSum(detailScores, courseKey) {
+  if (!detailScores) return null;
+  let sum = null;
+  for (let h = 1; h <= 9; h++) {
+    const v = detailScores[`${courseKey}${h}`];
+    if (v != null) { sum = (sum ?? 0) + v; }
+  }
+  return sum;
+}
+
+// 홀별 합계와 코스 점수가 불일치하는지 확인
+function hasMismatch(detailScores, courseKey, scoreValue) {
+  const detailSum = getDetailSum(detailScores, courseKey);
+  if (detailSum === null || scoreValue === null || scoreValue === undefined) return false;
+  return detailSum !== scoreValue;
+}
+
 export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, onAddPlayerToCourse, onRemovePlayerFromCourse, onUpdateGroupCount, onViewSummary, searchByName }) {
   const holeCount = tournament.holeCount || 36;
   const is27Hole = holeCount === 27;
@@ -409,144 +427,196 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                       </td>
 
                       {/* A코스 */}
-                      <td className="py-2 px-1 border-r">
-                        <div className="flex flex-col items-center gap-0.5">
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            value={player.scoreA ?? ''}
-                            onChange={(e) => handleScoreChange(player.id, 'scoreA', e.target.value)}
-                            disabled={isRankingCalculated}
-                            className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                          />
-                          {!isRankingCalculated && (
-                            <button
-                              onClick={() => setHoleModalPlayer({ player, initialCourse: 'A' })}
-                              className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
-                              title="A코스 홀별 입력"
-                            >홀별</button>
-                          )}
-                        </div>
-                      </td>
+                      {(() => {
+                        const mismatch = hasMismatch(player.detailScores, 'A', player.scoreA);
+                        return (
+                          <td className="py-2 px-1 border-r">
+                            <div className="flex flex-col items-center gap-0.5">
+                              <input
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={player.scoreA ?? ''}
+                                onChange={(e) => handleScoreChange(player.id, 'scoreA', e.target.value)}
+                                disabled={isRankingCalculated}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                              />
+                              {mismatch && (
+                                <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'A')}`}>
+                                  ⚠ 합계불일치
+                                </span>
+                              )}
+                              {!isRankingCalculated && (
+                                <button
+                                  onClick={() => setHoleModalPlayer({ player, initialCourse: 'A' })}
+                                  className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                                  title="A코스 홀별 입력"
+                                >홀별</button>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      })()}
 
                       {/* B코스 */}
-                      <td className="py-2 px-1 border-r">
-                        <div className="flex flex-col items-center gap-0.5">
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            value={player.scoreB ?? ''}
-                            onChange={(e) => handleScoreChange(player.id, 'scoreB', e.target.value)}
-                            disabled={isRankingCalculated}
-                            className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                          />
-                          {!isRankingCalculated && (
-                            <button
-                              onClick={() => setHoleModalPlayer({ player, initialCourse: 'B' })}
-                              className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
-                              title="B코스 홀별 입력"
-                            >홀별</button>
-                          )}
-                        </div>
-                      </td>
+                      {(() => {
+                        const mismatch = hasMismatch(player.detailScores, 'B', player.scoreB);
+                        return (
+                          <td className="py-2 px-1 border-r">
+                            <div className="flex flex-col items-center gap-0.5">
+                              <input
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={player.scoreB ?? ''}
+                                onChange={(e) => handleScoreChange(player.id, 'scoreB', e.target.value)}
+                                disabled={isRankingCalculated}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                              />
+                              {mismatch && (
+                                <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'B')}`}>
+                                  ⚠ 합계불일치
+                                </span>
+                              )}
+                              {!isRankingCalculated && (
+                                <button
+                                  onClick={() => setHoleModalPlayer({ player, initialCourse: 'B' })}
+                                  className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                                  title="B코스 홀별 입력"
+                                >홀별</button>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      })()}
 
                       {/* C코스 - 27홀 이상 표시 */}
-                      {hasScoreC && (
-                        <td className="py-2 px-1 border-r">
-                          <div className="flex flex-col items-center gap-0.5">
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              pattern="[0-9]*"
-                              value={player.scoreC ?? ''}
-                              onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
-                              disabled={isRankingCalculated}
-                              className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                            />
-                            {!isRankingCalculated && (
-                              <button
-                                onClick={() => setHoleModalPlayer({ player, initialCourse: 'C' })}
-                                className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
-                                title="C코스 홀별 입력"
-                              >홀별</button>
-                            )}
-                          </div>
-                        </td>
-                      )}
+                      {hasScoreC && (() => {
+                        const mismatch = hasMismatch(player.detailScores, 'C', player.scoreC);
+                        return (
+                          <td className="py-2 px-1 border-r">
+                            <div className="flex flex-col items-center gap-0.5">
+                              <input
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={player.scoreC ?? ''}
+                                onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
+                                disabled={isRankingCalculated}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                              />
+                              {mismatch && (
+                                <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'C')}`}>
+                                  ⚠ 합계불일치
+                                </span>
+                              )}
+                              {!isRankingCalculated && (
+                                <button
+                                  onClick={() => setHoleModalPlayer({ player, initialCourse: 'C' })}
+                                  className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                                  title="C코스 홀별 입력"
+                                >홀별</button>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      })()}
 
                       {/* D코스 - 36홀 이상 표시 */}
-                      {hasScoreD && (
-                        <td className="py-2 px-1 border-r">
-                          <div className="flex flex-col items-center gap-0.5">
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              pattern="[0-9]*"
-                              value={player.scoreD ?? ''}
-                              onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
-                              disabled={isRankingCalculated}
-                              className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                            />
-                            {!isRankingCalculated && (
-                              <button
-                                onClick={() => setHoleModalPlayer({ player, initialCourse: 'D' })}
-                                className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
-                                title="D코스 홀별 입력"
-                              >홀별</button>
-                            )}
-                          </div>
-                        </td>
-                      )}
+                      {hasScoreD && (() => {
+                        const mismatch = hasMismatch(player.detailScores, 'D', player.scoreD);
+                        return (
+                          <td className="py-2 px-1 border-r">
+                            <div className="flex flex-col items-center gap-0.5">
+                              <input
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={player.scoreD ?? ''}
+                                onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
+                                disabled={isRankingCalculated}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                              />
+                              {mismatch && (
+                                <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'D')}`}>
+                                  ⚠ 합계불일치
+                                </span>
+                              )}
+                              {!isRankingCalculated && (
+                                <button
+                                  onClick={() => setHoleModalPlayer({ player, initialCourse: 'D' })}
+                                  className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                                  title="D코스 홀별 입력"
+                                >홀별</button>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      })()}
 
                       {/* E코스 (A2) - 54홀만 표시 */}
-                      {hasScoreEF && (
-                        <td className="py-2 px-1 border-r">
-                          <div className="flex flex-col items-center gap-0.5">
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              pattern="[0-9]*"
-                              value={player.scoreE ?? ''}
-                              onChange={(e) => handleScoreChange(player.id, 'scoreE', e.target.value)}
-                              disabled={isRankingCalculated}
-                              className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                            />
-                            {!isRankingCalculated && (
-                              <button
-                                onClick={() => setHoleModalPlayer({ player, initialCourse: 'E' })}
-                                className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
-                                title="A2코스 홀별 입력"
-                              >홀별</button>
-                            )}
-                          </div>
-                        </td>
-                      )}
+                      {hasScoreEF && (() => {
+                        const mismatch = hasMismatch(player.detailScores, 'E', player.scoreE);
+                        return (
+                          <td className="py-2 px-1 border-r">
+                            <div className="flex flex-col items-center gap-0.5">
+                              <input
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={player.scoreE ?? ''}
+                                onChange={(e) => handleScoreChange(player.id, 'scoreE', e.target.value)}
+                                disabled={isRankingCalculated}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                              />
+                              {mismatch && (
+                                <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'E')}`}>
+                                  ⚠ 합계불일치
+                                </span>
+                              )}
+                              {!isRankingCalculated && (
+                                <button
+                                  onClick={() => setHoleModalPlayer({ player, initialCourse: 'E' })}
+                                  className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                                  title="A2코스 홀별 입력"
+                                >홀별</button>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      })()}
 
                       {/* F코스 (B2) - 54홀만 표시 */}
-                      {hasScoreEF && (
-                        <td className="py-2 px-1 border-r">
-                          <div className="flex flex-col items-center gap-0.5">
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              pattern="[0-9]*"
-                              value={player.scoreF ?? ''}
-                              onChange={(e) => handleScoreChange(player.id, 'scoreF', e.target.value)}
-                              disabled={isRankingCalculated}
-                              className={`w-14 px-1 py-1.5 border rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''}`}
-                            />
-                            {!isRankingCalculated && (
-                              <button
-                                onClick={() => setHoleModalPlayer({ player, initialCourse: 'F' })}
-                                className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
-                                title="B2코스 홀별 입력"
-                              >홀별</button>
-                            )}
-                          </div>
-                        </td>
-                      )}
+                      {hasScoreEF && (() => {
+                        const mismatch = hasMismatch(player.detailScores, 'F', player.scoreF);
+                        return (
+                          <td className="py-2 px-1 border-r">
+                            <div className="flex flex-col items-center gap-0.5">
+                              <input
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={player.scoreF ?? ''}
+                                onChange={(e) => handleScoreChange(player.id, 'scoreF', e.target.value)}
+                                disabled={isRankingCalculated}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                              />
+                              {mismatch && (
+                                <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'F')}`}>
+                                  ⚠ 합계불일치
+                                </span>
+                              )}
+                              {!isRankingCalculated && (
+                                <button
+                                  onClick={() => setHoleModalPlayer({ player, initialCourse: 'F' })}
+                                  className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
+                                  title="B2코스 홀별 입력"
+                                >홀별</button>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      })()}
 
                       {/* 홀인원 */}
                       <td className="py-2 px-2 text-center border-r">
