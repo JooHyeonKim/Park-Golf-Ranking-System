@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRanking } from '../../hooks/useRanking';
 import { countExtraPlayers } from '../../utils/data';
 import DetailScoreModal from './DetailScoreModal';
+import HoleScoreModal from './HoleScoreModal';
 
 // 코스명에서 기본 코스 추출 ("A-1-1" → "A-1", "A-1" → "A-1")
 function getBaseCourse(course) {
@@ -22,6 +23,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [detailModalPlayer, setDetailModalPlayer] = useState(null);
+  const [holeModalPlayer, setHoleModalPlayer] = useState(null); // { player, initialCourse }
 
   // 동명이인 선택 모달 상태
   const [duplicateMatches, setDuplicateMatches] = useState(null);
@@ -420,7 +422,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           />
                           {!isRankingCalculated && (
                             <button
-                              onClick={() => setDetailModalPlayer({ player, initialCourse: 'A' })}
+                              onClick={() => setHoleModalPlayer({ player, initialCourse: 'A' })}
                               className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
                               title="A코스 홀별 입력"
                             >홀별</button>
@@ -442,7 +444,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           />
                           {!isRankingCalculated && (
                             <button
-                              onClick={() => setDetailModalPlayer({ player, initialCourse: 'B' })}
+                              onClick={() => setHoleModalPlayer({ player, initialCourse: 'B' })}
                               className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
                               title="B코스 홀별 입력"
                             >홀별</button>
@@ -465,7 +467,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                             />
                             {!isRankingCalculated && (
                               <button
-                                onClick={() => setDetailModalPlayer({ player, initialCourse: 'C' })}
+                                onClick={() => setHoleModalPlayer({ player, initialCourse: 'C' })}
                                 className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
                                 title="C코스 홀별 입력"
                               >홀별</button>
@@ -489,7 +491,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                             />
                             {!isRankingCalculated && (
                               <button
-                                onClick={() => setDetailModalPlayer({ player, initialCourse: 'D' })}
+                                onClick={() => setHoleModalPlayer({ player, initialCourse: 'D' })}
                                 className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
                                 title="D코스 홀별 입력"
                               >홀별</button>
@@ -513,7 +515,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                             />
                             {!isRankingCalculated && (
                               <button
-                                onClick={() => setDetailModalPlayer({ player, initialCourse: 'E' })}
+                                onClick={() => setHoleModalPlayer({ player, initialCourse: 'E' })}
                                 className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
                                 title="A2코스 홀별 입력"
                               >홀별</button>
@@ -537,7 +539,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                             />
                             {!isRankingCalculated && (
                               <button
-                                onClick={() => setDetailModalPlayer({ player, initialCourse: 'F' })}
+                                onClick={() => setHoleModalPlayer({ player, initialCourse: 'F' })}
                                 className="text-[10px] text-gray-400 hover:text-blue-500 transition-colors leading-none"
                                 title="B2코스 홀별 입력"
                               >홀별</button>
@@ -641,6 +643,20 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
             onUpdatePlayer(tournament.id, playerId, updates);
           }}
           onClose={() => setDetailModalPlayer(null)}
+        />
+      )}
+
+      {/* 홀별 점수 입력 모달 (일반 입력 - A→D, 1→9) */}
+      {holeModalPlayer && (
+        <HoleScoreModal
+          player={holeModalPlayer.player}
+          holeCount={holeCount}
+          initialCourse={holeModalPlayer.initialCourse}
+          onSave={(playerId, updates) => {
+            onUpdatePlayer(tournament.id, playerId, updates);
+            setIsRankingCalculated(false);
+          }}
+          onClose={() => setHoleModalPlayer(null)}
         />
       )}
 
