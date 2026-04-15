@@ -117,10 +117,12 @@ export default function DetailScoreModal({ player, is36Hole, holeCount, onSave, 
             </span>
           </div>
 
-          {/* 안내 메시지 */}
-          <div className="mt-2 px-2 py-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
-            여기서 입력한 홀별 상세 점수는 동점자 등수 집계에만 사용되며,<br />코스 합계에는 영향을 주지 않습니다.
-          </div>
+          {/* 안내 메시지 (입력 모드에서만 표시) */}
+          {!readOnly && (
+            <div className="mt-2 px-2 py-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
+              여기서 입력한 홀별 상세 점수는 동점자 등수 집계에만 사용되며,<br />코스 합계에는 영향을 주지 않습니다.
+            </div>
+          )}
         </div>
 
         {/* 하단 버튼 */}

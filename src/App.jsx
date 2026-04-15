@@ -80,8 +80,8 @@ function AuthenticatedApp() {
   const [loginReturnTo, setLoginReturnTo] = useState('collab-role');
 
   // ==================== 혼자입력 핸들러 ====================
-  const handleAddTournament = (name, date, holeCount, groupCount, clubType) => {
-    addTournament(name, date, holeCount, groupCount, clubType);
+  const handleAddTournament = (name, date, holeCount, groupCount, clubType, inputMode) => {
+    addTournament(name, date, holeCount, groupCount, clubType, inputMode);
     setScreenMode('score');
   };
 

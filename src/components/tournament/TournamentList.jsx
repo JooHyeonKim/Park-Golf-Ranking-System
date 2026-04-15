@@ -32,6 +32,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
   const [newHoleCount, setNewHoleCount] = useState(36);
   const [newGroupCount, setNewGroupCount] = useState(getDefaultGroupCount(36));
   const [newClubType, setNewClubType] = useState('club');
+  const [newInputMode, setNewInputMode] = useState('traditional');
 
   const filteredTournaments = tournaments.filter(t => (t.clubType || 'club') === clubTypeFilter);
 
@@ -40,12 +41,13 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
       alert('대회명을 입력해주세요.');
       return;
     }
-    onAdd(newName.trim(), newDate, newHoleCount, newGroupCount, newClubType);
+    onAdd(newName.trim(), newDate, newHoleCount, newGroupCount, newClubType, newInputMode);
     setNewName('');
     setNewDate(new Date().toISOString().split('T')[0]);
     setNewHoleCount(36);
     setNewGroupCount(getDefaultGroupCount(36));
     setNewClubType(clubTypeFilter);
+    setNewInputMode('traditional');
     setShowAddForm(false);
   };
 
@@ -160,8 +162,8 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
               />
             </div>
 
-            {/* 옵션 선택 영역 */}
-            <div className="grid grid-cols-3 gap-3 mb-4">
+            {/* 옵션 선택 영역 - 1행 */}
+            <div className="grid grid-cols-2 gap-3 mb-3">
               {/* 홀 수 */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-500 mb-1.5">홀 수</label>
@@ -205,7 +207,10 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                   </button>
                 </div>
               </div>
+            </div>
 
+            {/* 옵션 선택 영역 - 2행 */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
               {/* 조 수 */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-500 mb-1.5">조 수</label>
@@ -218,6 +223,35 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                     <option key={n} value={n}>{n}조</option>
                   ))}
                 </select>
+              </div>
+
+              {/* 입력 방식 */}
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-500 mb-1.5">입력 방식</label>
+                <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 w-full">
+                  <button
+                    type="button"
+                    onClick={() => setNewInputMode('traditional')}
+                    className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                      newInputMode === 'traditional'
+                        ? 'bg-green-600 text-white'
+                        : 'bg-white text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    기본
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNewInputMode('hole')}
+                    className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                      newInputMode === 'hole'
+                        ? 'bg-green-600 text-white'
+                        : 'bg-white text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    홀별 입력
+                  </button>
+                </div>
               </div>
             </div>
 

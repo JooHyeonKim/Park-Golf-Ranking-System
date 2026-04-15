@@ -94,7 +94,7 @@ export function createInitialPlayers(holeCount = 36, groupCount = null) {
  * @param {number} groupCount - 총 조 수 (기본: 18홀=18, 36홀=36, 54홀=54)
  * @returns {Object} - 대회 객체
  */
-export function createTournament(name, date, holeCount = 36, groupCount = null, clubType = 'club') {
+export function createTournament(name, date, holeCount = 36, groupCount = null, clubType = 'club', inputMode = 'traditional') {
   const courses = getCoursesForHoleCount(holeCount);
   if (groupCount === null) groupCount = courses.length * 9;
 
@@ -105,6 +105,7 @@ export function createTournament(name, date, holeCount = 36, groupCount = null, 
     holeCount,
     groupCount,
     clubType,
+    inputMode,
     createdAt: Date.now(),
     players: createInitialPlayers(holeCount, groupCount)
   };
