@@ -37,16 +37,7 @@ export default function DetailScoreModal({ player, is36Hole, holeCount, onSave, 
 
 
   const handleSave = () => {
-    const scoreUpdates = {};
-    ['A','B','C','D','E','F'].forEach(c => {
-      let sum = null;
-      for (let h = 1; h <= 9; h++) {
-        const v = scores[`${c}${h}`];
-        if (v != null) { sum = (sum ?? 0) + v; }
-      }
-      if (sum !== null) scoreUpdates[`score${c}`] = sum;
-    });
-    onSave(player.id, { detailScores: scores, ...scoreUpdates });
+    onSave(player.id, { detailScores: scores });
     onClose();
   };
 
@@ -124,6 +115,11 @@ export default function DetailScoreModal({ player, is36Hole, holeCount, onSave, 
             <span className="font-semibold">
               {effectiveHoleCount === 54 ? COURSE_TAB_LABELS[activeCourse] : activeCourse}코스 합계: {courseTotal ?? '-'}
             </span>
+          </div>
+
+          {/* 안내 메시지 */}
+          <div className="mt-2 px-2 py-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
+            여기서 입력한 홀별 상세 점수는 동점자 등수 집계에만 사용되며,<br />코스 합계에는 영향을 주지 않습니다.
           </div>
         </div>
 
