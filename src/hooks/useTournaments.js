@@ -76,8 +76,8 @@ export function useTournaments() {
   }, []);
 
   // 새 대회 추가
-  const addTournament = useCallback((name, date, holeCount = 36, groupCount = null, clubType = 'club') => {
-    const newTournament = createTournament(name, date, holeCount, groupCount, clubType);
+  const addTournament = useCallback((name, date, holeCount = 36, groupCount = null, clubType = 'club', inputMode = 'traditional') => {
+    const newTournament = createTournament(name, date, holeCount, groupCount, clubType, inputMode);
     setTournaments(prev => [newTournament, ...prev]);
     setCurrentTournamentId(newTournament.id);
     immediateSave(newTournament);

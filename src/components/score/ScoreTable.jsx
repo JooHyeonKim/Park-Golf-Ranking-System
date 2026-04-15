@@ -36,6 +36,7 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
   const hasScoreC = holeCount >= 27;
   const hasScoreD = holeCount >= 36;
   const hasScoreEF = holeCount === 54;
+  const isHoleMode = (tournament.inputMode ?? 'hole') === 'hole';
   const clubLabel = tournament.clubType === 'affiliation' ? '소속' : '클럽';
   const [sortBy, setSortBy] = useState('group'); // 'rank' | 'group'
   const [isRankingCalculated, setIsRankingCalculated] = useState(false);
@@ -439,14 +440,14 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                 value={player.scoreA ?? ''}
                                 onChange={(e) => handleScoreChange(player.id, 'scoreA', e.target.value)}
                                 disabled={isRankingCalculated}
-                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch && isHoleMode ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
                               />
-                              {mismatch && (
+                              {mismatch && isHoleMode && (
                                 <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'A')}`}>
                                   ⚠ 합계불일치
                                 </span>
                               )}
-                              {!isRankingCalculated && (
+                              {isHoleMode && !isRankingCalculated && (
                                 <button
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'A' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
@@ -471,14 +472,14 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                 value={player.scoreB ?? ''}
                                 onChange={(e) => handleScoreChange(player.id, 'scoreB', e.target.value)}
                                 disabled={isRankingCalculated}
-                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch && isHoleMode ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
                               />
-                              {mismatch && (
+                              {mismatch && isHoleMode && (
                                 <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'B')}`}>
                                   ⚠ 합계불일치
                                 </span>
                               )}
-                              {!isRankingCalculated && (
+                              {isHoleMode && !isRankingCalculated && (
                                 <button
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'B' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
@@ -503,14 +504,14 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                 value={player.scoreC ?? ''}
                                 onChange={(e) => handleScoreChange(player.id, 'scoreC', e.target.value)}
                                 disabled={isRankingCalculated}
-                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch && isHoleMode ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
                               />
-                              {mismatch && (
+                              {mismatch && isHoleMode && (
                                 <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'C')}`}>
                                   ⚠ 합계불일치
                                 </span>
                               )}
-                              {!isRankingCalculated && (
+                              {isHoleMode && !isRankingCalculated && (
                                 <button
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'C' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
@@ -535,14 +536,14 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                 value={player.scoreD ?? ''}
                                 onChange={(e) => handleScoreChange(player.id, 'scoreD', e.target.value)}
                                 disabled={isRankingCalculated}
-                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch && isHoleMode ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
                               />
-                              {mismatch && (
+                              {mismatch && isHoleMode && (
                                 <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'D')}`}>
                                   ⚠ 합계불일치
                                 </span>
                               )}
-                              {!isRankingCalculated && (
+                              {isHoleMode && !isRankingCalculated && (
                                 <button
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'D' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
@@ -567,14 +568,14 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                 value={player.scoreE ?? ''}
                                 onChange={(e) => handleScoreChange(player.id, 'scoreE', e.target.value)}
                                 disabled={isRankingCalculated}
-                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch && isHoleMode ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
                               />
-                              {mismatch && (
+                              {mismatch && isHoleMode && (
                                 <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'E')}`}>
                                   ⚠ 합계불일치
                                 </span>
                               )}
-                              {!isRankingCalculated && (
+                              {isHoleMode && !isRankingCalculated && (
                                 <button
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'E' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
@@ -599,14 +600,14 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                                 value={player.scoreF ?? ''}
                                 onChange={(e) => handleScoreChange(player.id, 'scoreF', e.target.value)}
                                 disabled={isRankingCalculated}
-                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
+                                className={`w-14 px-1 py-1.5 border-2 rounded text-center focus:outline-none focus:ring-1 focus:ring-green-500 ${isRankingCalculated ? 'bg-gray-50 text-gray-700' : ''} ${mismatch && isHoleMode ? 'border-orange-400 bg-orange-50' : 'border-gray-300'}`}
                               />
-                              {mismatch && (
+                              {mismatch && isHoleMode && (
                                 <span className="text-[9px] text-orange-500 font-bold leading-none" title={`홀별 합계: ${getDetailSum(player.detailScores, 'F')}`}>
                                   ⚠ 합계불일치
                                 </span>
                               )}
-                              {!isRankingCalculated && (
+                              {isHoleMode && !isRankingCalculated && (
                                 <button
                                   onClick={() => setHoleModalPlayer({ player, initialCourse: 'F' })}
                                   className="px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded hover:bg-blue-100 hover:border-blue-500 active:scale-95 transition-all shadow-sm leading-none"
