@@ -22,9 +22,12 @@ function getDetailSum(detailScores, courseKey) {
 }
 
 // 홀별 합계와 코스 점수가 불일치하는지 확인
+// 9개 홀 전체가 입력된 경우에만 비교 (부분 입력 시 경고 미표시)
 function hasMismatch(detailScores, courseKey, scoreValue) {
+  if (!detailScores || scoreValue === null || scoreValue === undefined) return false;
+  const allFilled = Array.from({ length: 9 }, (_, i) => i + 1).every(h => detailScores[`${courseKey}${h}`] != null);
+  if (!allFilled) return false;
   const detailSum = getDetailSum(detailScores, courseKey);
-  if (detailSum === null || scoreValue === null || scoreValue === undefined) return false;
   return detailSum !== scoreValue;
 }
 
@@ -710,7 +713,6 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
           is36Hole={is36Hole}
           holeCount={holeCount}
           initialCourse={detailModalPlayer.initialCourse}
-          updateScoreX={isHoleMode}
           onSave={(playerId, updates) => {
             onUpdatePlayer(tournament.id, playerId, updates);
           }}

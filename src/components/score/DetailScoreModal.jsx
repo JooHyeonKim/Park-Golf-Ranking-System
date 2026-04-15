@@ -4,7 +4,7 @@ const HOLES = 9;
 
 const COURSE_TAB_LABELS = { A: 'A1', B: 'B1', C: 'C1', D: 'D1', E: 'A2', F: 'B2' };
 
-export default function DetailScoreModal({ player, is36Hole, holeCount, onSave, onClose, readOnly = false, initialCourse, updateScoreX = false }) {
+export default function DetailScoreModal({ player, is36Hole, holeCount, onSave, onClose, readOnly = false, initialCourse }) {
   const effectiveHoleCount = holeCount || (is36Hole ? 36 : 18);
   const courses = effectiveHoleCount === 54 ? ['F', 'E', 'D', 'C', 'B', 'A']
                : effectiveHoleCount >= 36 ? ['D', 'C', 'B', 'A']
@@ -37,18 +37,7 @@ export default function DetailScoreModal({ player, is36Hole, holeCount, onSave, 
 
 
   const handleSave = () => {
-    const updates = { detailScores: scores };
-    if (updateScoreX) {
-      ['A', 'B', 'C', 'D', 'E', 'F'].forEach(c => {
-        let sum = null;
-        for (let h = 1; h <= 9; h++) {
-          const v = scores[`${c}${h}`];
-          if (v != null) { sum = (sum ?? 0) + v; }
-        }
-        if (sum !== null) updates[`score${c}`] = sum;
-      });
-    }
-    onSave(player.id, updates);
+    onSave(player.id, { detailScores: scores });
     onClose();
   };
 
