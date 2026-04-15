@@ -238,7 +238,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                         : 'bg-white text-gray-600 hover:bg-gray-100'
                     }`}
                   >
-                    기존
+                    기본
                   </button>
                   <button
                     type="button"
