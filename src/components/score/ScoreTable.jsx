@@ -643,7 +643,9 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                           {isRankingCalculated && player.needsDetail && (
                             player.detailScores && Object.keys(player.detailScores).length > 0 ? (
                               <button
-                                onClick={() => setDetailModalPlayer({ player, initialCourse: null })}
+                                onClick={() => isHoleMode
+                                  ? setHoleModalPlayer({ player, initialCourse: 'A' })
+                                  : setDetailModalPlayer({ player, initialCourse: null })}
                                 className="ml-1 px-1.5 py-0.5 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition-colors whitespace-nowrap"
                                 title="동점자 - 백카운트 입력 완료"
                               >
@@ -651,7 +653,9 @@ export default function ScoreTable({ tournament, clubs, onBack, onUpdatePlayer, 
                               </button>
                             ) : (
                               <button
-                                onClick={() => setDetailModalPlayer({ player, initialCourse: null })}
+                                onClick={() => isHoleMode
+                                  ? setHoleModalPlayer({ player, initialCourse: 'A' })
+                                  : setDetailModalPlayer({ player, initialCourse: null })}
                                 className="ml-1 px-1.5 py-0.5 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors animate-pulse whitespace-nowrap"
                                 title="동점자 - 백카운트 입력 필요"
                               >
