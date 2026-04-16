@@ -33,6 +33,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
   const [newGroupCount, setNewGroupCount] = useState(getDefaultGroupCount(36));
   const [newClubType, setNewClubType] = useState('club');
   const [newInputMode, setNewInputMode] = useState('traditional');
+  const [showBackCountInfo, setShowBackCountInfo] = useState(false);
 
   const filteredTournaments = tournaments.filter(t => (t.clubType || 'club') === clubTypeFilter);
 
@@ -238,7 +239,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                         : 'bg-white text-gray-600 hover:bg-gray-100'
                     }`}
                   >
-                    기본
+                    코스합계
                   </button>
                   <button
                     type="button"
@@ -253,6 +254,32 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                   </button>
                 </div>
               </div>
+            </div>
+
+            {/* 백카운트 방식 안내 */}
+            <div className="mb-4">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm font-medium text-gray-500">백카운트 방식</span>
+                <button
+                  type="button"
+                  onClick={() => setShowBackCountInfo(prev => !prev)}
+                  className="px-2 py-0.5 rounded-full bg-amber-100 border border-amber-400 text-amber-700 text-xs font-bold hover:bg-amber-200 hover:border-amber-500 active:scale-95 transition-all shadow-sm"
+                >
+                  ?
+                </button>
+              </div>
+              {showBackCountInfo && (
+                <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-xs text-gray-700 leading-relaxed">
+                  <p className="font-bold text-sm mb-2">백 카운트 방식</p>
+                  <p className="mb-2">경기자가 경기를 시작하는 홀이 동일하게 또는 다르게 진행하고서 스코어카드에 기록된 타수로써 순위를 결정한다.</p>
+                  <p className="font-semibold mb-1">• 18홀인 경우</p>
+                  <p className="mb-0.5 pl-2">① B→A코스 총 타수 합산 비교</p>
+                  <p className="mb-2 pl-2">② 동타 시 B-9번 홀부터 역순으로 1개 홀씩 타수를 비교</p>
+                  <p className="font-semibold mb-1">• 36홀인 경우</p>
+                  <p className="mb-0.5 pl-2">① D→C→B→A코스 총 타수 순으로 비교</p>
+                  <p className="pl-2">② 동타 시 D-9번 홀부터 역순으로 1개 홀씩 타수를 비교</p>
+                </div>
+              )}
             </div>
 
             {/* 버튼 */}
