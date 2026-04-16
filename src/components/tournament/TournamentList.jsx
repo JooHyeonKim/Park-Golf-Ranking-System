@@ -265,7 +265,7 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
                   onClick={() => setShowBackCountInfo(prev => !prev)}
                   className="px-2 py-0.5 rounded-full bg-amber-100 border border-amber-400 text-amber-700 text-xs font-bold hover:bg-amber-200 hover:border-amber-500 active:scale-95 transition-all shadow-sm"
                 >
-                  ? 보기
+                  ?
                 </button>
               </div>
               {showBackCountInfo && (
