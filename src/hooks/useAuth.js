@@ -12,7 +12,14 @@ export function useAuth() {
   const [session, setSession] = useState(null);
   const [isLoading, setIsLoading] = useState(!!supabase);
   const [error, setError] = useState(null);
-  const [authEvent, setAuthEvent] = useState(null);
+  // URL 해시에 type=recovery가 있으면 초기값으로 설정
+  // onAuthStateChange는 React 마운트 전에 이미 발생할 수 있어서 놓칠 수 있음
+  const [authEvent, setAuthEvent] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.hash.includes('type=recovery')) {
+      return 'PASSWORD_RECOVERY';
+    }
+    return null;
+  });
 
   useEffect(() => {
     if (!supabase) return;
@@ -28,6 +35,10 @@ export function useAuth() {
         setAuthEvent(event);
         setSession(session);
         setUser(session?.user ?? null);
+        // 비밀번호 재설정 완료 후 URL 해시 제거
+        if (event === 'PASSWORD_RECOVERY' || event === 'USER_UPDATED') {
+          window.history.replaceState(null, '', window.location.pathname);
+        }
       }
     );
 
@@ -107,6 +118,24 @@ export function useAuth() {
     return { error: null };
   }, []);
 
+  const resetPassword = useCallback(async (email) => {
+    if (!supabase) return { data: null, error: { message: 'Supabase not configured' } };
+    setError(null);
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin,
+    });
+    if (error) setError(error.message);
+    return { data, error };
+  }, []);
+
+  const updatePassword = useCallback(async (newPassword) => {
+    if (!supabase) return { data: null, error: { message: 'Supabase not configured' } };
+    setError(null);
+    const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) setError(error.message);
+    return { data, error };
+  }, []);
+
   const getDisplayName = useCallback(() => {
     if (!user) return '';
     return (
@@ -130,6 +159,8 @@ export function useAuth() {
     signInWithOAuth,
     signOut,
     deleteAccount,
+    resetPassword,
+    updatePassword,
     getDisplayName,
   };
 }

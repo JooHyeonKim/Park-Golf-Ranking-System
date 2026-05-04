@@ -7,6 +7,7 @@ import { useAffiliations } from './hooks/useAffiliations';
 import { useMembers } from './hooks/useMembers';
 import AuthLoginScreen from './components/auth/AuthLoginScreen';
 import AuthProfileScreen from './components/auth/AuthProfileScreen';
+import PasswordUpdateScreen from './components/auth/PasswordUpdateScreen';
 import TournamentList from './components/tournament/TournamentList';
 import ScoreTable from './components/score/ScoreTable';
 import SummaryPage from './components/summary/SummaryPage';
@@ -514,7 +515,7 @@ function SubscriptionGate() {
 
 // ==================== 루트 앱 (인증 게이트) ====================
 export default function App() {
-  const { user, isAuthenticated, isLoading } = useAuthContext();
+  const { user, isAuthenticated, isLoading, authEvent } = useAuthContext();
   const { isMigrating, isDone } = useDataMigration(user?.id);
 
   // OAuth 콜백 후 네비게이션 의도 복원
@@ -530,6 +531,11 @@ export default function App() {
   // 인증 세션 확인 중
   if (isLoading) {
     return <LoadingScreen />;
+  }
+
+  // 비밀번호 재설정 링크 클릭 후 리디렉션
+  if (authEvent === 'PASSWORD_RECOVERY') {
+    return <PasswordUpdateScreen onSuccess={() => {}} />;
   }
 
   // 필수 로그인
