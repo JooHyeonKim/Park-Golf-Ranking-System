@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { useAuthContext } from '../../contexts/AuthContext';
 
 export default function AuthLoginScreen({ onLoginSuccess, onBack, returnTo = 'collab-role', hideBackButton = false, subtitle }) {
-  const { signUp, signIn, signInWithOAuth, error: authError } = useAuthContext();
-  const [tab, setTab] = useState('login'); // 'login' | 'register'
+  const { signUp, signIn, signInWithOAuth, resetPassword, error: authError } = useAuthContext();
+  const [tab, setTab] = useState('login'); // 'login' | 'register' | 'forgot'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [localError, setLocalError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
 
   const error = localError || authError;
 
@@ -42,11 +43,46 @@ export default function AuthLoginScreen({ onLoginSuccess, onBack, returnTo = 'co
     }
   };
 
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setLocalError('');
+    setIsLoading(true);
+    try {
+      await resetPassword(email);
+      setResetEmailSent(true);
+    } catch {
+      setLocalError('오류가 발생했습니다');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleOAuth = async (provider) => {
     setLocalError('');
     localStorage.setItem('parkgolf-auth-redirect-intent', returnTo);
     await signInWithOAuth(provider);
   };
+
+  if (resetEmailSent) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center p-8">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+          <div className="text-5xl mb-4">✉️</div>
+          <h2 className="text-xl font-bold text-green-800 mb-3">이메일을 확인해주세요</h2>
+          <p className="text-gray-600 mb-6">
+            <strong>{email}</strong>으로 비밀번호 재설정 링크를 보냈습니다.
+            <br />이메일의 링크를 클릭하면 새 비밀번호를 설정할 수 있습니다.
+          </p>
+          <button
+            onClick={() => { setResetEmailSent(false); setTab('login'); setEmail(''); }}
+            className="w-full py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+          >
+            로그인으로 돌아가기
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (signUpSuccess) {
     return (
@@ -78,30 +114,71 @@ export default function AuthLoginScreen({ onLoginSuccess, onBack, returnTo = 'co
         </div>
 
         {/* 탭 */}
-        <div className="flex mb-6 border-b">
-          <button
-            onClick={() => { setTab('login'); setLocalError(''); }}
-            className={`flex-1 pb-3 text-center font-semibold transition-colors ${
-              tab === 'login'
-                ? 'text-green-700 border-b-2 border-green-600'
-                : 'text-gray-400 hover:text-gray-600'
-            }`}
-          >
-            로그인
-          </button>
-          <button
-            onClick={() => { setTab('register'); setLocalError(''); }}
-            className={`flex-1 pb-3 text-center font-semibold transition-colors ${
-              tab === 'register'
-                ? 'text-green-700 border-b-2 border-green-600'
-                : 'text-gray-400 hover:text-gray-600'
-            }`}
-          >
-            회원가입
-          </button>
-        </div>
+        {tab !== 'forgot' && (
+          <div className="flex mb-6 border-b">
+            <button
+              onClick={() => { setTab('login'); setLocalError(''); }}
+              className={`flex-1 pb-3 text-center font-semibold transition-colors ${
+                tab === 'login'
+                  ? 'text-green-700 border-b-2 border-green-600'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+            >
+              로그인
+            </button>
+            <button
+              onClick={() => { setTab('register'); setLocalError(''); }}
+              className={`flex-1 pb-3 text-center font-semibold transition-colors ${
+                tab === 'register'
+                  ? 'text-green-700 border-b-2 border-green-600'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+            >
+              회원가입
+            </button>
+          </div>
+        )}
 
-        {/* 폼 */}
+        {/* 비밀번호 찾기 폼 */}
+        {tab === 'forgot' && (
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div className="text-center mb-2">
+              <h2 className="text-lg font-bold text-green-800">비밀번호 찾기</h2>
+              <p className="text-sm text-gray-500 mt-1">가입한 이메일로 재설정 링크를 보내드립니다</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">이메일</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="email@example.com"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
+                required
+              />
+            </div>
+            {localError && (
+              <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{localError}</div>
+            )}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? '전송 중...' : '재설정 링크 보내기'}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setTab('login'); setLocalError(''); }}
+              className="w-full py-2 text-gray-500 hover:text-gray-700 text-sm transition-colors"
+            >
+              ← 로그인으로 돌아가기
+            </button>
+          </form>
+        )}
+
+        {/* 로그인/회원가입 폼 */}
+        {tab !== 'forgot' && <>
         <form onSubmit={handleSubmit} className="space-y-4">
           {tab === 'register' && (
             <div>
@@ -139,6 +216,18 @@ export default function AuthLoginScreen({ onLoginSuccess, onBack, returnTo = 'co
               minLength={6}
             />
           </div>
+
+          {tab === 'login' && (
+            <div className="text-right -mt-2">
+              <button
+                type="button"
+                onClick={() => { setTab('forgot'); setLocalError(''); }}
+                className="text-sm text-green-600 hover:text-green-800 hover:underline"
+              >
+                비밀번호를 잊으셨나요?
+              </button>
+            </div>
+          )}
 
           {error && (
             <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{error}</div>
@@ -202,6 +291,7 @@ export default function AuthLoginScreen({ onLoginSuccess, onBack, returnTo = 'co
             ← 모드 선택으로 돌아가기
           </button>
         )}
+        </>}
       </div>
     </div>
   );
