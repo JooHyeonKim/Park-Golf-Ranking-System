@@ -20,6 +20,7 @@ export async function loadTournaments() {
     holeCount: row.hole_count,
     groupCount: row.group_count,
     clubType: row.club_type,
+    inputMode: row.input_mode || 'hole',
     players: row.players || [],
     createdAt: Number(row.created_at),
   }));
@@ -36,6 +37,7 @@ export async function saveTournament(tournament) {
       hole_count: tournament.holeCount,
       group_count: tournament.groupCount,
       club_type: tournament.clubType || 'club',
+      input_mode: tournament.inputMode || 'hole',
       players: tournament.players || [],
       created_at: tournament.createdAt || tournament.id,
     }, { onConflict: 'id' });
