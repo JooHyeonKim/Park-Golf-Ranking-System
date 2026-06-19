@@ -6,8 +6,7 @@ import ImageDownloadButton from '../../common/ImageDownloadButton';
 import PdfDownloadButton from '../../common/PdfDownloadButton';
 import LoadingOverlay from '../../common/LoadingOverlay';
 
-const DEFAULT_MAX_RANK = 10;
-const RANK_OPTIONS = [9, 10, 11, 12, 13, 14, 15];
+const RANK_OPTIONS = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 const INDIVIDUAL_TOP = 5; // 개인전 탭에서 이미 표시한 상위 인원 수
 
 export default function EncouragementTab({ tournament, maleMaxRank, femaleMaxRank, onMaleMaxRankChange, onFemaleMaxRankChange }) {
