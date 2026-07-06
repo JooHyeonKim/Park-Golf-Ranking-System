@@ -370,6 +370,10 @@ export default function TournamentList({ tournaments, onSelect, onDelete, onAdd,
         )}
       </div>
 
+      {/* 하단 고정 무료 서비스 안내 배너 */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-green-600 to-emerald-500 text-white text-center py-2 px-4 text-xs sm:text-sm font-semibold shadow-lg">
+        🎁 2026년 9월 1일까지 무료 서비스로 제공됩니다
+      </div>
     </div>
   );
 }
